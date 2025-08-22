@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Ceylon TeaFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tea-green': '#2E8B57',
+                        'tea-green-light': '#3CB371',
+                        'tea-gold': '#DAA520',
+                        'tea-cream': '#FFF8E1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f0f8e6, #e6f0e6);
+        }
+
+        .tea-leaf {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232E8B57' d='M19.74 4.29c-4.53.16-9.31 2.6-12.8 6.1C3.76 13.56 2 17.11 2 22c4.89 0 8.44-1.76 11.61-4.94 3.5-3.49 5.94-8.27 6.1-12.8.03-.61-.48-1.12-1.09-1.09zM6.54 17.46c1.33-2.27 3.28-4.47 5.54-6.73 2.26-2.26 4.46-4.21 6.73-5.54-.33 2.9-2.1 6.76-5.28 9.94s-7.04 4.94-9.94 5.28z'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        .role-option {
+            transition: all 0.3s ease;
+        }
+
+        .role-option input:checked + div {
+            border-color: #2E8B57;
+            background-color: #f0f8e6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+<!-- Animated tea leaves -->
+<div class="tea-leaf top-20 left-10 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 0s;"></div>
+<div class="tea-leaf top-40 right-20 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 1s;"></div>
+<div class="tea-leaf bottom-40 left-20 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 2s;"></div>
+<div class="tea-leaf bottom-20 right-10 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 3s;"></div>
+
+<div class="w-full max-w-2xl">
+    <div class="bg-white rounded-xl shadow-2xl p-8">
+        <div class="text-center mb-8">
+            <div class="flex justify-center mb-4">
+                <i class="fas fa-leaf text-tea-green text-4xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-tea-green">Create an Account</h1>
+            <p class="text-gray-600 mt-2">Join Ceylon TeaFlow today</p>
+        </div>
+
+        <form>
+            <div class="mb-6">
+                <label class="block text-gray-700 mb-2">I am a:</label>
+                <div class="grid grid-cols-2 gap-4">
+                    <label class="role-option cursor-pointer">
+                        <input type="radio" name="role" value="supplier" class="hidden">
+                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-tea-green transition">
+                            <i class="fas fa-truck-loading text-2xl text-tea-green mb-2"></i>
+                            <p class="font-semibold">Tea Leaf Supplier</p>
+                            <p class="text-sm text-gray-500 mt-1">I supply tea leaves to the factory</p>
+                        </div>
+                    </label>
+
+                    <label class="role-option cursor-pointer">
+                        <input type="radio" name="role" value="customer" class="hidden" checked>
+                        <div class="border-2 border-gray-200 rounded-lg p-4 text-center hover:border-tea-green transition">
+                            <i class="fas fa-shopping-bag text-2xl text-tea-green mb-2"></i>
+                            <p class="font-semibold">Normal Customer</p>
+                            <p class="text-sm text-gray-500 mt-1">I purchase tea products</p>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="firstName" class="block text-gray-700 mb-2">First Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="firstName" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="John">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="lastName" class="block text-gray-700 mb-2">Last Name</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" id="lastName" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Doe">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label for="email" class="block text-gray-700 mb-2">Email Address</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-envelope text-gray-400"></i>
+                    </div>
+                    <input type="email" id="email" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="you@example.com">
+                </div>
+            </div>
+
+            <div class="mb-6" id="teaCardField" style="display: none;">
+                <label for="teaCard" class="block text-gray-700 mb-2">Tea Card Number</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                    </div>
+                    <input type="text" id="teaCard" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="TC-123456">
+                </div>
+                <p class="text-sm text-gray-500 mt-1">If you're a supplier, you must have a tea card number provided by the factory</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="password" class="block text-gray-700 mb-2">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="password" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="confirmPassword" class="block text-gray-700 mb-2">Confirm Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="confirmPassword" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="••••••••">
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center mb-6">
+                <input type="checkbox" id="terms" class="h-4 w-4 text-tea-green focus:ring-tea-green border-gray-300 rounded">
+                <label for="terms" class="ml-2 block text-sm text-gray-700">I agree to the <a href="#" class="text-tea-green hover:text-tea-green-light">Terms of Service</a> and <a href="#" class="text-tea-green hover:text-tea-green-light">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" class="w-full bg-tea-green text-white py-3 rounded-lg font-semibold hover:bg-tea-green-light transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-tea-green">
+                Create Account
+            </button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-gray-600">Already have an account? <a href="./login.html" class="text-tea-green hover:text-tea-green-light font-semibold">Sign in</a></p>
+        </div>
+    </div>
+
+    <div class="text-center mt-6">
+        <p class="text-gray-500 text-sm">© 2025 Ceylon TeaFlow. All rights reserved.</p>
+    </div>
+</div>
+
+<script>
+    // Show/hide tea card field based on role selection
+    document.querySelectorAll('input[name="role"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('teaCardField').style.display =
+                this.value === 'supplier' ? 'block' : 'none';
+        });
+    });
+
+    // Create animated tea leaves
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('body');
+        for (let i = 0; i < 10; i++) {
+            const leaf = document.createElement('div');
+            leaf.classList.add('tea-leaf');
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.top = Math.random() * 100 + '%';
+            leaf.style.animation = `float ${6 + Math.random() * 4}s ease-in-out ${Math.random() * 5}s infinite`;
+            leaf.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            container.appendChild(leaf);
+        }
+    });
+</script>
+</body>
+</html>
