@@ -2,9 +2,294 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceylon TeaFlow - Tea Factory Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tea-green': '#2E8B57',
+                        'tea-green-light': '#3CB371',
+                        'tea-gold': '#DAA520',
+                        'tea-cream': '#FFF8E1',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(120deg, #f0f8e6, #e6f0e6);
+        }
+
+        .tea-leaf {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232E8B57' d='M19.74 4.29c-4.53.16-9.31 2.6-12.8 6.1C3.76 13.56 2 17.11 2 22c4.89 0 8.44-1.76 11.61-4.94 3.5-3.49 5.94-8.27 6.1-12.8.03-.61-.48-1.12-1.09-1.09zM6.54 17.46c1.33-2.27 3.28-4.47 5.54-6.73 2.26-2.26 4.46-4.21 6.73-5.54-.33 2.9-2.1 6.76-5.28 9.94s-7.04 4.94-9.94 5.28z'/%3E%3C/svg%3E");
+            opacity: 0.7;
+            z-index: 0;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #2E8B57 0%, #3CB371 50%, #DAA520 100%);
+        }
+
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<!-- Navigation -->
+<nav class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+    <div class="flex items-center">
+        <i class="fas fa-leaf text-tea-green text-2xl mr-2"></i>
+        <span class="text-xl font-semibold text-tea-green">Ceylon TeaFlow</span>
+    </div>
+    <div class="hidden md:flex space-x-8">
+        <a href="#" class="text-tea-green hover:text-tea-green-light">Home</a>
+        <a href="#" class="text-gray-600 hover:text-tea-green">About</a>
+        <a href="#" class="text-gray-600 hover:text-tea-green">Features</a>
+        <a href="#" class="text-gray-600 hover:text-tea-green">Contact</a>
+    </div>
+    <div class="flex items-center space-x-4">
+        <a href="./pages/login.html" class="px-4 py-2 text-tea-green rounded hover:bg-tea-green hover:text-white transition">Sign In</a>
+        <a href="./pages/register.html" class="px-4 py-2 bg-tea-green text-white rounded hover:bg-tea-green-light transition">Sign Up</a>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative py-20 overflow-hidden">
+    <!-- Animated tea leaves -->
+    <div class="tea-leaf absolute top-20 left-10 animate-float" style="animation-delay: 0s;"></div>
+    <div class="tea-leaf absolute top-40 right-20 animate-float" style="animation-delay: 1s;"></div>
+    <div class="tea-leaf absolute bottom-40 left-20 animate-float" style="animation-delay: 2s;"></div>
+    <div class="tea-leaf absolute bottom-20 right-10 animate-float" style="animation-delay: 3s;"></div>
+
+    <div class="container mx-auto px-6 flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 text-center md:text-left">
+            <h1 class="text-4xl md:text-5xl font-bold text-tea-green mb-6">Revolutionizing Tea Factory Management</h1>
+            <p class="text-lg text-gray-600 mb-8">Streamline your tea production process, from leaf to cup, with our comprehensive management system designed for Sri Lanka's premier tea factories.</p>
+            <div class="flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="./pages/register.html" class="px-6 py-3 gradient-bg text-white rounded-lg shadow-md hover:shadow-lg transition">Get Started</a>
+                <a href="#" class="px-6 py-3 bg-white text-tea-green border border-tea-green rounded-lg shadow-md hover:bg-tea-green hover:text-white transition">Learn More</a>
+            </div>
+        </div>
+        <div class="md:w-1/2 mt-10 md:mt-0">
+            <img src="./assets/images/healthy-tea-leaves.jpg" alt="Tea Plantation" class="rounded-xl shadow-xl mx-auto">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-16 bg-tea-cream">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-tea-green mb-12">Key Features</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">Multi-Role Management</h3>
+                <p class="text-gray-600">Support for CEOs, Suppliers, Customers, Tea Makers, and Managers with customized dashboards.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">Tea Leaf Tracking</h3>
+                <p class="text-gray-600">Monitor tea leaf quality, quantity, and supplier information throughout the production process.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">Inventory & Sales</h3>
+                <p class="text-gray-600">Track stock levels, manage orders, and analyze sales performance in real-time.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">Financial Management</h3>
+                <p class="text-gray-600">Handle payments, expenses, salaries, and generate comprehensive financial reports.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">Supplier Portal</h3>
+                <p class="text-gray-600">Suppliers can view their monthly contributions and track payments through a dedicated portal.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md card-hover">
+                <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white text-xl mb-4">
+                    <i class="fas fa-eye"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-tea-green mb-2">CEO Dashboard</h3>
+                <p class="text-gray-600">Comprehensive overview of all operations with analytics and monitoring capabilities.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonial Section -->
+<section class="py-16">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-tea-green mb-12">What Our Users Say</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-tea-green rounded-full flex items-center justify-center text-white text-xl mr-4">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">Mr. Perera</h4>
+                        <p class="text-tea-green">Factory CEO</p>
+                    </div>
+                </div>
+                <p class="text-gray-600">"Ceylon TeaFlow has transformed how we manage our operations. The CEO dashboard gives me real-time insights into every aspect of our business."</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-tea-green rounded-full flex items-center justify-center text-white text-xl mr-4">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">Mrs. Fernando</h4>
+                        <p class="text-tea-green">Stock Manager</p>
+                    </div>
+                </div>
+                <p class="text-gray-600">"Managing tea stock."</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-tea-green rounded-full flex items-center justify-center text-white text-xl mr-4">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold">Mr. Silva</h4>
+                        <p class="text-tea-green">Finance Manager</p>
+                    </div>
+                </div>
+                <p class="text-gray-600">"Managing expenses, salaries, and supplier payments has never been easier. The financial tools are comprehensive yet intuitive to use."</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 gradient-bg">
+    <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold text-white mb-6">Ready to Transform Your Tea Factory Management?</h2>
+        <p class="text-white text-lg mb-8 max-w-2xl mx-auto">Join hundreds of tea factories in Sri Lanka that have streamlined their operations with Ceylon TeaFlow.</p>
+        <a href="./pages/register.html" class="px-8 py-3 bg-white text-tea-green font-semibold rounded-lg shadow-md hover:bg-tea-cream transition">Get Started Today</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-12">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-leaf text-tea-green-light text-2xl mr-2"></i>
+                    <span class="text-xl font-semibold">Ceylon TeaFlow</span>
+                </div>
+                <p class="text-gray-400">Revolutionizing tea factory management in Sri Lanka with cutting-edge technology.</p>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Home</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">About</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Features</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Contact</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Account</h4>
+                <ul class="space-y-2">
+                    <li><a href="./pages/login.html" class="text-gray-400 hover:text-tea-green-light transition">Sign In</a></li>
+                    <li><a href="./pages/register.html" class="text-gray-400 hover:text-tea-green-light transition">Sign Up</a></li>
+                    <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Forgot Password</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
+                <ul class="space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-map-marker-alt text-tea-green-light mr-2"></i>
+                        <span class="text-gray-400">123 Tea Garden Rd, Kandy, Sri Lanka</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-phone text-tea-green-light mr-2"></i>
+                        <span class="text-gray-400">+94 77 123 4567</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-envelope text-tea-green-light mr-2"></i>
+                        <span class="text-gray-400">info@ceylonteaflow.lk</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-gray-400 text-sm">© 2025 Ceylon TeaFlow. All rights reserved.</p>
+            <div class="flex space-x-4 mt-4 md:mt-0">
+                <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Create animated tea leaves
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.relative.py-20');
+        for (let i = 0; i < 15; i++) {
+            const leaf = document.createElement('div');
+            leaf.classList.add('tea-leaf');
+            leaf.style.left = Math.random() * 100 + '%';
+            leaf.style.top = Math.random() * 100 + '%';
+            leaf.style.animationDelay = Math.random() * 5 + 's';
+            leaf.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            container.appendChild(leaf);
+        }
+    });
+</script>
 </body>
 </html>
