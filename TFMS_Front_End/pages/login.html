@@ -36,6 +36,15 @@
       opacity: 0.7;
       z-index: 0;
     }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-20px) rotate(5deg);
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
@@ -48,10 +57,10 @@
   </div>
 </header>
 <!-- Animated tea leaves -->
-<div class="tea-leaf top-20 left-10 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 0s;"></div>
-<div class="tea-leaf top-40 right-20 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 1s;"></div>
-<div class="tea-leaf bottom-40 left-20 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 2s;"></div>
-<div class="tea-leaf bottom-20 right-10 animate-float" style="animation: float 6s ease-in-out infinite; animation-delay: 3s;"></div>
+<div class="tea-leaf top-20 left-10" style="animation: float 6s ease-in-out infinite; animation-delay: 0s;"></div>
+<div class="tea-leaf top-40 right-20" style="animation: float 6s ease-in-out infinite; animation-delay: 1s;"></div>
+<div class="tea-leaf bottom-40 left-20" style="animation: float 6s ease-in-out infinite; animation-delay: 2s;"></div>
+<div class="tea-leaf bottom-20 right-10" style="animation: float 6s ease-in-out infinite; animation-delay: 3s;"></div>
 
 <div class="w-full max-w-md">
   <div class="bg-white rounded-xl shadow-2xl p-8">
@@ -65,12 +74,12 @@
 
     <form>
       <div class="mb-6">
-        <label for="email" class="block text-gray-700 mb-2">Email Address</label>
+        <label for="username" class="block text-gray-700 mb-2">Username</label>
         <div class="relative">
           <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="fas fa-envelope text-gray-400"></i>
+            <i class="fas fa-user text-gray-400"></i>
           </div>
-          <input type="email" id="email" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="you@example.com">
+          <input type="text" id="username" class="pl-10 w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter your username">
         </div>
       </div>
 
@@ -101,16 +110,6 @@
     <div class="mt-6 text-center">
       <p class="text-gray-600">Don't have an account? <a href="./register.html" class="text-tea-green hover:text-tea-green-light font-semibold">Sign up</a></p>
     </div>
-
-<!--    <div class="mt-8 pt-6 border-t border-gray-200">-->
-<!--      <p class="text-center text-gray-500 text-sm">Select user role for demo:</p>-->
-<!--      <div class="grid grid-cols-2 gap-2 mt-2">-->
-<!--        <button class="py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-tea-green hover:text-white transition">Supplier</button>-->
-<!--        <button class="py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-tea-green hover:text-white transition">Customer</button>-->
-<!--        <button class="py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-tea-green hover:text-white transition">CEO</button>-->
-<!--        <button class="py-2 bg-gray-100 text-gray-700 rounded text-sm hover:bg-tea-green hover:text-white transition">Employee</button>-->
-<!--      </div>-->
-<!--    </div>-->
   </div>
 
   <div class="text-center mt-6">
