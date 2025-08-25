@@ -1,5 +1,7 @@
 package lk.ijse.edu.service;
 
+import lk.ijse.edu.dto.AuthDto;
+import lk.ijse.edu.dto.AuthResponseDto;
 import lk.ijse.edu.dto.RegisterCustomerDto;
 import lk.ijse.edu.dto.RegisterSupplierDto;
 import lk.ijse.edu.entity.*;
@@ -7,7 +9,10 @@ import lk.ijse.edu.repository.NormalCustomerRepo;
 import lk.ijse.edu.repository.TeaCardRepo;
 import lk.ijse.edu.repository.TeaLeafSupplierRepo;
 import lk.ijse.edu.repository.UserRepo;
+import lk.ijse.edu.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +27,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final TeaLeafSupplierRepo teaLeafSupplierRepo;
     private final TeaCardRepo teaCardRepo;
+    private final JWTUtil jwt;
 
     public String registerCustomer(RegisterCustomerDto registerCustomerDto) {
         if (userRepo.existsByUsername(registerCustomerDto.getUsername())) {
@@ -87,5 +93,26 @@ public class AuthService {
         userRepo.save(user);
 
         return "Supplier registration success";
+    }
+
+    public AuthResponseDto login(AuthDto dto) {
+        User user = userRepo.findByUsername(dto.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid credentials");
+        }
+
+        String role = user.getRole().name();
+        String name = user.getNormalCustomer() != null ?
+                user.getNormalCustomer().getFirstName() + " " + user.getNormalCustomer().getLastName() :
+                user.getTeaLeafSupplier() != null ?
+                        user.getTeaLeafSupplier().getFirstName() + " " + user.getTeaLeafSupplier().getLastName() :
+                        "User";
+        String access = jwt.generateAccessToken(user.getUsername(), role);
+
+        long exp = jwt.getExpiry(access).getTime();
+
+        return new AuthResponseDto(access, role, exp, name);
     }
 }
