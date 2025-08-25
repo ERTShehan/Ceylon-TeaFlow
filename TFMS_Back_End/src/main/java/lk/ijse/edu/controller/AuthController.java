@@ -2,6 +2,7 @@ package lk.ijse.edu.controller;
 
 import lk.ijse.edu.dto.APIResponse;
 import lk.ijse.edu.dto.RegisterCustomerDto;
+import lk.ijse.edu.dto.RegisterSupplierDto;
 import lk.ijse.edu.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,5 +22,10 @@ public class AuthController {
                 "OK",
                 authService.registerCustomer(registerCustomerDto)
         ));
+    }
+
+    @PostMapping("/register/supplier")
+    public ResponseEntity<APIResponse> registerSupplier(@RequestBody RegisterSupplierDto dto) {
+        return ResponseEntity.ok(new APIResponse(200, "OK", authService.registerSupplier(dto)));
     }
 }

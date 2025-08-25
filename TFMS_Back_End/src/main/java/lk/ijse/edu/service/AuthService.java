@@ -1,14 +1,16 @@
 package lk.ijse.edu.service;
 
 import lk.ijse.edu.dto.RegisterCustomerDto;
-import lk.ijse.edu.entity.NormalCustomer;
-import lk.ijse.edu.entity.SystemUserRole;
-import lk.ijse.edu.entity.User;
+import lk.ijse.edu.dto.RegisterSupplierDto;
+import lk.ijse.edu.entity.*;
 import lk.ijse.edu.repository.NormalCustomerRepo;
+import lk.ijse.edu.repository.TeaCardRepo;
+import lk.ijse.edu.repository.TeaLeafSupplierRepo;
 import lk.ijse.edu.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -18,6 +20,8 @@ public class AuthService {
     private final UserRepo userRepo;
     private final NormalCustomerRepo normalCustomerRepo;
     private final PasswordEncoder passwordEncoder;
+    private final TeaLeafSupplierRepo teaLeafSupplierRepo;
+    private final TeaCardRepo teaCardRepo;
 
     public String registerCustomer(RegisterCustomerDto registerCustomerDto) {
         if (userRepo.existsByUsername(registerCustomerDto.getUsername())) {
@@ -45,5 +49,43 @@ public class AuthService {
         user.setNormalCustomer(profile);
         userRepo.save(user);
         return "Customer registration success";
+    }
+
+    @Transactional
+    public String registerSupplier(RegisterSupplierDto dto) {
+        if (userRepo.existsByUsername(dto.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (dto.getEmail() != null && teaLeafSupplierRepo.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        TeaCard teaCard = teaCardRepo.findByNumber(dto.getTeaCardNumber())
+                .orElseThrow(() -> new RuntimeException("Invalid tea card number. Please contact CEO."));
+        if (teaCard.isUsed()) {
+            throw new RuntimeException("Tea card number already used");
+        }
+
+        User user = User.builder()
+                .username(dto.getUsername())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .createdAt(new Date())
+                .role(SystemUserRole.TEA_LEAF_SUPPLIER)
+                .build();
+
+        TeaLeafSupplier supplier = TeaLeafSupplier.builder()
+                .firstName(dto.getFirstName())
+                .lastName(dto.getLastName())
+                .email(dto.getEmail())
+                .address(dto.getAddress())
+                .teaCardNumber(dto.getTeaCardNumber())
+                .user(user)
+                .build();
+
+        teaCard.setUsed(true);
+        user.setTeaLeafSupplier(supplier);
+        userRepo.save(user);
+
+        return "Supplier registration success";
     }
 }
