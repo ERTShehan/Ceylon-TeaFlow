@@ -18,7 +18,7 @@ public class TeaCard {
     private Long id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String number; // e.g., "TC-100001" (unique, created by CEO)
+    private String number; // e.g., "TC-100001"
 
     @Column(nullable = false)
     private boolean used = false;
