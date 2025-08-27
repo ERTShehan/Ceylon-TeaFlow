@@ -1,4 +1,4 @@
-package lk.ijse.edu.service;
+package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.*;
 import lk.ijse.edu.entity.*;
@@ -6,6 +6,7 @@ import lk.ijse.edu.repository.NormalCustomerRepository;
 import lk.ijse.edu.repository.TeaCardRepository;
 import lk.ijse.edu.repository.TeaLeafSupplierRepository;
 import lk.ijse.edu.repository.UserRepository;
+import lk.ijse.edu.service.AuthService;
 import lk.ijse.edu.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +19,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl {
+public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final NormalCustomerRepository normalCustomerRepository;
     private final PasswordEncoder passwordEncoder;
@@ -27,6 +28,7 @@ public class AuthServiceImpl {
     private final JWTUtil jwt;
 
     @Transactional
+    @Override
     public String registerCustomer(RegisterCustomerDto registerCustomerDto) {
         if (userRepository.existsByUsername(registerCustomerDto.getUsername())) {
             throw new RuntimeException("Username already exists");
@@ -75,6 +77,7 @@ public class AuthServiceImpl {
     }
 
     @Transactional
+    @Override
     public String registerSupplier(RegisterSupplierDto dto) {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new RuntimeException("Username already exists");
@@ -112,6 +115,7 @@ public class AuthServiceImpl {
         return "Supplier registration success";
     }
 
+    @Override
     public AuthResponseDto login(AuthDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
