@@ -1,14 +1,11 @@
 package lk.ijse.edu.service;
 
-import lk.ijse.edu.dto.AuthDto;
-import lk.ijse.edu.dto.AuthResponseDto;
-import lk.ijse.edu.dto.RegisterCustomerDto;
-import lk.ijse.edu.dto.RegisterSupplierDto;
+import lk.ijse.edu.dto.*;
 import lk.ijse.edu.entity.*;
-import lk.ijse.edu.repository.NormalCustomerRepo;
-import lk.ijse.edu.repository.TeaCardRepo;
-import lk.ijse.edu.repository.TeaLeafSupplierRepo;
-import lk.ijse.edu.repository.UserRepo;
+import lk.ijse.edu.repository.NormalCustomerRepository;
+import lk.ijse.edu.repository.TeaCardRepository;
+import lk.ijse.edu.repository.TeaLeafSupplierRepository;
+import lk.ijse.edu.repository.UserRepository;
 import lk.ijse.edu.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,19 +18,20 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
-    private final UserRepo userRepo;
-    private final NormalCustomerRepo normalCustomerRepo;
+public class AuthServiceImpl {
+    private final UserRepository userRepository;
+    private final NormalCustomerRepository normalCustomerRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TeaLeafSupplierRepo teaLeafSupplierRepo;
-    private final TeaCardRepo teaCardRepo;
+    private final TeaLeafSupplierRepository teaLeafSupplierRepository;
+    private final TeaCardRepository teaCardRepository;
     private final JWTUtil jwt;
 
+    @Transactional
     public String registerCustomer(RegisterCustomerDto registerCustomerDto) {
-        if (userRepo.existsByUsername(registerCustomerDto.getUsername())) {
+        if (userRepository.existsByUsername(registerCustomerDto.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
-        if (registerCustomerDto.getEmail() != null && normalCustomerRepo.existsByEmail(registerCustomerDto.getEmail())) {
+        if (registerCustomerDto.getEmail() != null && normalCustomerRepository.existsByEmail(registerCustomerDto.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
 
@@ -53,20 +51,39 @@ public class AuthService {
                 .build();
 
         user.setNormalCustomer(profile);
-        userRepo.save(user);
+        userRepository.save(user);
         return "Customer registration success";
+    }
+
+    public String saveAdmin(SaveAdminDto dto) {
+        User user = User.builder()
+                .username(dto.getUsername())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .createdAt(new Date())
+                .role(SystemUserRole.ADMIN)
+                .build();
+
+        Admin admin = Admin.builder()
+                .name(dto.getName())
+                .email(dto.getEmail())
+                .user(user)
+                .build();
+
+        user.setAdmin(admin);
+        userRepository.save(user);
+        return "Admin saved successfully";
     }
 
     @Transactional
     public String registerSupplier(RegisterSupplierDto dto) {
-        if (userRepo.existsByUsername(dto.getUsername())) {
+        if (userRepository.existsByUsername(dto.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
-        if (dto.getEmail() != null && teaLeafSupplierRepo.existsByEmail(dto.getEmail())) {
+        if (dto.getEmail() != null && teaLeafSupplierRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
 
-        TeaCard teaCard = teaCardRepo.findByNumber(dto.getTeaCardNumber())
+        TeaCard teaCard = teaCardRepository.findByNumber(dto.getTeaCardNumber())
                 .orElseThrow(() -> new RuntimeException("Invalid tea card number. Please contact CEO."));
         if (teaCard.isUsed()) {
             throw new RuntimeException("Tea card number already used");
@@ -90,13 +107,13 @@ public class AuthService {
 
         teaCard.setUsed(true);
         user.setTeaLeafSupplier(supplier);
-        userRepo.save(user);
+        userRepository.save(user);
 
         return "Supplier registration success";
     }
 
     public AuthResponseDto login(AuthDto dto) {
-        User user = userRepo.findByUsername(dto.getUsername())
+        User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {

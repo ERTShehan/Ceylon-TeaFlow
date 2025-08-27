@@ -1,6 +1,6 @@
 package lk.ijse.edu.config;
 
-import lk.ijse.edu.repository.UserRepo;
+import lk.ijse.edu.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepo userRepo;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> userRepo.findByUsername(username)
+        return username -> userRepository.findByUsername(username)
                 .map(u -> new User(
                         u.getUsername(),
                         u.getPassword(),

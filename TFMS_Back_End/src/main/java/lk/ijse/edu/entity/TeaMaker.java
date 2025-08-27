@@ -15,10 +15,10 @@ public class TeaMaker {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teaMakerId;
 
-    private String makerName;
-    private String makerAddress;
+    private String fullName;
+    private String email;
     private String phoneNumber;
-    private String basicSalary;
+//    private String basicSalary;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

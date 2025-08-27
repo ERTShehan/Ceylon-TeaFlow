@@ -49,10 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const role = auth.role || '';
             if (role === 'CUSTOMER') {
                 window.location.href = './customerDashboard.html';
-            } else if (role === 'TEA_LEAF_SUPPLIER' || role === 'TEA_LEAF_SUPPLIER') {
+            } else if (role === 'TEA_LEAF_SUPPLIER') {
                 window.location.href = './supplierDashboard.html';
-            } else {
-                window.location.href = './customerDashboard.html';
+            } else if (role === 'ADMIN') {
+                window.location.href = './adminDashboard.html';
             }
 
         } catch (err) {

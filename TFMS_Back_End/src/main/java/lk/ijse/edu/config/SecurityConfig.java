@@ -32,10 +32,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/login",
                                 "/auth/register/customer",
-                                "/auth/register/supplier"
+                                "/auth/register/supplier",
+//                                "/auth/saveAdmin"
+                                "/teaMaker/register"
                         ).permitAll()
-                        // supplier registration requires CEO (ADMIN)
                         .requestMatchers("/auth/teacards/**").hasRole("ADMIN")
+//                                .requestMatchers("/teaMaker/register").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

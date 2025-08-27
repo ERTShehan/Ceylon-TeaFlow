@@ -25,7 +25,7 @@ public class JWTUtil {
     private String secret;
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     public String generateAccessToken(String username, String role) {
