@@ -15,15 +15,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register/customer")
-    public ResponseEntity<APIResponse> registerCustomer(@RequestBody RegisterCustomerDto registerCustomerDto) {
-        return new ResponseEntity<>(new APIResponse(
+    public ResponseEntity<APIResponse<String>> registerCustomer(@RequestBody RegisterCustomerDto registerCustomerDto) {
+        return new ResponseEntity<>(new APIResponse<>(
                 201, "Customer Registered Successfully", authService.registerCustomer(registerCustomerDto)
         ), HttpStatus.CREATED);
     }
 
     @PostMapping("/register/supplier")
-    public ResponseEntity<APIResponse> registerSupplier(@RequestBody RegisterSupplierDto dto) {
-        return new ResponseEntity<>(new APIResponse(
+    public ResponseEntity<APIResponse<String>> registerSupplier(@RequestBody RegisterSupplierDto dto) {
+        return new ResponseEntity<>(new APIResponse<>(
                 201, "Supplier Registered Successfully", authService.registerSupplier(dto)
         ), HttpStatus.CREATED);
     }
@@ -34,12 +34,12 @@ public class AuthController {
 //    }
 
     @PostMapping("/login")
-    public ResponseEntity<APIResponse> login(@RequestBody AuthDto dto) {
-        return ResponseEntity.ok(new APIResponse(200, "OK", authService.login(dto)));
+    public ResponseEntity<APIResponse<String>> login(@RequestBody AuthDto dto) {
+        return ResponseEntity.ok(new APIResponse<>(200, "OK", authService.login(dto)));
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<APIResponse> profile() {
-        return ResponseEntity.ok(new APIResponse(200, "OK", "This is a protected endpoint!"));
+    public ResponseEntity<APIResponse<String>> profile() {
+        return ResponseEntity.ok(new APIResponse<>(200, "OK", "This is a protected endpoint!"));
     }
 }

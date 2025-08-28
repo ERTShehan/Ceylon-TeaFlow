@@ -32,7 +32,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         if (path.startsWith("/auth/")
                 || path.startsWith("/auth/refresh")
                 || path.startsWith("/auth/register/customer")
-                || path.startsWith("/teaMaker/register")) {
+                || path.startsWith("/teaMaker/")) {
             filterChain.doFilter(request, response);
             return;
         }

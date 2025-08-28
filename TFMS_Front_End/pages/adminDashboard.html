@@ -100,6 +100,51 @@
         .close:hover {
             color: black;
         }
+
+        /* Scroll to top button */
+        .scroll-top {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            background-color: #2E8B57;
+            color: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 18px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .scroll-top:hover {
+            background-color: #3CB371;
+        }
+
+        /* Auto-hide sidebar styles */
+        .sidebar-hidden {
+            transform: translateX(-100%) !important;
+        }
+
+        .main-content-full {
+            margin-left: 0 !important;
+            width: 100% !important;
+        }
+
+        @media (min-width: 769px) {
+            .sidebar {
+                position: fixed;
+                height: 100vh;
+                z-index: 40;
+            }
+
+            .main-content {
+                transition: margin-left 0.3s ease, width 0.3s ease;
+                margin-left: 16rem; /* w-64 = 16rem */
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -109,6 +154,11 @@
         <i class="fas fa-bars"></i>
     </button>
 </div>
+
+<!-- Scroll to Top Button -->
+<button id="scrollTopBtn" class="scroll-top">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
 <!-- Add User Modal -->
 <div id="addUserModal" class="modal">
@@ -181,7 +231,7 @@
 
 <div class="flex">
     <!-- Sidebar -->
-    <div class="sidebar w-64 bg-tea-green text-white min-h-screen p-4">
+    <div id="sidebar" class="sidebar w-64 bg-tea-green text-white min-h-screen p-4">
         <div class="flex items-center justify-center mb-8 mt-4">
             <i class="fas fa-leaf text-3xl mr-2"></i>
             <span class="text-xl font-semibold">Ceylon TeaFlow</span>
@@ -266,7 +316,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 p-6 md:ml-0">
+    <div id="mainContent" class="main-content flex-1 p-6 transition-all duration-300">
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
             <h1 class="text-2xl font-bold text-tea-green mb-2">CEO Dashboard</h1>
             <p class="text-gray-600">Comprehensive overview of tea factory operations and performance metrics.</p>
@@ -353,6 +403,10 @@
                 </button>
             </div>
 
+            <div class="mb-4">
+                <input type="text" id="tea-maker-search" placeholder="Search by name..." class="w-full p-2 border rounded-lg">
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
@@ -364,7 +418,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tea-maker-table-body">
                     <tr class="border-b">
                         <td class="p-3">TM-001</td>
                         <td class="p-3">Rohan Silva</td>
@@ -393,8 +447,99 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-003</td>
+                        <td class="p-3">Saman Perera</td>
+                        <td class="p-3">saman@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-004</td>
+                        <td class="p-3">Nimal Rathnayake</td>
+                        <td class="p-3">nimal@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-005</td>
+                        <td class="p-3">Kamal Fernando</td>
+                        <td class="p-3">kamal@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-006</td>
+                        <td class="p-3">Sunil Silva</td>
+                        <td class="p-3">sunil@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-007</td>
+                        <td class="p-3">Anusha Perera</td>
+                        <td class="p-3">anusha@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TM-008</td>
+                        <td class="p-3">Chamari Silva</td>
+                        <td class="p-3">chamari@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="tea-maker-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 8 entries</div>
+                <div class="flex space-x-2">
+                    <button id="tea-maker-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300">Previous</button>
+                    <button id="tea-maker-next" class="px-3 py-1 bg-tea-green text-white rounded-lg hover:bg-tea-green-light">Next</button>
+                </div>
             </div>
         </div>
 
@@ -405,6 +550,10 @@
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition add-user-btn" data-role="stock_manager">
                     <i class="fas fa-plus mr-2"></i> Add Stock Manager
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="stock-manager-search" placeholder="Search by name..." class="w-full p-2 border rounded-lg">
             </div>
 
             <div class="overflow-x-auto">
@@ -418,7 +567,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="stock-manager-table-body">
                     <tr class="border-b">
                         <td class="p-3">SM-001</td>
                         <td class="p-3">David Perera</td>
@@ -433,8 +582,85 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SM-002</td>
+                        <td class="p-3">Niroshan Fernando</td>
+                        <td class="p-3">niroshan@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SM-003</td>
+                        <td class="p-3">Lakmal Silva</td>
+                        <td class="p-3">lakmal@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SM-004</td>
+                        <td class="p-3">Dinesh Perera</td>
+                        <td class="p-3">dinesh@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SM-005</td>
+                        <td class="p-3">Malith Jayawardena</td>
+                        <td class="p-3">malith@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SM-006</td>
+                        <td class="p-3">Kasun Rathnayake</td>
+                        <td class="p-3">kasun@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="stock-manager-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 6 entries</div>
+                <div class="flex space-x-2">
+                    <button id="stock-manager-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Previous</button>
+                    <button id="stock-manager-next" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Next</button>
+                </div>
             </div>
         </div>
 
@@ -445,6 +671,10 @@
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition add-user-btn" data-role="sales_manager">
                     <i class="fas fa-plus mr-2"></i> Add Sales Manager
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="sales-manager-search" placeholder="Search by name..." class="w-full p-2 border rounded-lg">
             </div>
 
             <div class="overflow-x-auto">
@@ -458,7 +688,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="sales-manager-table-body">
                     <tr class="border-b">
                         <td class="p-3">SLM-001</td>
                         <td class="p-3">Nisha Ratnayake</td>
@@ -473,8 +703,99 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-002</td>
+                        <td class="p-3">Amila Silva</td>
+                        <td class="p-3">amila@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-003</td>
+                        <td class="p-3">Chaminda Perera</td>
+                        <td class="p-3">chaminda@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-004</td>
+                        <td class="p-3">Sampath Fernando</td>
+                        <td class="p-3">sampath@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-005</td>
+                        <td class="p-3">Tharindu Rathnayake</td>
+                        <td class="p-3">tharindu@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-006</td>
+                        <td class="p-3">Dilani Silva</td>
+                        <td class="p-3">dilani@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">SLM-007</td>
+                        <td class="p-3">Nadeesha Perera</td>
+                        <td class="p-3">nadeesha@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="sales-manager-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 7 entries</div>
+                <div class="flex space-x-2">
+                    <button id="sales-manager-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Previous</button>
+                    <button id="sales-manager-next" class="px-3 py-1 bg-tea-green text-white rounded-lg hover:bg-tea-green-light">Next</button>
+                </div>
             </div>
         </div>
 
@@ -485,6 +806,10 @@
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition add-user-btn" data-role="finance_manager">
                     <i class="fas fa-plus mr-2"></i> Add Finance Manager
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="finance-manager-search" placeholder="Search by name..." class="w-full p-2 border rounded-lg">
             </div>
 
             <div class="overflow-x-auto">
@@ -498,7 +823,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="finance-manager-table-body">
                     <tr class="border-b">
                         <td class="p-3">FM-001</td>
                         <td class="p-3">Amanda Jayawardena</td>
@@ -513,8 +838,71 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">FM-002</td>
+                        <td class="p-3">Kavindu Silva</td>
+                        <td class="p-3">kavindu@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">FM-003</td>
+                        <td class="p-3">Shanika Perera</td>
+                        <td class="p-3">shanika@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">FM-004</td>
+                        <td class="p-3">Dilshan Fernando</td>
+                        <td class="p-3">dilshan@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">FM-005</td>
+                        <td class="p-3">Nipuni Rathnayake</td>
+                        <td class="p-3">nipuni@example.com</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="finance-manager-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 5 entries</div>
+                <div class="flex space-x-2">
+                    <button id="finance-manager-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Previous</button>
+                    <button id="finance-manager-next" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Next</button>
+                </div>
             </div>
         </div>
 
@@ -525,6 +913,10 @@
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition" id="addTeaCardBtn">
                     <i class="fas fa-plus mr-2"></i> Add Tea Card
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="tea-card-search" placeholder="Search by supplier name..." class="w-full p-2 border rounded-lg">
             </div>
 
             <div class="overflow-x-auto">
@@ -538,7 +930,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tea-card-table-body">
                     <tr class="border-b">
                         <td class="p-3">TC-784592</td>
                         <td class="p-3">Kamal Perera</td>
@@ -567,8 +959,71 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TC-784594</td>
+                        <td class="p-3">Sunil Rathnayake</td>
+                        <td class="p-3">Jul 18, 2025</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TC-784595</td>
+                        <td class="p-3">Saman Kumara</td>
+                        <td class="p-3">Aug 2, 2025</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TC-784596</td>
+                        <td class="p-3">Chaminda Silva</td>
+                        <td class="p-3">Aug 15, 2025</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">TC-784597</td>
+                        <td class="p-3">Priyantha Fernando</td>
+                        <td class="p-3">Aug 20, 2025</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="tea-card-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 6 entries</div>
+                <div class="flex space-x-2">
+                    <button id="tea-card-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Previous</button>
+                    <button id="tea-card-next" class="px-3 py-1 bg-tea-green text-white rounded-lg hover:bg-tea-green-light">Next</button>
+                </div>
             </div>
         </div>
 
@@ -579,6 +1034,10 @@
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition add-user-btn" data-role="employee">
                     <i class="fas fa-plus mr-2"></i> Add Employee
                 </button>
+            </div>
+
+            <div class="mb-4">
+                <input type="text" id="employee-search" placeholder="Search by name..." class="w-full p-2 border rounded-lg">
             </div>
 
             <div class="overflow-x-auto">
@@ -593,7 +1052,7 @@
                         <th class="p-3 text-left">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="employee-table-body">
                     <tr class="border-b">
                         <td class="p-3">EMP-001</td>
                         <td class="p-3">Saman Kumara</td>
@@ -624,8 +1083,135 @@
                             </button>
                         </td>
                     </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-003</td>
+                        <td class="p-3">Niroshan Perera</td>
+                        <td class="p-3">niroshan@example.com</td>
+                        <td class="p-3">Quality Control</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-004</td>
+                        <td class="p-3">Dilani Fernando</td>
+                        <td class="p-3">dilani@example.com</td>
+                        <td class="p-3">Production</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-005</td>
+                        <td class="p-3">Kasun Jayawardena</td>
+                        <td class="p-3">kasun@example.com</td>
+                        <td class="p-3">Logistics</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-006</td>
+                        <td class="p-3">Thilini Rathnayake</td>
+                        <td class="p-3">thilini@example.com</td>
+                        <td class="p-3">Packaging</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-007</td>
+                        <td class="p-3">Lakmal Silva</td>
+                        <td class="p-3">lakmal@example.com</td>
+                        <td class="p-3">Quality Control</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-008</td>
+                        <td class="p-3">Nadeesha Perera</td>
+                        <td class="p-3">nadeesha@example.com</td>
+                        <td class="p-3">Production</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-009</td>
+                        <td class="p-3">Chaminda Fernando</td>
+                        <td class="p-3">chaminda@example.com</td>
+                        <td class="p-3">Logistics</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">EMP-010</td>
+                        <td class="p-3">Shyama Silva</td>
+                        <td class="p-3">shyama@example.com</td>
+                        <td class="p-3">Packaging</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span></td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <div id="employee-pagination-info" class="text-sm text-gray-600">Showing 1 to 5 of 10 entries</div>
+                <div class="flex space-x-2">
+                    <button id="employee-prev" class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300" disabled>Previous</button>
+                    <button id="employee-next" class="px-3 py-1 bg-tea-green text-white rounded-lg hover:bg-tea-green-light">Next</button>
+                </div>
             </div>
         </div>
 
@@ -916,6 +1502,196 @@
                 });
             }
         });
+    });
+
+    // Pagination and Search functionality
+    function setupTablePagination(tableId, searchId, prevId, nextId, infoId, pageSize = 5) {
+        const table = document.getElementById(tableId);
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        const searchInput = document.getElementById(searchId);
+        const prevBtn = document.getElementById(prevId);
+        const nextBtn = document.getElementById(nextId);
+        const infoDiv = document.getElementById(infoId);
+
+        let currentPage = 1;
+        let filteredRows = rows;
+
+        function updateTable() {
+            // Calculate total pages
+            const totalPages = Math.ceil(filteredRows.length / pageSize);
+
+            // Update button states
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // Show the appropriate rows
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+
+            // Hide all rows first
+            rows.forEach(row => row.style.display = 'none');
+
+            // Show only the rows for the current page
+            filteredRows.slice(startIndex, endIndex).forEach(row => {
+                row.style.display = '';
+            });
+
+            // Update pagination info
+            infoDiv.textContent = `Showing ${startIndex + 1} to ${Math.min(endIndex, filteredRows.length)} of ${filteredRows.length} entries`;
+        }
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filteredRows = rows.filter(row => {
+                const nameCell = row.cells[1]; // Assuming name is in the second column
+                return nameCell.textContent.toLowerCase().includes(searchTerm);
+            });
+
+            currentPage = 1;
+            updateTable();
+        });
+
+        // Pagination button handlers
+        prevBtn.addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                updateTable();
+            }
+        });
+
+        nextBtn.addEventListener('click', function() {
+            const totalPages = Math.ceil(filteredRows.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateTable();
+            }
+        });
+
+        // Initialize the table
+        updateTable();
+    }
+
+    // Setup pagination for all tables
+    setupTablePagination('tea-maker-table-body', 'tea-maker-search', 'tea-maker-prev', 'tea-maker-next', 'tea-maker-pagination-info');
+    setupTablePagination('stock-manager-table-body', 'stock-manager-search', 'stock-manager-prev', 'stock-manager-next', 'stock-manager-pagination-info');
+    setupTablePagination('sales-manager-table-body', 'sales-manager-search', 'sales-manager-prev', 'sales-manager-next', 'sales-manager-pagination-info');
+    setupTablePagination('finance-manager-table-body', 'finance-manager-search', 'finance-manager-prev', 'finance-manager-next', 'finance-manager-pagination-info');
+    setupTablePagination('tea-card-table-body', 'tea-card-search', 'tea-card-prev', 'tea-card-next', 'tea-card-pagination-info');
+    setupTablePagination('employee-table-body', 'employee-search', 'employee-prev', 'employee-next', 'employee-pagination-info');
+
+    // Auto-hide sidebar functionality
+    let lastScrollTop = 0;
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    // Track sidebar state
+    let sidebarHidden = false;
+
+    // Function to show sidebar
+    function showSidebar() {
+        sidebar.classList.remove('sidebar-hidden');
+        if (window.innerWidth >= 769) {
+            mainContent.classList.remove('main-content-full');
+        }
+        sidebarHidden = false;
+    }
+
+    // Function to hide sidebar
+    function hideSidebar() {
+        if (window.innerWidth >= 769 && !sidebar.classList.contains('active')) {
+            sidebar.classList.add('sidebar-hidden');
+            mainContent.classList.add('main-content-full');
+            sidebarHidden = true;
+        }
+    }
+
+    // Scroll event to hide/show sidebar
+    window.addEventListener('scroll', function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        // Show/hide scroll to top button
+        if (scrollTop > 300) {
+            scrollTopBtn.style.display = 'block';
+        } else {
+            scrollTopBtn.style.display = 'none';
+        }
+
+        // Auto-hide sidebar on scroll down, show on scroll up
+        if (window.innerWidth >= 769) {
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                // Scrolling down - hide sidebar
+                hideSidebar();
+            } else if (scrollTop < lastScrollTop - 10) {
+                // Scrolling up - show sidebar
+                showSidebar();
+            }
+        }
+
+        lastScrollTop = scrollTop;
+    });
+
+    // Toggle sidebar with hamburger menu
+    mobileMenuBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+
+        if (window.innerWidth < 769) {
+            // Mobile behavior
+            if (sidebar.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        } else {
+            // Desktop behavior
+            if (sidebar.classList.contains('sidebar-hidden') || sidebarHidden) {
+                showSidebar();
+            } else {
+                hideSidebar();
+            }
+        }
+    });
+
+    // Show sidebar when mouse enters the left edge of the screen
+    document.addEventListener('mousemove', function(e) {
+        if (window.innerWidth >= 769 && sidebarHidden && e.clientX < 20) {
+            showSidebar();
+        }
+    });
+
+    // Hide sidebar when clicking outside on mobile
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth < 769 &&
+            sidebar.classList.contains('active') &&
+            !sidebar.contains(e.target) &&
+            e.target !== mobileMenuBtn) {
+            sidebar.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth < 769) {
+            // Mobile view
+            sidebar.classList.remove('sidebar-hidden');
+            mainContent.classList.remove('main-content-full');
+            sidebarHidden = false;
+        } else {
+            // Desktop view
+            if (!sidebarHidden) {
+                showSidebar();
+            } else {
+                hideSidebar();
+            }
+        }
+    });
+
+    // Scroll to top functionality
+    scrollTopBtn.addEventListener('click', function() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
     });
 </script>
 </body>

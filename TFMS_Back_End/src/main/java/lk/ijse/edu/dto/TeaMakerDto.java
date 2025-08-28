@@ -3,7 +3,8 @@ package lk.ijse.edu.dto;
 import lombok.Data;
 
 @Data
-public class RegisterTeaMakerDto {
+public class TeaMakerDto {
+    private String id;
     private String username;
     private String password;
 

@@ -34,7 +34,8 @@ public class SecurityConfig {
                                 "/auth/register/customer",
                                 "/auth/register/supplier",
 //                                "/auth/saveAdmin"
-                                "/teaMaker/register"
+                                "/teaMaker/register",
+                                "/teaMaker/update"
                         ).permitAll()
                         .requestMatchers("/auth/teacards/**").hasRole("ADMIN")
 //                                .requestMatchers("/teaMaker/register").hasRole("ADMIN")
