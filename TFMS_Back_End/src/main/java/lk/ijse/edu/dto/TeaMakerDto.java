@@ -7,9 +7,10 @@ public class TeaMakerDto {
     private String id;
     private String username;
     private String password;
-
     private String fullName;
     private String email;
     private String phoneNumber;
+    private String basicSalary;
+    private String status;
     private String role;
 }

@@ -11,8 +11,7 @@ import lombok.*;
 @Builder
 public class TeaLeafSupplier {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long supplierId;
+    private String supplierId;
 
     private String firstName;
     private String lastName;

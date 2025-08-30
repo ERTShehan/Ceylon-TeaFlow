@@ -12,13 +12,13 @@ import lombok.*;
 @Builder
 public class StockManager {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long StockManagerId;
+    private String StockManagerId;
 
-    private String managerName;
+    private String fullName;
     private String managerAddress;
     private String phoneNumber;
     private String basicSalary;
+    private String status;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

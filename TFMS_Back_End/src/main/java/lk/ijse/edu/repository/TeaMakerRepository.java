@@ -3,10 +3,21 @@ package lk.ijse.edu.repository;
 import jakarta.transaction.Transactional;
 import lk.ijse.edu.entity.TeaMaker;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface TeaMakerRepository extends JpaRepository<TeaMaker,Long> {
-//    @Transactional
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE tea_makers SET status='Inactive' WHERE id = ?1",nativeQuery = true)
+    void updateTeaMakerStatus(String id);
 
+    @Query(value = "SELECT tea_maker_id FROM tea_makers ORDER BY tea_maker_id DESC LIMIT 1", nativeQuery = true)
+    String findLastTeaMakerId();
+
+    List<TeaMaker> findTeaMakerByFullNameContainingIgnoreCase(String keyword);
 }

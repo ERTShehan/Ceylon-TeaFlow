@@ -9,4 +9,6 @@ public interface TeaMakerService {
     String updateTeaMaker(TeaMakerDto teaMakerDto);
     String deleteTeaMaker(String id);
     List<TeaMakerDto> getAllTeaMakers();
+    List<TeaMakerDto> searchTeaMaker(String keyword);
+    void changeTeaMakerStatus(String id);
 }

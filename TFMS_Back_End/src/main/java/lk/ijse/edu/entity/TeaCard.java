@@ -14,8 +14,7 @@ import java.util.Date;
 @Builder
 public class TeaCard {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(nullable = false, unique = true, length = 50)
     private String number; // e.g., "TC-100001"

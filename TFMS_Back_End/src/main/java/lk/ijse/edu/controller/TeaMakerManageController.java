@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/teaMaker")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
-public class TeaMakerController {
+public class TeaMakerManageController {
     private final TeaMakerService teaMakerService;
 
     @PostMapping("/register")
@@ -44,5 +44,25 @@ public class TeaMakerController {
         return ResponseEntity.ok(new APIResponse<>(
                 200, "Tea Makers Retrieved Successfully", teaMakerService.getAllTeaMakers()
         ));
+    }
+
+    @GetMapping("search/{keyword}")
+    public ResponseEntity<APIResponse<List<TeaMakerDto>>>searchTeaMaker(@PathVariable("keyword") String keyword) {
+        List<TeaMakerDto> teaMakerDTOS = teaMakerService.searchTeaMaker(keyword);
+        return ResponseEntity.ok(new APIResponse<>(
+                200,
+                "",
+                teaMakerDTOS
+        ));
+    }
+
+    @PatchMapping("/changeStatus/{id}")
+    public ResponseEntity<APIResponse<String>> changeTeaMakerStatus(@PathVariable("id") String id) {
+        teaMakerService.changeTeaMakerStatus(id);
+        return ResponseEntity.ok(
+                new APIResponse<>(
+                        200,
+                        "Job Status Changed Successfully",
+                        null));
     }
 }
