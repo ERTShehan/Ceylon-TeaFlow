@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TeaCardRepository extends JpaRepository<TeaCard, Long> {
+public interface TeaCardRepository extends JpaRepository<TeaCard, String> {
     Optional<TeaCard> findByNumber(String number);
 }

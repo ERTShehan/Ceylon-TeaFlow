@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TeaMakerRepository extends JpaRepository<TeaMaker,Long> {
+public interface TeaMakerRepository extends JpaRepository<TeaMaker,String> {
     @Transactional
     @Modifying
     @Query(value = "UPDATE tea_makers SET status='Inactive' WHERE id = ?1",nativeQuery = true)

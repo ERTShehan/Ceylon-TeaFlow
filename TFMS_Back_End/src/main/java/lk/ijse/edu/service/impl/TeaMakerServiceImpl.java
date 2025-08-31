@@ -8,6 +8,7 @@ import lk.ijse.edu.exception.ResourceNotFound;
 import lk.ijse.edu.repository.TeaMakerRepository;
 import lk.ijse.edu.repository.UserRepository;
 import lk.ijse.edu.service.TeaMakerService;
+import lk.ijse.edu.util.IdGenerate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,23 +25,27 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final TeaMakerRepository teaMakerRepository;
+    private final IdGenerate idGenerate;
 
-    private String generateNextTeaMakerId(String lastId) {
+    private String generateNextSupplierId(String lastId) {
         if (lastId == null) return "TM-000-001";
 
-        String numericPart = lastId.split("-")[2];
-        int number = Integer.parseInt(numericPart);
-        number++;
+        String[] parts = lastId.split("-");
+        int major = Integer.parseInt(parts[0]);
+        int minor = Integer.parseInt(parts[1]);
 
-        return String.format("TM-000-%03d", number);
-    }
+        minor++;
 
-    private String generateNextUserId(String lastId) {
-        if (lastId == null) return "U00-001";
-        String numericPart = lastId.split("-")[1];
-        int number = Integer.parseInt(numericPart);
-        number++;
-        return String.format("U00-%03d", number);
+        if (minor > 999) {
+            minor = 1;
+            major++;
+        }
+
+        if (major > 999) {
+            throw new IllegalStateException("Supplier ID count has ended. Please contact the developer.");
+        }
+
+        return String.format("TM-%03d-%03d", major, minor);
     }
 
     @Transactional
@@ -55,10 +60,10 @@ public class TeaMakerServiceImpl implements TeaMakerService {
         }
 
         String lastId = teaMakerRepository.findLastTeaMakerId();
-        String newTeaMakerId = generateNextTeaMakerId(lastId);
+        String newTeaMakerId = generateNextSupplierId(lastId);
 
         String lastUserId = userRepository.findLastUserId();
-        String newUserId = generateNextUserId(lastUserId);
+        String newUserId = idGenerate.generateNextUserId(lastUserId);
 
         User user = User.builder()
                 .id(newUserId)
@@ -90,7 +95,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
             throw new IllegalArgumentException("Register Tea Maker DTO cannot be null");
         }
 
-        TeaMaker existingTeaMaker = teaMakerRepository.findById(Long.valueOf(teaMakerDto.getId()))
+        TeaMaker existingTeaMaker = teaMakerRepository.findById(String.valueOf(teaMakerDto))
                 .orElseThrow(() -> new ResourceNotFound("Tea Maker not found"));
 
         existingTeaMaker.setFullName(teaMakerDto.getFullName());
@@ -113,7 +118,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     @Transactional
     @Override
     public String deleteTeaMaker(String id) {
-        TeaMaker teaMaker = teaMakerRepository.findById(Long.valueOf(id))
+        TeaMaker teaMaker = teaMakerRepository.findById(String.valueOf(id))
                 .orElseThrow(() -> new ResourceNotFound("Tea Maker not found"));
 
         User linkedUser = teaMaker.getUser();
