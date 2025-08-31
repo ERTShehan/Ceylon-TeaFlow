@@ -92,7 +92,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     @Override
     public String updateTeaMaker(TeaMakerDto teaMakerDto) {
         if (teaMakerDto ==null||teaMakerDto.getId()==null){
-            throw new IllegalArgumentException("Register Tea Maker DTO cannot be null");
+            throw new IllegalArgumentException("Update Tea Maker DTO cannot be null");
         }
 
         TeaMaker existingTeaMaker = teaMakerRepository.findById(String.valueOf(teaMakerDto))

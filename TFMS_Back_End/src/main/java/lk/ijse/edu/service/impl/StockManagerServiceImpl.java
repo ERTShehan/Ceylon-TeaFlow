@@ -65,7 +65,7 @@ public class StockManagerServiceImpl implements StockManagerService {
                 .username(stockManagerDto.getUsername())
                 .password(passwordEncoder.encode(stockManagerDto.getPassword()))
                 .createdAt(new Date())
-                .role(SystemUserRole.TEAM_MAKER)
+                .role(SystemUserRole.STOCK_MANAGER)
                 .build();
 
         userRepository.save(user);
@@ -82,5 +82,32 @@ public class StockManagerServiceImpl implements StockManagerService {
 
         stockManagerRepository.save(stockManager);
         return "Stock Manager registered successfully";
+    }
+
+    @Transactional
+    @Override
+    public String updateStockManager(StockManagerDto stockManagerDto){
+        if (stockManagerDto == null|| stockManagerDto.getId()==null) {
+            throw new IllegalArgumentException("Update Stock Manager DTO cannot be null");
+        }
+
+        StockManager existingStockManager = stockManagerRepository.findById(stockManagerDto.getId())
+                .orElseThrow(() -> new RuntimeException("Stock Manager not found"));
+
+        existingStockManager.setFullName(stockManagerDto.getFullName());
+        existingStockManager.setEmail(stockManagerDto.getEmail());
+        existingStockManager.setPhoneNumber(stockManagerDto.getPhoneNumber());
+        existingStockManager.setBasicSalary(stockManagerDto.getBasicSalary());
+        existingStockManager.setStatus(stockManagerDto.getStatus());
+
+        User existingUser = existingStockManager.getUser();
+        existingUser.setUsername(stockManagerDto.getUsername());
+        if (stockManagerDto.getPassword() != null && !stockManagerDto.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(stockManagerDto.getPassword()));
+        }
+
+        userRepository.save(existingUser);
+        stockManagerRepository.save(existingStockManager);
+        return "Stock Manager updated successfully";
     }
 }
