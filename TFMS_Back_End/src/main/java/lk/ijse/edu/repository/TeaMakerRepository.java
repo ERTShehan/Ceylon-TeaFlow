@@ -13,7 +13,7 @@ import java.util.List;
 public interface TeaMakerRepository extends JpaRepository<TeaMaker,String> {
     @Transactional
     @Modifying
-    @Query(value = "UPDATE tea_makers SET status='Inactive' WHERE id = ?1",nativeQuery = true)
+    @Query(value = "UPDATE tea_makers SET status='Inactive' WHERE tea_maker_id = ?1",nativeQuery = true)
     void updateTeaMakerStatus(String id);
 
     @Query(value = "SELECT tea_maker_id FROM tea_makers ORDER BY tea_maker_id DESC LIMIT 1", nativeQuery = true)

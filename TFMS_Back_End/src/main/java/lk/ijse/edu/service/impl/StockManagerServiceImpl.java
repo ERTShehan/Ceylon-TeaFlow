@@ -4,6 +4,7 @@ import lk.ijse.edu.dto.StockManagerDto;
 import lk.ijse.edu.entity.StockManager;
 import lk.ijse.edu.entity.SystemUserRole;
 import lk.ijse.edu.entity.User;
+import lk.ijse.edu.exception.ResourceNotFound;
 import lk.ijse.edu.repository.StockManagerRepository;
 import lk.ijse.edu.repository.UserRepository;
 import lk.ijse.edu.service.StockManagerService;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class StockManagerServiceImpl implements StockManagerService {
     }
 
     @Transactional
+    @Override
     public String saveStockManager(StockManagerDto stockManagerDto) {
         if (userRepository.existsByUsername(stockManagerDto.getUsername())) {
             throw new RuntimeException("Username already exists");
@@ -110,4 +114,80 @@ public class StockManagerServiceImpl implements StockManagerService {
         stockManagerRepository.save(existingStockManager);
         return "Stock Manager updated successfully";
     }
+
+    @Transactional
+    @Override
+    public void deleteStockManager(String id) {
+        StockManager stockManager = stockManagerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFound("Stock Manager not found"));
+
+        User linkedUser = stockManager.getUser();
+//        stockManager.setUser(null);
+        stockManagerRepository.save(stockManager);
+
+        stockManagerRepository.delete(stockManager);
+        if (linkedUser != null) {
+            userRepository.delete(linkedUser);
+        }
+    }
+
+    @Override
+    public List<StockManagerDto> getAllStockManagers() {
+        List<StockManager> allStockManagers = stockManagerRepository.findAll();
+        if (allStockManagers.isEmpty()) {
+            throw new ResourceNotFound("No Stock Managers found");
+        }
+
+        return allStockManagers.stream().map(sm -> {
+            StockManagerDto dto = new StockManagerDto();
+            dto.setId(sm.getStockManagerId());
+            dto.setFullName(sm.getFullName());
+            dto.setEmail(sm.getEmail());
+            dto.setPhoneNumber(sm.getPhoneNumber());
+            if (sm.getUser() != null) {
+                dto.setUsername(sm.getUser().getUsername());
+                dto.setRole(sm.getUser().getRole().name());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StockManagerDto> searchStockManager(String keyword) {
+        if (keyword==null){
+            throw new IllegalArgumentException("Keyword cannot be null");
+        }
+
+        List<StockManager> allStockManagers = stockManagerRepository.findStockManagerByFullNameContainingIgnoreCase(keyword);
+
+        if (allStockManagers.isEmpty()) {
+            throw new ResourceNotFound("No Stock Managers found with the given keyword");
+        }
+
+        return allStockManagers.stream().map(sm -> {
+            StockManagerDto dto = new StockManagerDto();
+            dto.setId(sm.getStockManagerId());
+            dto.setFullName(sm.getFullName());
+            dto.setEmail(sm.getEmail());
+            dto.setPhoneNumber(sm.getPhoneNumber());
+                dto.setUsername(sm.getUser().getUsername());
+                dto.setRole(sm.getUser().getRole().name());
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public void changeStockManagerStatus(String id) {
+        if (stockManagerRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFound("Stock Manager not found");
+        }
+
+        if (id == null) {
+            throw new IllegalArgumentException("Stock Manager ID cannot be null");
+        }
+
+        stockManagerRepository.updateStockManagerStatus(id);
+    }
+
+
 }

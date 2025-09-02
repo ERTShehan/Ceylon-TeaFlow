@@ -118,7 +118,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     @Transactional
     @Override
     public String deleteTeaMaker(String id) {
-        TeaMaker teaMaker = teaMakerRepository.findById(String.valueOf(id))
+        TeaMaker teaMaker = teaMakerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFound("Tea Maker not found"));
 
         User linkedUser = teaMaker.getUser();
@@ -180,6 +180,9 @@ public class TeaMakerServiceImpl implements TeaMakerService {
 
     @Override
     public void changeTeaMakerStatus(String id) {
+        if (teaMakerRepository.findById(id).isEmpty()) {
+            throw new ResourceNotFound("Tea Maker not found");
+        }
         if (id==null){
             throw new IllegalArgumentException("Tea Maker Id cannot be null");
         }
