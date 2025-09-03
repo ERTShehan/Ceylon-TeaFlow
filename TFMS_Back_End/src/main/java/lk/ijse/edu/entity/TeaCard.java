@@ -17,7 +17,7 @@ public class TeaCard {
     private String id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String number; //
+    private String number;
 
     private String name;
 
@@ -26,4 +26,9 @@ public class TeaCard {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date issuedAt;
+
+    @OneToOne
+    @JoinColumn(name = "supplier_id", unique = true)
+    private TeaLeafSupplier supplier;
+
 }

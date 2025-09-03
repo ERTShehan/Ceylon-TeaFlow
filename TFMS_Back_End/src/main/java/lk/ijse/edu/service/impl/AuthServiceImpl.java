@@ -169,6 +169,9 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         teaCard.setUsed(true);
+        teaCard.setSupplier(supplier);
+        supplier.setTeaCard(teaCard);
+
         user.setTeaLeafSupplier(supplier);
         userRepository.save(user);
 

@@ -22,6 +22,9 @@ public class TeaLeafSupplier {
     private String address;
     private String teaCardNumber;
 
+    @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL)
+    private TeaCard teaCard;
+
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;

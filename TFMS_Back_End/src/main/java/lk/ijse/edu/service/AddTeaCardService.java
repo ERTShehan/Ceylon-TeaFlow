@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AddTeaCardService {
     String saveTeaCard(TeaCardDto teaCardDto);
-    void deleteTeaCard(String id);
+    String deleteTeaCard(String id);
     List<TeaCardDto> getAllTeaCards();
     List<TeaCardDto> searchTeaCard(String keyword);
 }

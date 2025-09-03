@@ -2,9 +2,505 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Manager Dashboard - Ceylon TeaFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tea-green': '#2E8B57',
+                        'tea-green-light': '#3CB371',
+                        'tea-gold': '#DAA520',
+                        'tea-cream': '#FFF8E1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stock-level {
+            transition: all 0.3s ease;
+        }
+
+        .stock-level.low {
+            background-color: #FEF2F2;
+            border-left: 4px solid #EF4444;
+        }
+
+        .stock-level.medium {
+            background-color: #FFFBEB;
+            border-left: 4px solid #F59E0B;
+        }
+
+        .stock-level.high {
+            background-color: #ECFDF5;
+            border-left: 4px solid #10B981;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<!-- Mobile Menu Button -->
+<div class="md:hidden fixed top-4 left-4 z-50">
+    <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+
+<div class="flex">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-tea-green text-white min-h-screen p-4">
+        <div class="flex items-center justify-center mb-8 mt-4">
+            <i class="fas fa-leaf text-3xl mr-2"></i>
+            <span class="text-xl font-semibold">Ceylon TeaFlow</span>
+        </div>
+
+        <div class="p-4 bg-tea-green-light rounded-lg mb-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-tea-green text-xl mr-3">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold">David Perera</h3>
+                    <p class="text-sm">Stock Manager</p>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" class="flex items-center p-3 rounded-lg bg-tea-green-light">
+                        <i class="fas fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#stock-levels" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-boxes mr-3"></i>
+                        <span>Stock Levels</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#add-stock" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-plus-circle mr-3"></i>
+                        <span>Add Stock</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#stock-history" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-history mr-3"></i>
+                        <span>Stock History</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#reports" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-chart-bar mr-3"></i>
+                        <span>Reports</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mt-8 p-4 bg-tea-green-light rounded-lg">
+            <h4 class="font-semibold mb-2">Support</h4>
+            <p class="text-sm">Need help? Contact factory support:</p>
+            <p class="text-sm mt-1"><i class="fas fa-phone mr-2"></i> +94 77 123 4567</p>
+            <p class="text-sm mt-1"><i class="fas fa-envelope mr-2"></i> support@ceylonteaflow.lk</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-6 md:ml-0">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <h1 class="text-2xl font-bold text-tea-green mb-2">Stock Manager Dashboard</h1>
+            <p class="text-gray-600">Welcome back, David! Monitor and manage tea stock levels.</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Total Stock</h3>
+                        <p class="text-2xl font-bold text-tea-green">2,450 kg</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-boxes text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Tea Varieties</h3>
+                        <p class="text-2xl font-bold text-tea-green">12</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-list text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">Different types in stock</p>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Low Stock Items</h3>
+                        <p class="text-2xl font-bold text-tea-green">3</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-exclamation-triangle text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">Needs restocking</p>
+            </div>
+        </div>
+
+        <!-- Stock Levels Section -->
+        <div id="stock-levels" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Current Stock Levels</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="stock-level high p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Ceylon Black Tea</h3>
+                        <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">High</span>
+                    </div>
+                    <p class="text-2xl font-bold">850 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Today, 09:45 AM</p>
+                </div>
+
+                <div class="stock-level high p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Green Tea</h3>
+                        <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded-full">High</span>
+                    </div>
+                    <p class="text-2xl font-bold">720 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Today, 10:15 AM</p>
+                </div>
+
+                <div class="stock-level medium p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">White Tea</h3>
+                        <span class="text-sm bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">Medium</span>
+                    </div>
+                    <p class="text-2xl font-bold">450 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-yellow-500 h-2 rounded-full" style="width: 45%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Today, 09:30 AM</p>
+                </div>
+
+                <div class="stock-level low p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Earl Grey</h3>
+                        <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">Low</span>
+                    </div>
+                    <p class="text-2xl font-bold">120 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-red-500 h-2 rounded-full" style="width: 12%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Yesterday, 04:20 PM</p>
+                </div>
+
+                <div class="stock-level low p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Chamomile</h3>
+                        <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">Low</span>
+                    </div>
+                    <p class="text-2xl font-bold">95 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-red-500 h-2 rounded-full" style="width: 9.5%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Yesterday, 03:45 PM</p>
+                </div>
+
+                <div class="stock-level low p-4 rounded-lg">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="font-semibold">Oolong Tea</h3>
+                        <span class="text-sm bg-red-100 text-red-800 px-2 py-1 rounded-full">Low</span>
+                    </div>
+                    <p class="text-2xl font-bold">115 kg</p>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                        <div class="bg-red-500 h-2 rounded-full" style="width: 11.5%"></div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-1">Last updated: Today, 08:30 AM</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Stock Section -->
+        <div id="add-stock" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Add New Stock</h2>
+
+            <form>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 mb-2">Tea Type</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+                            <option value="">Select Tea Type</option>
+                            <option value="ceylon_black">Ceylon Black Tea</option>
+                            <option value="green">Green Tea</option>
+                            <option value="white">White Tea</option>
+                            <option value="earl_grey">Earl Grey</option>
+                            <option value="chamomile">Chamomile</option>
+                            <option value="oolong">Oolong Tea</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Quantity (kg)</label>
+                        <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter quantity">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Batch Number</label>
+                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter batch number">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Source</label>
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+                            <option value="">Select Source</option>
+                            <option value="local">Local Supplier</option>
+                            <option value="internal">Internal Production</option>
+                            <option value="import">Imported</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Received Date</label>
+                        <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">Expiry Date</label>
+                        <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">Notes</label>
+                    <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" rows="3" placeholder="Add any notes about this stock"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
+                    <i class="fas fa-plus-circle mr-2"></i> Add to Stock
+                </button>
+            </form>
+        </div>
+
+        <!-- Stock History Section -->
+        <div id="stock-history" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Recent Stock History</h2>
+
+            <div class="mb-4 flex space-x-4">
+                <button class="px-4 py-2 bg-tea-green text-white rounded-lg">All</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Incoming</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Outgoing</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="bg-gray-50">
+                        <th class="p-3 text-left">Date</th>
+                        <th class="p-3 text-left">Tea Type</th>
+                        <th class="p-3 text-left">Batch No.</th>
+                        <th class="p-3 text-left">Quantity</th>
+                        <th class="p-3 text-left">Type</th>
+                        <th class="p-3 text-left">Source/Destination</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b">
+                        <td class="p-3">Aug 22, 2025</td>
+                        <td class="p-3">Ceylon Black Tea</td>
+                        <td class="p-3">BATCH-0822-01</td>
+                        <td class="p-3">+125 kg</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
+                        <td class="p-3">Kamal Perera</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Aug 22, 2025</td>
+                        <td class="p-3">Green Tea</td>
+                        <td class="p-3">BATCH-0822-02</td>
+                        <td class="p-3">+98 kg</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
+                        <td class="p-3">Nimal Fernando</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Aug 21, 2025</td>
+                        <td class="p-3">Ceylon Black Tea</td>
+                        <td class="p-3">BATCH-0810-05</td>
+                        <td class="p-3">-50 kg</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Outgoing</span></td>
+                        <td class="p-3">Order #TF-7842</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Aug 21, 2025</td>
+                        <td class="p-3">White Tea</td>
+                        <td class="p-3">BATCH-0815-03</td>
+                        <td class="p-3">-35 kg</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Outgoing</span></td>
+                        <td class="p-3">Order #TF-7791</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Aug 20, 2025</td>
+                        <td class="p-3">Green Tea</td>
+                        <td class="p-3">BATCH-0820-01</td>
+                        <td class="p-3">+112 kg</td>
+                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
+                        <td class="p-3">Sunil Rathnayake</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                <button class="px-6 py-2 border border-tea-green text-tea-green rounded-lg hover:bg-tea-green hover:text-white transition">
+                    View Full History
+                </button>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Stock Reports</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Monthly Stock Movement</h3>
+                    <div class="h-64">
+                        <canvas id="stockMovementChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Stock Distribution by Type</h3>
+                    <div class="h-64">
+                        <canvas id="stockDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex space-x-4 mb-4">
+                <button class="px-4 py-2 bg-tea-green text-white rounded-lg">
+                    <i class="fas fa-download mr-2"></i> Download Stock Report
+                </button>
+                <button class="px-4 py-2 border border-tea-green text-tea-green rounded-lg">
+                    <i class="fas fa-print mr-2"></i> Print Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Charts initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Stock Movement Chart
+        const stockMovementCtx = document.getElementById('stockMovementChart').getContext('2d');
+        new Chart(stockMovementCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [{
+                    label: 'Incoming Stock (kg)',
+                    data: [1250, 1320, 1100, 1450, 1380, 1520, 1680, 1745],
+                    borderColor: '#2E8B57',
+                    backgroundColor: 'rgba(46, 139, 87, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }, {
+                    label: 'Outgoing Stock (kg)',
+                    data: [980, 1050, 920, 1120, 1080, 1250, 1320, 1280],
+                    borderColor: '#DAA520',
+                    backgroundColor: 'rgba(218, 165, 32, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Stock Distribution Chart
+        const stockDistributionCtx = document.getElementById('stockDistributionChart').getContext('2d');
+        new Chart(stockDistributionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ceylon Black', 'Green Tea', 'White Tea', 'Earl Grey', 'Chamomile', 'Oolong'],
+                datasets: [{
+                    data: [850, 720, 450, 120, 95, 115],
+                    backgroundColor: [
+                        '#2E8B57',
+                        '#3CB371',
+                        '#DAA520',
+                        '#FFD700',
+                        '#F4A460',
+                        '#CD853F'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
 </body>
 </html>
