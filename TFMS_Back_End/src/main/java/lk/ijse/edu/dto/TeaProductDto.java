@@ -6,7 +6,7 @@ import lombok.Data;
 public class TeaProductDto {
     private String id;
     private String name;
-    private String price;
+    private double price;
     private String quantity;
     private String description;
 }
