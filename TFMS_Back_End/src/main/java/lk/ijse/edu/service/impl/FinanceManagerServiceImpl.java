@@ -76,7 +76,7 @@ public class FinanceManagerServiceImpl implements FinanceManagerService {
                 .email(financeManagerDto.getEmail())
                 .phoneNumber(financeManagerDto.getPhoneNumber())
                 .basicSalary(financeManagerDto.getBasicSalary())
-                .status(financeManagerDto.getStatus())
+                .status("Active")
                 .user(user)
                 .build();
 
@@ -172,7 +172,7 @@ public class FinanceManagerServiceImpl implements FinanceManagerService {
 
     @Override
     public void changeFinanceManagerStatus(String id) {
-        if (financeManagerRepository.findById(id).isEmpty()) {
+        if (!financeManagerRepository.existsById(id)) {
             throw new ResourceNotFound("Finance Manager not found");
         }
 

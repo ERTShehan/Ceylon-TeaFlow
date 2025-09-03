@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TeaProductImpl implements TeaProductService {
+public class TeaProductServiceImpl implements TeaProductService {
     private final TeaProductRepository teaProductRepository;
 
     private String generateNextProductId(String lastId) {

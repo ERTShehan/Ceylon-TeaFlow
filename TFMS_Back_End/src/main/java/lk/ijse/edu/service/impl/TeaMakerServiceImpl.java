@@ -30,7 +30,8 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     private String generateNextSupplierId(String lastId) {
         if (lastId == null) return "TM-000-001";
 
-        String[] parts = lastId.split("-");
+        String numericPart = lastId.substring(3);
+        String[] parts = numericPart.split("-");
         int major = Integer.parseInt(parts[0]);
         int minor = Integer.parseInt(parts[1]);
 
@@ -79,7 +80,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
                 .email(teaMakerDto.getEmail())
                 .phoneNumber(teaMakerDto.getPhoneNumber())
                 .basicSalary(teaMakerDto.getBasicSalary())
-                .status(teaMakerDto.getStatus())
+                .status("Active")
                 .user(user)
                 .build();
 
@@ -91,11 +92,15 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     @Transactional
     @Override
     public String updateTeaMaker(TeaMakerDto teaMakerDto) {
+        if (userRepository.existsByUsername(teaMakerDto.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
         if (teaMakerDto ==null||teaMakerDto.getId()==null){
             throw new IllegalArgumentException("Update Tea Maker DTO cannot be null");
         }
 
-        TeaMaker existingTeaMaker = teaMakerRepository.findById(String.valueOf(teaMakerDto))
+        TeaMaker existingTeaMaker = teaMakerRepository.findById(teaMakerDto.getId())
                 .orElseThrow(() -> new ResourceNotFound("Tea Maker not found"));
 
         existingTeaMaker.setFullName(teaMakerDto.getFullName());
@@ -142,7 +147,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
 
         return allTeaMakers.stream().map(tm -> {
             TeaMakerDto dto = new TeaMakerDto();
-            dto.setId(String.valueOf(tm.getTeaMakerId()));
+            dto.setId(tm.getTeaMakerId());
             dto.setFullName(tm.getFullName());
             dto.setEmail(tm.getEmail());
             dto.setPhoneNumber(tm.getPhoneNumber());
@@ -182,9 +187,10 @@ public class TeaMakerServiceImpl implements TeaMakerService {
 
     @Override
     public void changeTeaMakerStatus(String id) {
-        if (teaMakerRepository.findById(id).isEmpty()) {
+        if (!teaMakerRepository.existsById(id)) {
             throw new ResourceNotFound("Tea Maker not found");
         }
+
         if (id==null){
             throw new IllegalArgumentException("Tea Maker Id cannot be null");
         }

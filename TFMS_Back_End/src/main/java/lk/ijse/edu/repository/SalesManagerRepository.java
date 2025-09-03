@@ -13,7 +13,7 @@ import java.util.List;
 public interface SalesManagerRepository extends JpaRepository<SalesManager, String> {
     @Transactional
     @Modifying
-    @Query(value = "UPDATE sales_managers SET status='Inactive' WHERE sales_manager_id = ?1",nativeQuery = true)
+    @Query("UPDATE SalesManager sm SET sm.status = CASE WHEN sm.status = 'Active' THEN 'Inactive' ELSE 'Active' END WHERE sm.SalesManagerId = ?1")
     void updateSalesManagerStatus(String id);
 
     @Query(value = "SELECT sales_manager_id FROM sales_managers ORDER BY sales_manager_id DESC LIMIT 1", nativeQuery = true)

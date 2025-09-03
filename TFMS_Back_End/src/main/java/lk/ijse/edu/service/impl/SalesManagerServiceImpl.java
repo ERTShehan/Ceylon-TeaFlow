@@ -78,7 +78,7 @@ public class SalesManagerServiceImpl implements SalesManagerService {
                 .email(salesManagerDto.getEmail())
                 .phoneNumber(salesManagerDto.getPhoneNumber())
                 .basicSalary(salesManagerDto.getBasicSalary())
-                .status(salesManagerDto.getStatus())
+                .status("Active")
                 .user(user)
                 .build();
 
@@ -174,8 +174,8 @@ public class SalesManagerServiceImpl implements SalesManagerService {
 
     @Override
     public void changeSalesManagerStatus(String id) {
-        if (salesManagerRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFound("Finance Manager not found");
+        if (!salesManagerRepository.existsById(id)) {
+            throw new ResourceNotFound("Sales Manager not found");
         }
 
         if (id == null) {

@@ -80,7 +80,7 @@ public class StockManagerServiceImpl implements StockManagerService {
                 .email(stockManagerDto.getEmail())
                 .phoneNumber(stockManagerDto.getPhoneNumber())
                 .basicSalary(stockManagerDto.getBasicSalary())
-                .status(stockManagerDto.getStatus())
+                .status("Active")
                 .user(user)
                 .build();
 
@@ -180,7 +180,7 @@ public class StockManagerServiceImpl implements StockManagerService {
 
     @Override
     public void changeStockManagerStatus(String id) {
-        if (stockManagerRepository.findById(id).isEmpty()) {
+        if (!stockManagerRepository.existsById(id)) {
             throw new ResourceNotFound("Stock Manager not found");
         }
 

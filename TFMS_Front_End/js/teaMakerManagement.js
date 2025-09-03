@@ -1,6 +1,3 @@
-// Add this code to your existing JavaScript section
-
-// Base API URL (adjust based on your backend URL)
 const API_BASE_URL = 'http://localhost:8080';
 
 // Tea Maker Management Functions
@@ -20,6 +17,7 @@ function loadTeaMakers() {
                         <td class="p-3">${tm.fullName}</td>
                         <td class="p-3">${tm.email}</td>
                         <td class="p-3">${tm.phoneNumber}</td>
+                        <td class="p-3">${tm.username}</td>
                         <td class="p-3 status-text">${tm.status ? 'Active' : 'Inactive'}</td>
                         <td class="p-3">
                             <label class="toggle-switch">
