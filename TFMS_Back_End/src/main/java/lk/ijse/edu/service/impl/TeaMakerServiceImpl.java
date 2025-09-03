@@ -146,6 +146,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
             dto.setFullName(tm.getFullName());
             dto.setEmail(tm.getEmail());
             dto.setPhoneNumber(tm.getPhoneNumber());
+            dto.setStatus(tm.getStatus());
             if (tm.getUser() != null) {
                 dto.setUsername(tm.getUser().getUsername());
                 dto.setRole(tm.getUser().getRole().name());
@@ -168,10 +169,11 @@ public class TeaMakerServiceImpl implements TeaMakerService {
 
         return allTeaMakers.stream().map(tm -> {
             TeaMakerDto dto = new TeaMakerDto();
-            dto.setId(String.valueOf(tm.getTeaMakerId()));
+            dto.setId(tm.getTeaMakerId());
             dto.setFullName(tm.getFullName());
             dto.setEmail(tm.getEmail());
             dto.setPhoneNumber(tm.getPhoneNumber());
+            dto.setStatus(tm.getStatus());
             dto.setUsername(tm.getUser().getUsername());
             dto.setRole(tm.getUser().getRole().name());
             return dto;

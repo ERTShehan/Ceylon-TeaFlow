@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tea Maker Dashboard - Ceylon TeaFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'tea-green': '#2E8B57',
+            'tea-green-light': '#3CB371',
+            'tea-gold': '#DAA520',
+            'tea-cream': '#FFF8E1',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        z-index: 50;
+        height: 100vh;
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+    }
+
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .quality-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+    }
+
+    .quality-excellent {
+      background-color: #ECFDF5;
+      color: #10B981;
+    }
+
+    .quality-good {
+      background-color: #FFFBEB;
+      color: #F59E0B;
+    }
+
+    .quality-average {
+      background-color: #EFF6FF;
+      color: #3B82F6;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<!-- Mobile Menu Button -->
+<div class="md:hidden fixed top-4 left-4 z-50">
+  <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <div class="sidebar w-64 bg-tea-green text-white min-h-screen p-4">
+    <div class="flex items-center justify-center mb-8 mt-4">
+      <i class="fas fa-leaf text-3xl mr-2"></i>
+      <span class="text-xl font-semibold">Ceylon TeaFlow</span>
+    </div>
+
+    <div class="p-4 bg-tea-green-light rounded-lg mb-6">
+      <div class="flex items-center">
+        <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-tea-green text-xl mr-3">
+          <i class="fas fa-user"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">Rohan Silva</h3>
+          <p class="text-sm">Tea Maker</p>
+        </div>
+      </div>
+    </div>
+
+    <nav>
+      <ul class="space-y-2">
+        <li>
+          <a href="#" class="flex items-center p-3 rounded-lg bg-tea-green-light">
+            <i class="fas fa-home mr-3"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="#record-tea" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+            <i class="fas fa-pen mr-3"></i>
+            <span>Record Tea Leaves</span>
+          </a>
+        </li>
+        <li>
+          <a href="#today-records" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+            <i class="fas fa-history mr-3"></i>
+            <span>Today's Records</span>
+          </a>
+        </li>
+        <li>
+          <a href="#quality-reports" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+            <i class="fas fa-chart-line mr-3"></i>
+            <span>Quality Reports</span>
+          </a>
+        </li>
+        <li>
+          <a href="../index.html" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="mt-8 p-4 bg-tea-green-light rounded-lg">
+      <h4 class="font-semibold mb-2">Support</h4>
+      <p class="text-sm">Need help? Contact factory support:</p>
+      <p class="text-sm mt-1"><i class="fas fa-phone mr-2"></i> +94 77 123 4567</p>
+      <p class="text-sm mt-1"><i class="fas fa-envelope mr-2"></i> support@ceylonteaflow.lk</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 p-6 md:ml-0">
+    <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+      <h1 class="text-2xl font-bold text-tea-green mb-2">Tea Maker Dashboard</h1>
+      <p class="text-gray-600">Welcome back, Rohan! Record today's tea leaf measurements and monitor quality.</p>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="stat-card bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-gray-500">Today's Records</h3>
+            <p class="text-2xl font-bold text-tea-green">18</p>
+          </div>
+          <div class="bg-tea-cream p-3 rounded-lg">
+            <i class="fas fa-clipboard-list text-tea-green text-xl"></i>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">Last updated: 10:30 AM</p>
+      </div>
+
+      <div class="stat-card bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-gray-500">Total Weight</h3>
+            <p class="text-2xl font-bold text-tea-green">1,245 kg</p>
+          </div>
+          <div class="bg-tea-cream p-3 rounded-lg">
+            <i class="fas fa-weight-hanging text-tea-green text-xl"></i>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">Raw tea leaves measured</p>
+      </div>
+
+      <div class="stat-card bg-white rounded-xl shadow-md p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-gray-500">Avg. Quality Score</h3>
+            <p class="text-2xl font-bold text-tea-green">8.7/10</p>
+          </div>
+          <div class="bg-tea-cream p-3 rounded-lg">
+            <i class="fas fa-star text-tea-green text-xl"></i>
+          </div>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">Based on today's records</p>
+      </div>
+    </div>
+
+    <!-- Record Tea Leaves Section -->
+    <div id="record-tea" class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-tea-green mb-4">Record Tea Leaf Measurements</h2>
+
+      <form>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label class="block text-gray-700 mb-2">Supplier Tea Card No.</label>
+            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter tea card number">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Supplier Name</label>
+            <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Supplier name will auto-fill">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Gross Weight (kg)</label>
+            <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter gross weight">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Sack Weight (kg)</label>
+            <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter sack weight" value="0.5">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Moisture Content (%)</label>
+            <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter moisture percentage">
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Net Weight (kg)</label>
+            <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition bg-gray-100" placeholder="Will calculate automatically" disabled>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 mb-2">Quality Assessment</label>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="flex items-center">
+              <input type="radio" id="quality-excellent" name="quality" value="excellent" class="mr-2">
+              <label for="quality-excellent" class="quality-badge quality-excellent">Excellent</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="quality-good" name="quality" value="good" class="mr-2">
+              <label for="quality-good" class="quality-badge quality-good">Good</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="quality-average" name="quality" value="average" class="mr-2">
+              <label for="quality-average" class="quality-badge quality-average">Average</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" id="quality-poor" name="quality" value="poor" class="mr-2">
+              <label for="quality-poor" class="quality-badge bg-gray-100 text-gray-800">Poor</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-gray-700 mb-2">Notes (Optional)</label>
+          <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" rows="3" placeholder="Add any additional notes about this batch"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
+          <i class="fas fa-save mr-2"></i> Save Measurement
+        </button>
+      </form>
+    </div>
+
+    <!-- Today's Records Section -->
+    <div id="today-records" class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-tea-green mb-4">Today's Records</h2>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">Time</th>
+            <th class="p-3 text-left">Supplier</th>
+            <th class="p-3 text-left">Gross Weight</th>
+            <th class="p-3 text-left">Net Weight</th>
+            <th class="p-3 text-left">Quality</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="border-b">
+            <td class="p-3">10:15 AM</td>
+            <td class="p-3">Kamal Perera (TC-784592)</td>
+            <td class="p-3">125 kg</td>
+            <td class="p-3">118 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-excellent">Excellent</span>
+            </td>
+            <td class="p-3">
+              <button class="text-tea-green hover:text-tea-green-light">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">09:45 AM</td>
+            <td class="p-3">Nimal Fernando (TC-784593)</td>
+            <td class="p-3">98 kg</td>
+            <td class="p-3">92 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-good">Good</span>
+            </td>
+            <td class="p-3">
+              <button class="text-tea-green hover:text-tea-green-light">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">09:20 AM</td>
+            <td class="p-3">Sunil Rathnayake (TC-784594)</td>
+            <td class="p-3">112 kg</td>
+            <td class="p-3">105 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-excellent">Excellent</span>
+            </td>
+            <td class="p-3">
+              <button class="text-tea-green hover:text-tea-green-light">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">08:50 AM</td>
+            <td class="p-3">Saman Kumara (TC-784595)</td>
+            <td class="p-3">87 kg</td>
+            <td class="p-3">80 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-average">Average</span>
+            </td>
+            <td class="p-3">
+              <button class="text-tea-green hover:text-tea-green-light">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">08:15 AM</td>
+            <td class="p-3">Chaminda Silva (TC-784596)</td>
+            <td class="p-3">105 kg</td>
+            <td class="p-3">98 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-good">Good</span>
+            </td>
+            <td class="p-3">
+              <button class="text-tea-green hover:text-tea-green-light">
+                <i class="fas fa-edit"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <button class="px-6 py-2 border border-tea-green text-tea-green rounded-lg hover:bg-tea-green hover:text-white transition">
+          Load More Records
+        </button>
+      </div>
+    </div>
+
+    <!-- Quality Reports Section -->
+    <div id="quality-reports" class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-tea-green mb-4">Quality Reports</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-tea-cream p-4 rounded-lg">
+          <h3 class="font-medium text-tea-green mb-3">Today's Quality Distribution</h3>
+          <div class="flex items-center mb-2">
+            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <span class="text-sm">Excellent: 45%</span>
+          </div>
+          <div class="flex items-center mb-2">
+            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+            <span class="text-sm">Good: 35%</span>
+          </div>
+          <div class="flex items-center mb-2">
+            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+            <span class="text-sm">Average: 15%</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-3 h-3 bg-gray-400 rounded-full mr-2"></div>
+            <span class="text-sm">Poor: 5%</span>
+          </div>
+        </div>
+
+        <div class="bg-tea-cream p-4 rounded-lg">
+          <h3 class="font-medium text-tea-green mb-3">Monthly Quality Trend</h3>
+          <div class="flex justify-between mb-1">
+            <span class="text-sm">August Average: 8.7/10</span>
+            <span class="text-sm text-tea-green">+0.5 from July</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+            <div class="bg-tea-green h-2 rounded-full" style="width: 87%"></div>
+          </div>
+          <p class="text-sm text-gray-600">Quality improvement this month</p>
+        </div>
+      </div>
+
+      <h3 class="font-medium mb-3">Top Suppliers by Quality</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">Supplier</th>
+            <th class="p-3 text-left">Avg. Quality Score</th>
+            <th class="p-3 text-left">Total Supplied</th>
+            <th class="p-3 text-left">Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="border-b">
+            <td class="p-3">Kamal Perera</td>
+            <td class="p-3">9.2/10</td>
+            <td class="p-3">1,245 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-excellent">Premium</span>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">Sunil Rathnayake</td>
+            <td class="p-3">8.8/10</td>
+            <td class="p-3">985 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-excellent">Premium</span>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">Nimal Fernando</td>
+            <td class="p-3">8.5/10</td>
+            <td class="p-3">1,120 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-good">Good</span>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">Chaminda Silva</td>
+            <td class="p-3">8.3/10</td>
+            <td class="p-3">875 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-good">Good</span>
+            </td>
+          </tr>
+          <tr class="border-b">
+            <td class="p-3">Saman Kumara</td>
+            <td class="p-3">7.6/10</td>
+            <td class="p-3">756 kg</td>
+            <td class="p-3">
+              <span class="quality-badge quality-average">Average</span>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Mobile menu toggle
+  document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+    document.querySelector('.sidebar').classList.toggle('active');
+  });
+
+  // Auto-calculate net weight
+  const grossWeightInput = document.querySelector('input[placeholder="Enter gross weight"]');
+  const sackWeightInput = document.querySelector('input[placeholder="Enter sack weight"]');
+  const netWeightInput = document.querySelector('input[placeholder="Will calculate automatically"]');
+
+  function calculateNetWeight() {
+    if (grossWeightInput.value && sackWeightInput.value) {
+      const gross = parseFloat(grossWeightInput.value);
+      const sack = parseFloat(sackWeightInput.value);
+      netWeightInput.value = (gross - sack).toFixed(2);
+    }
+  }
+
+  grossWeightInput.addEventListener('input', calculateNetWeight);
+  sackWeightInput.addEventListener('input', calculateNetWeight);
+</script>
+</body>
+</html>

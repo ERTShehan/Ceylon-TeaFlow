@@ -17,7 +17,9 @@ public class TeaCard {
     private String id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String number; // e.g., "TC-100001"
+    private String number; //
+
+    private String name;
 
     @Column(nullable = false)
     private boolean used = false;

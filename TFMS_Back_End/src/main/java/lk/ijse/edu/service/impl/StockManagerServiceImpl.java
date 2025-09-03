@@ -144,6 +144,7 @@ public class StockManagerServiceImpl implements StockManagerService {
             dto.setFullName(sm.getFullName());
             dto.setEmail(sm.getEmail());
             dto.setPhoneNumber(sm.getPhoneNumber());
+            dto.setStatus(sm.getStatus());
             if (sm.getUser() != null) {
                 dto.setUsername(sm.getUser().getUsername());
                 dto.setRole(sm.getUser().getRole().name());
@@ -170,6 +171,7 @@ public class StockManagerServiceImpl implements StockManagerService {
             dto.setFullName(sm.getFullName());
             dto.setEmail(sm.getEmail());
             dto.setPhoneNumber(sm.getPhoneNumber());
+            dto.setStatus(sm.getStatus());
                 dto.setUsername(sm.getUser().getUsername());
                 dto.setRole(sm.getUser().getRole().name());
             return dto;

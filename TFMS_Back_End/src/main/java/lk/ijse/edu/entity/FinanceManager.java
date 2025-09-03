@@ -15,7 +15,7 @@ public class FinanceManager {
     private String financeManagerId;
 
     private String fullName;
-    private String address;
+    private String email;
     private String phoneNumber;
     private String basicSalary;
     private String status;
