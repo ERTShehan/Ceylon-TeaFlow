@@ -3,6 +3,9 @@ package lk.ijse.edu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -24,6 +27,9 @@ public class TeaLeafSupplier {
 
     @OneToOne(mappedBy = "supplier", cascade = CascadeType.ALL)
     private TeaCard teaCard;
+
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
+    private List<AdvancePayment> advancePayments = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

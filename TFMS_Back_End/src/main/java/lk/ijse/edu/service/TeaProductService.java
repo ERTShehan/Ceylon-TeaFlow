@@ -10,4 +10,5 @@ public interface TeaProductService {
     void deleteTeaProduct(String id);
     List<TeaProductDto> getAllTeaProducts();
     List<TeaProductDto> searchTeaProduct(String keyword);
+    List<String> getTeaProductNames();
 }

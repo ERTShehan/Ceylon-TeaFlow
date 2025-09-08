@@ -80,7 +80,6 @@
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<!-- Mobile Menu Button -->
 <div class="md:hidden fixed top-4 left-4 z-50">
     <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
         <i class="fas fa-bars"></i>
@@ -203,152 +202,76 @@
         <div id="shop" class="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-tea-green mb-4">Our Premium Tea Collection</h2>
 
-            <div class="mb-6">
-                <div class="flex overflow-x-auto space-x-4 pb-4">
-                    <button class="px-4 py-2 bg-tea-green text-white rounded-full whitespace-nowrap">All Teas</button>
-                    <button class="px-4 py-2 bg-gray-200 rounded-full whitespace-nowrap">Black Tea</button>
-                    <button class="px-4 py-2 bg-gray-200 rounded-full whitespace-nowrap">Green Tea</button>
-                    <button class="px-4 py-2 bg-gray-200 rounded-full whitespace-nowrap">White Tea</button>
-                    <button class="px-4 py-2 bg-gray-200 rounded-full whitespace-nowrap">Herbal Blends</button>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                <div class="product-card border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-48 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-5xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">Ceylon Black Tea</h3>
-                    <p class="text-gray-600 text-sm mb-3">Rich and full-bodied with notes of citrus and spice</p>
-                    <div class="flex justify-between items-center">
-                        <p class="text-tea-green font-semibold">LKR 450.00</p>
-                        <span class="text-yellow-500">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </span>
-                    </div>
-                    <button class="mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                        Add to Cart
-                    </button>
-                </div>
-
-                <div class="product-card border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-48 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-5xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">Green Tea</h3>
-                    <p class="text-gray-600 text-sm mb-3">Light and refreshing with a delicate grassy flavor</p>
-                    <div class="flex justify-between items-center">
-                        <p class="text-tea-green font-semibold">LKR 500.00</p>
-                        <span class="text-yellow-500">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                    </div>
-                    <button class="mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                        Add to Cart
-                    </button>
-                </div>
-
-                <div class="product-card border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-48 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-5xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">White Tea</h3>
-                    <p class="text-gray-600 text-sm mb-3">Delicate and subtly sweet with a smooth finish</p>
-                    <div class="flex justify-between items-center">
-                        <p class="text-tea-green font-semibold">LKR 650.00</p>
-                        <span class="text-yellow-500">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
-                            </span>
-                    </div>
-                    <button class="mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                        Add to Cart
-                    </button>
-                </div>
-            </div>
-
-            <div class="text-center">
-                <button class="px-6 py-2 border border-tea-green text-tea-green rounded-lg hover:bg-tea-green hover:text-white transition">
-                    View All Products
-                </button>
+            <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Products will be loaded here dynamically -->
             </div>
         </div>
+
 
         <!-- Cart Preview -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold text-tea-green mb-4">Your Cart</h2>
+<!--        <div class="bg-white rounded-xl shadow-md p-6 mb-8">-->
+<!--            <h2 class="text-xl font-semibold text-tea-green mb-4">Your Cart</h2>-->
 
-            <div class="space-y-4">
-                <div class="flex items-center justify-between border-b pb-4">
-                    <div class="flex items-center">
-                        <div class="w-16 h-16 bg-tea-cream rounded-lg mr-4 flex items-center justify-center">
-                            <i class="fas fa-box-open text-tea-green"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold">Ceylon Black Tea</h3>
-                            <p class="text-gray-600 text-sm">250g packet</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="flex items-center mr-6">
-                            <button class="w-8 h-8 bg-gray-200 rounded-l">-</button>
-                            <div class="w-10 h-8 flex items-center justify-center border-y">2</div>
-                            <button class="w-8 h-8 bg-gray-200 rounded-r">+</button>
-                        </div>
-                        <p class="font-semibold text-tea-green">LKR 900.00</p>
-                    </div>
-                </div>
+<!--            <div class="space-y-4">-->
+<!--                <div class="flex items-center justify-between border-b pb-4">-->
+<!--                    <div class="flex items-center">-->
+<!--                        <div class="w-16 h-16 bg-tea-cream rounded-lg mr-4 flex items-center justify-center">-->
+<!--                            <i class="fas fa-box-open text-tea-green"></i>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <h3 class="font-semibold">Ceylon Black Tea</h3>-->
+<!--                            <p class="text-gray-600 text-sm">250g packet</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="flex items-center">-->
+<!--                        <div class="flex items-center mr-6">-->
+<!--                            <button class="w-8 h-8 bg-gray-200 rounded-l">-</button>-->
+<!--                            <div class="w-10 h-8 flex items-center justify-center border-y">1</div>-->
+<!--                            <button class="w-8 h-8 bg-gray-200 rounded-r">+</button>-->
+<!--                        </div>-->
+<!--                        <p class="font-semibold text-tea-green">LKR 900.00</p>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div class="flex items-center justify-between border-b pb-4">
-                    <div class="flex items-center">
-                        <div class="w-16 h-16 bg-tea-cream rounded-lg mr-4 flex items-center justify-center">
-                            <i class="fas fa-box-open text-tea-green"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-semibold">Green Tea</h3>
-                            <p class="text-gray-600 text-sm">250g packet</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="flex items-center mr-6">
-                            <button class="w-8 h-8 bg-gray-200 rounded-l">-</button>
-                            <div class="w-10 h-8 flex items-center justify-center border-y">1</div>
-                            <button class="w-8 h-8 bg-gray-200 rounded-r">+</button>
-                        </div>
-                        <p class="font-semibold text-tea-green">LKR 500.00</p>
-                    </div>
-                </div>
-            </div>
+<!--                <div class="flex items-center justify-between border-b pb-4">-->
+<!--                    <div class="flex items-center">-->
+<!--                        <div class="w-16 h-16 bg-tea-cream rounded-lg mr-4 flex items-center justify-center">-->
+<!--                            <i class="fas fa-box-open text-tea-green"></i>-->
+<!--                        </div>-->
+<!--                        <div>-->
+<!--                            <h3 class="font-semibold">Green Tea</h3>-->
+<!--                            <p class="text-gray-600 text-sm">250g packet</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="flex items-center">-->
+<!--                        <div class="flex items-center mr-6">-->
+<!--                            <button class="w-8 h-8 bg-gray-200 rounded-l">-</button>-->
+<!--                            <div class="w-10 h-8 flex items-center justify-center border-y">1</div>-->
+<!--                            <button class="w-8 h-8 bg-gray-200 rounded-r">+</button>-->
+<!--                        </div>-->
+<!--                        <p class="font-semibold text-tea-green">LKR 500.00</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="mt-6 pt-4 border-t">
-                <div class="flex justify-between mb-2">
-                    <span class="text-gray-600">Subtotal</span>
-                    <span class="font-semibold">LKR 1,400.00</span>
-                </div>
-                <div class="flex justify-between mb-4">
-                    <span class="text-gray-600">Shipping</span>
-                    <span class="font-semibold">LKR 250.00</span>
-                </div>
-                <div class="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span class="text-tea-green">LKR 1,650.00</span>
-                </div>
-                <button class="mt-6 w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                    Proceed to Checkout
-                </button>
-            </div>
-        </div>
+<!--            <div class="mt-6 pt-4 border-t">-->
+<!--                <div class="flex justify-between mb-2">-->
+<!--                    <span class="text-gray-600">Subtotal</span>-->
+<!--                    <span class="font-semibold">LKR 1,400.00</span>-->
+<!--                </div>-->
+<!--                <div class="flex justify-between mb-4">-->
+<!--                    <span class="text-gray-600">Shipping</span>-->
+<!--                    <span class="font-semibold">LKR 250.00</span>-->
+<!--                </div>-->
+<!--                <div class="flex justify-between text-lg font-bold">-->
+<!--                    <span>Total</span>-->
+<!--                    <span class="text-tea-green">LKR 1,650.00</span>-->
+<!--                </div>-->
+<!--                <button class="mt-6 w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">-->
+<!--                    Proceed to Checkout-->
+<!--                </button>-->
+<!--            </div>-->
+<!--        </div>-->
 
         <!-- Order History Section -->
         <div id="orders" class="bg-white rounded-xl shadow-md p-6 mb-8">
@@ -531,6 +454,7 @@
         </div>
     </div>
 </div>
+<script src="../js/customer.js"></script>
 
 <script>
     // Mobile menu toggle

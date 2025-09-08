@@ -28,10 +28,10 @@ public class AuthController {
         ), HttpStatus.CREATED);
     }
 
-//    @PostMapping("/saveAdmin")
-//    public ResponseEntity<APIResponse> saveAdmin(@RequestBody SaveAdminDto dto) {
-//        return ResponseEntity.ok(new APIResponse(200, "OK", authService.saveAdmin(dto)));
-//    }
+    @PostMapping("/saveAdmin")
+    public ResponseEntity<APIResponse> saveAdmin(@RequestBody SaveAdminDto dto) {
+        return ResponseEntity.ok(new APIResponse(200, "OK", authService.saveAdmin(dto)));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<APIResponse<String>> login(@RequestBody AuthDto dto) {

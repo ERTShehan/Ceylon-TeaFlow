@@ -92,7 +92,7 @@ public class AddTeaCardImpl implements AddTeaCardService {
     public List<TeaCardDto> getAllTeaCards() {
         List<TeaCard> allTeaCards = teaCardRepository.findAll();
         if (allTeaCards.isEmpty()) {
-            throw new ResourceNotFound("No tea Maker Found");
+            throw new ResourceNotFound("No tea card Found");
         }
 
         return allTeaCards.stream().map(teaCard -> {

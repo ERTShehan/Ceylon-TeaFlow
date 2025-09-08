@@ -2,6 +2,7 @@ package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.TeaProductDto;
 import lk.ijse.edu.entity.TeaProduct;
+import lk.ijse.edu.entity.TeaProductName;
 import lk.ijse.edu.exception.ResourceNotFound;
 import lk.ijse.edu.repository.TeaProductRepository;
 import lk.ijse.edu.service.TeaProductService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,9 +37,9 @@ public class TeaProductServiceImpl implements TeaProductService {
     @Transactional
     @Override
     public String saveTeaProduct(TeaProductDto teaProductDto) {
-        if (teaProductRepository.existsByName(teaProductDto.getName())) {
-            throw new RuntimeException("Tea Product name already exists");
-        }
+//        if (teaProductRepository.existsByName(TeaProductName.valueOf(teaProductDto.getName()))) {
+//            throw new RuntimeException("Tea Product name already exists");
+//        }
 
         if (teaProductDto == null) {
             throw new IllegalArgumentException("Tea Product DTO cannot be null");
@@ -48,7 +50,7 @@ public class TeaProductServiceImpl implements TeaProductService {
 
         TeaProduct teaProduct = TeaProduct.builder()
                 .id(newProductId)
-                .name(teaProductDto.getName())
+                .name(TeaProductName.valueOf(teaProductDto.getName()))
                 .description(teaProductDto.getDescription())
                 .price(teaProductDto.getPrice())
                 .quantity(teaProductDto.getQuantity())
@@ -66,7 +68,7 @@ public class TeaProductServiceImpl implements TeaProductService {
         TeaProduct existingTeaProducts = teaProductRepository.findById(teaProductDto.getId())
                 .orElseThrow(() -> new RuntimeException("Tea Product not found"));
 
-        existingTeaProducts.setName(teaProductDto.getName());
+        existingTeaProducts.setName(TeaProductName.valueOf(teaProductDto.getName()));
         existingTeaProducts.setDescription(teaProductDto.getDescription());
         existingTeaProducts.setPrice(teaProductDto.getPrice());
         existingTeaProducts.setQuantity(teaProductDto.getQuantity());
@@ -88,7 +90,7 @@ public class TeaProductServiceImpl implements TeaProductService {
         return allTeaProducts.stream().map(teaProduct -> {
             TeaProductDto dto = new TeaProductDto();
             dto.setId(teaProduct.getId());
-            dto.setName(teaProduct.getName());
+            dto.setName(String.valueOf(teaProduct.getName()));
             dto.setDescription(teaProduct.getDescription());
             dto.setPrice(teaProduct.getPrice());
             dto.setQuantity(teaProduct.getQuantity());
@@ -101,7 +103,7 @@ public class TeaProductServiceImpl implements TeaProductService {
         if (keyword==null){
             throw new IllegalArgumentException("Keyword cannot be null");
         }
-        List<TeaProduct> allTeaProducts = teaProductRepository.findTeaProductByNameContainingIgnoreCase(keyword);
+        List<TeaProduct> allTeaProducts = teaProductRepository.searchByNameContainingIgnoreCase(keyword);
 
         if (allTeaProducts.isEmpty()){
             throw new ResourceNotFound("No Tea Maker Found");
@@ -110,11 +112,18 @@ public class TeaProductServiceImpl implements TeaProductService {
         return allTeaProducts.stream().map(teaProduct -> {
             TeaProductDto dto = new TeaProductDto();
             dto.setId(teaProduct.getId());
-            dto.setName(teaProduct.getName());
+            dto.setName(String.valueOf(teaProduct.getName()));
             dto.setDescription(teaProduct.getDescription());
             dto.setPrice(teaProduct.getPrice());
             dto.setQuantity(teaProduct.getQuantity());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> getTeaProductNames() {
+        return Arrays.stream(TeaProductName.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
     }
 }

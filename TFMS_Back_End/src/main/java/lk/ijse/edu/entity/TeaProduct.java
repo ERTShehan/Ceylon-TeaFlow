@@ -1,10 +1,9 @@
 package lk.ijse.edu.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "tea_products")
@@ -16,11 +15,21 @@ import lombok.*;
 public class TeaProduct {
     @Id
     private String id;
-    private String name;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TeaProductName name;
 
     @Column(nullable = false)
     private double price;
 
     private String quantity;
     private String description;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> order_item;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Stock stock;
+
 }

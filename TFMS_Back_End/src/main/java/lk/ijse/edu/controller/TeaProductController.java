@@ -55,4 +55,11 @@ public class TeaProductController {
                 teaProductDTOS
         ));
     }
+
+    @GetMapping("/teaNames" )
+    public ResponseEntity<APIResponse<List<String>>> getTeaProductNames() {
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Tea Product Names Retrieved Successfully", teaProductService.getTeaProductNames()
+        ));
+    }
 }

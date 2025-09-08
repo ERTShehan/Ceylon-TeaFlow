@@ -2,10 +2,7 @@ package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.*;
 import lk.ijse.edu.entity.*;
-import lk.ijse.edu.repository.NormalCustomerRepository;
-import lk.ijse.edu.repository.TeaCardRepository;
-import lk.ijse.edu.repository.TeaLeafSupplierRepository;
-import lk.ijse.edu.repository.UserRepository;
+import lk.ijse.edu.repository.*;
 import lk.ijse.edu.service.AuthService;
 import lk.ijse.edu.util.IdGenerate;
 import lk.ijse.edu.util.JWTUtil;
@@ -28,6 +25,7 @@ public class AuthServiceImpl implements AuthService {
     private final TeaCardRepository teaCardRepository;
     private final JWTUtil jwt;
     private final IdGenerate idGenerate;
+    private final AdminRepository adminRepository;
 
     private String generateNextCustomerId(String lastId) {
         if (lastId == null) return "C00-001";
@@ -71,6 +69,27 @@ public class AuthServiceImpl implements AuthService {
         return String.format("S%02d-%03d", major, minor);
     }
 
+    private String generateNextAdminId(String lastId) {
+        if (lastId == null) return "A00-001";
+
+        String[] parts = lastId.split("-");
+        int major = Integer.parseInt(parts[0].substring(1));
+        int minor = Integer.parseInt(parts[1]);
+
+        minor++;
+
+        if (minor > 999) {
+            minor = 1;
+            major++;
+        }
+
+        if (major > 99) {
+            throw new IllegalStateException("Admin ID count has ended. Please contact the developer.");
+        }
+
+        return String.format("A%02d-%03d", major, minor);
+    }
+
     @Transactional
     @Override
     public String registerCustomer(RegisterCustomerDto registerCustomerDto) {
@@ -110,7 +129,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public String saveAdmin(SaveAdminDto dto) {
+        if (userRepository.existsByUsername(dto.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+
+        String lastUserId = userRepository.findLastUserId();
+        String newUserId = idGenerate.generateNextUserId(lastUserId);
+
+        String lastAdminId = adminRepository.findLastAdminId();
+        String newAdminId = generateNextAdminId(lastAdminId);
+
         User user = User.builder()
+                .id(newUserId)
                 .username(dto.getUsername())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .createdAt(new Date())
@@ -118,6 +148,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         Admin admin = Admin.builder()
+                .adminId(newAdminId)
                 .name(dto.getName())
                 .email(dto.getEmail())
                 .user(user)
@@ -181,10 +212,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponseDto login(AuthDto dto) {
         User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found or Invalid credentials"));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Invalid credentials");
+            throw new BadCredentialsException("User not found or Invalid credentials");
         }
 
         String role = user.getRole().name();

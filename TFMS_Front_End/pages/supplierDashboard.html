@@ -319,78 +319,12 @@
             </div>
         </div>
 
-        <!-- Order Tea Packets Section -->
-        <div id="order-tea" class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold text-tea-green mb-4">Order Tea Packets</h2>
+        <!-- Shop Section -->
+        <div id="shop" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Our Tea Packets</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div class="border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-32 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-4xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">Ceylon Black Tea</h3>
-                    <p class="text-gray-600 text-sm">250g packet</p>
-                    <p class="text-tea-green font-semibold mt-2">LKR 450.00</p>
-                    <div class="mt-3 flex items-center">
-                        <button class="px-2 py-1 bg-gray-200 rounded-l">-</button>
-                        <input type="number" min="0" value="0" class="w-12 text-center border-y py-1">
-                        <button class="px-2 py-1 bg-gray-200 rounded-r">+</button>
-                        <button class="ml-auto px-3 py-1 bg-tea-green text-white rounded text-sm">Add</button>
-                    </div>
-                </div>
-
-                <div class="border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-32 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-4xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">Green Tea</h3>
-                    <p class="text-gray-600 text-sm">250g packet</p>
-                    <p class="text-tea-green font-semibold mt-2">LKR 500.00</p>
-                    <div class="mt-3 flex items-center">
-                        <button class="px-2 py-1 bg-gray-200 rounded-l">-</button>
-                        <input type="number" min="0" value="0" class="w-12 text-center border-y py-1">
-                        <button class="px-2 py-1 bg-gray-200 rounded-r">+</button>
-                        <button class="ml-auto px-3 py-1 bg-tea-green text-white rounded text-sm">Add</button>
-                    </div>
-                </div>
-
-                <div class="border rounded-lg p-4 hover:border-tea-green transition">
-                    <div class="h-32 bg-tea-cream rounded-lg mb-3 flex items-center justify-center">
-                        <i class="fas fa-box-open text-4xl text-tea-green"></i>
-                    </div>
-                    <h3 class="font-semibold">White Tea</h3>
-                    <p class="text-gray-600 text-sm">250g packet</p>
-                    <p class="text-tea-green font-semibold mt-2">LKR 650.00</p>
-                    <div class="mt-3 flex items-center">
-                        <button class="px-2 py-1 bg-gray-200 rounded-l">-</button>
-                        <input type="number" min="0" value="0" class="w-12 text-center border-y py-1">
-                        <button class="px-2 py-1 bg-gray-200 rounded-r">+</button>
-                        <button class="ml-auto px-3 py-1 bg-tea-green text-white rounded text-sm">Add</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-medium text-tea-green mb-3">Your Cart</h4>
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <span>2 x Ceylon Black Tea</span>
-                        <span>LKR 900.00</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>1 x Green Tea</span>
-                        <span>LKR 500.00</span>
-                    </div>
-                    <div class="border-t pt-2 mt-2">
-                        <div class="flex justify-between font-semibold">
-                            <span>Total</span>
-                            <span>LKR 1,400.00</span>
-                        </div>
-                    </div>
-                </div>
-                <button class="mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                    Checkout
-                </button>
+            <div id="products-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Products will be loaded here dynamically -->
             </div>
         </div>
 
@@ -480,7 +414,7 @@
         </div>
     </div>
 </div>
-
+<script src="../js/supplier.js"></script>
 <script>
     // Mobile menu toggle
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {
