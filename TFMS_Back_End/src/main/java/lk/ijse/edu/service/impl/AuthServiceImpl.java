@@ -219,15 +219,15 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String role = user.getRole().name();
-        String name = user.getNormalCustomer() != null ?
-                user.getNormalCustomer().getFirstName() + " " + user.getNormalCustomer().getLastName() :
-                user.getTeaLeafSupplier() != null ?
-                        user.getTeaLeafSupplier().getFirstName() + " " + user.getTeaLeafSupplier().getLastName() :
-                        "User";
-        String access = jwt.generateAccessToken(user.getUsername(), role);
+//        String name = user.getNormalCustomer() != null ?
+//                user.getNormalCustomer().getFirstName() + " " + user.getNormalCustomer().getLastName() :
+//                user.getTeaLeafSupplier() != null ?
+//                        user.getTeaLeafSupplier().getFirstName() + " " + user.getTeaLeafSupplier().getLastName() :
+//                        "User";
+        String access = jwt.generateAccessToken(user.getUsername());
 
         long exp = jwt.getExpiry(access).getTime();
 
-        return new AuthResponseDto(access, role, exp, name);
+        return new AuthResponseDto(access, role, exp);
     }
 }

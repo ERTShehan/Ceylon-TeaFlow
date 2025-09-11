@@ -16,47 +16,56 @@ import java.util.Map;
 public class JWTUtil {
 
     @Value("${jwt.access.expiration-ms}")
-    private long accessExpirationMs;
+    private long expiration;
 
     @Value("${jwt.refresh.expiration-ms}")
     private long refreshExpirationMs;
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String secretKey;
 
-    private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
-    }
+//    private SecretKey getKey() {
+//        return Keys.hmacShaKeyFor(secret.getBytes());
+//    }
 
-    public String generateAccessToken(String username, String role) {
-        long now = System.currentTimeMillis();
+    public String generateAccessToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .addClaims(Map.of("role", role))
-                .setIssuedAt(new Date(now))
-                .setExpiration(new Date(now + accessExpirationMs))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .setIssuedAt(new Date())
+                .setExpiration(new Date
+                        (System.currentTimeMillis() + expiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes())
+                        , SignatureAlgorithm.HS256).compact();
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor
+                            (secretKey.getBytes()))
+                    .build()
+                    .parseClaimsJws(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (Exception e) {
             return false;
         }
     }
 
     public String extractUsername(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getKey()).build()
-                .parseClaimsJws(token).getBody().getSubject();
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public Date getExpiry(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getKey()).build()
-                .parseClaimsJws(token).getBody().getExpiration();
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
     }
 }

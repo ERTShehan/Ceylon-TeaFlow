@@ -52,71 +52,71 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
 }
 
-const TeaMakerManager = {
+const StockManager = {
     currentPage: 1,
     pageSize: 5,
     allTeaMakers: [],
 
     async getAll() {
         try {
-            const response = await apiCall('/teaMaker/getAll');
+            const response = await apiCall('/stockManager/getAll');
             return response.data;
         } catch (error) {
-            console.error('Error fetching tea makers:', error);
+            console.error('Error fetching stock managers:', error);
             return [];
         }
     },
 
     async search(keyword) {
         try {
-            const response = await apiCall(`/teaMaker/search/${encodeURIComponent(keyword)}`);
+            const response = await apiCall(`/stockManager/search/${encodeURIComponent(keyword)}`);
             return response.data;
         } catch (error) {
-            console.error('Error searching tea makers:', error);
+            console.error('Error searching stock managers:', error);
             return [];
         }
     },
 
     async add(teaMakerData) {
         try {
-            const response = await apiCall('/teaMaker/register', 'POST', teaMakerData);
-            showToast(response.message || 'Tea maker added successfully');
+            const response = await apiCall('/stockManager/register', 'POST', teaMakerData);
+            showToast(response.message || 'Stock manager added successfully');
             return response.data;
         } catch (error) {
-            console.error('Error adding tea maker:', error);
+            console.error('Error adding stock manager:', error);
             throw error;
         }
     },
 
     async update(teaMakerData) {
         try {
-            const response = await apiCall('/teaMaker/update', 'PUT', teaMakerData);
-            showToast(response.message || 'Tea maker updated successfully');
+            const response = await apiCall('/stockManager/update', 'PUT', teaMakerData);
+            showToast(response.message || 'Stock Manager updated successfully');
             return response.data;
         } catch (error) {
-            console.error('Error updating tea maker:', error);
+            console.error('Error updating stock manager:', error);
             throw error;
         }
     },
 
     async delete(id) {
         try {
-            const response = await apiCall(`/teaMaker/delete?id=${id}`, 'PUT');
-            showToast(response.message || 'Tea maker deleted successfully');
+            const response = await apiCall(`/stockManager/delete?id=${id}`, 'PUT');
+            showToast(response.message || 'Stock manager deleted successfully');
             return response.data;
         } catch (error) {
-            console.error('Error deleting tea maker:', error);
+            console.error('Error deleting stock manager:', error);
             throw error;
         }
     },
 
     async changeStatus(id) {
         try {
-            const response = await apiCall(`/teaMaker/changeStatus/${id}`, 'PATCH');
+            const response = await apiCall(`/stockManager/changeStatus/${id}`, 'PATCH');
             showToast(response.message || 'Status changed successfully');
             return response.data;
         } catch (error) {
-            console.error('Error changing tea maker status:', error);
+            console.error('Error changing stock manager status:', error);
             throw error;
         }
     },
@@ -127,22 +127,22 @@ const TeaMakerManager = {
 
         tableBody.innerHTML = '';
 
-        teaMakers.forEach(maker => {
+        teaMakers.forEach(manager => {
             const row = document.createElement('tr');
             row.className = 'border-b';
             row.innerHTML = `
-                        <td class="p-3">${maker.id}</td>
-                        <td class="p-3">${maker.fullName}</td>
-                        <td class="p-3">${maker.email}</td>
-                        <td class="p-3">${maker.phoneNumber}</td>
-                        <td class="p-3">${maker.username}</td>
+                        <td class="p-3">${manager.id}</td>
+                        <td class="p-3">${manager.fullName}</td>
+                        <td class="p-3">${manager.email}</td>
+                        <td class="p-3">${manager.phoneNumber}</td>
+                        <td class="p-3">${manager.username}</td>
                         <td class="p-3">
-                            <span class="px-2 py-1 rounded ${maker.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${maker.status}</span>
+                            <span class="px-2 py-1 rounded ${manager.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${manager.status}</span>
                         </td>
                         <td class="p-3">
-                            <button class="edit-btn px-2 py-1 bg-blue-500 text-white rounded mr-2" data-id="${maker.id}">Edit</button>
-                            <button class="status-btn px-2 py-1 bg-yellow-500 text-white rounded mr-2" data-id="${maker.id}">Change Status</button>
-                            <button class="delete-btn px-2 py-1 bg-red-500 text-white rounded" data-id="${maker.id}">Delete</button>
+                            <button class="edit-btn px-2 py-1 bg-blue-500 text-white rounded mr-2" data-id="${manager.id}">Edit</button>
+                            <button class="status-btn px-2 py-1 bg-yellow-500 text-white rounded mr-2" data-id="${manager.id}">Change Status</button>
+                            <button class="delete-btn px-2 py-1 bg-red-500 text-white rounded" data-id="${manager.id}">Delete</button>
                         </td>
                     `;
             tableBody.appendChild(row);
@@ -188,37 +188,37 @@ const TeaMakerManager = {
 
     async openUpdateModal(id) {
         try {
-            const teaMakers = await this.getAll();
-            const maker = teaMakers.find(m => m.id === id);
+            const stockManagers = await this.getAll();
+            const manager = stockManagers.find(m => m.id === id);
 
-            if (maker) {
+            if (manager) {
                 // Store the original username to check if it changed later
-                document.getElementById('teaMakerUpdateForm').dataset.originalUsername = maker.username;
+                document.getElementById('stockManagerUpdateForm').dataset.originalUsername = maker.username;
 
                 // Populate the update form
-                document.getElementById('updateTeaMakerId').value = maker.id;
-                document.getElementById('updateTeaMakerName').value = maker.fullName;
-                document.getElementById('updateTeaMakerEmail').value = maker.email;
-                document.getElementById('updateTeaMakerPhone').value = maker.phoneNumber;
-                document.getElementById('updateTeaMakerSalary').value = maker.basicSalary;
-                document.getElementById('updateTeaMakerPassword').value = '';
+                document.getElementById('updateStockManagerId').value = manager.id;
+                document.getElementById('updateStockManagerName').value = manager.fullName;
+                document.getElementById('updateStockManagerEmail').value = manager.email;
+                document.getElementById('updateStockManagerPhone').value = manager.phoneNumber;
+                document.getElementById('updateStockManagerSalary').value = manager.basicSalary;
+                document.getElementById('updateStockManagerPassword').value = '';
 
                 // Set up the update form submission
-                const updateForm = document.getElementById('teaMakerUpdateForm');
+                const updateForm = document.getElementById('stockManagerUpdateForm');
                 updateForm.onsubmit = async (e) => {
                     e.preventDefault();
 
                     const updatedData = {
-                        id: document.getElementById('updateTeaMakerId').value,
-                        fullName: document.getElementById('updateTeaMakerName').value,
-                        email: document.getElementById('updateTeaMakerEmail').value,
-                        phoneNumber: document.getElementById('updateTeaMakerPhone').value,
-                        basicSalary: parseFloat(document.getElementById('updateTeaMakerSalary').value),
-                        status: maker.status // Include the current status
+                        id: document.getElementById('updateStockManagerId').value,
+                        fullName: document.getElementById('updateStockManagerName').value,
+                        email: document.getElementById('updateStockManagerEmail').value,
+                        phoneNumber: document.getElementById('updateStockManagerPhone').value,
+                        basicSalary: parseFloat(document.getElementById('updateStockManagerSalary').value),
+                        status: manager.status // Include the current status
                     };
 
                     // Only include password if provided
-                    const password = document.getElementById('updateTeaMakerPassword').value;
+                    const password = document.getElementById('updateStockManagerPassword').value;
                     if (password) {
                         updatedData.password = password;
                     }
@@ -226,19 +226,19 @@ const TeaMakerManager = {
                     try {
                         await this.update(updatedData);
                         this.refreshTable();
-                        document.getElementById('teaMakerUpdateModal').style.display = 'none';
+                        document.getElementById('stockManagerUpdateModal').style.display = 'none';
                     } catch (error) {
-                        console.error('Error updating tea maker:', error);
+                        console.error('Error updating stock manager:', error);
                         // Error is already shown by apiCall
                     }
                 };
 
                 // Show the update modal
-                document.getElementById('teaMakerUpdateModal').style.display = 'block';
+                document.getElementById('stockManagerUpdateModal').style.display = 'block';
             }
         } catch (error) {
             console.error('Error opening update modal:', error);
-            showToast('Error loading tea maker details', 'error');
+            showToast('Error loading stock manager details', 'error');
         }
     },
 
@@ -260,14 +260,14 @@ const TeaMakerManager = {
                 this.refreshTable();
                 Swal.fire(
                     'Deleted!',
-                    'Tea maker has been deleted.',
+                    'Stock Manager has been deleted.',
                     'success'
                 );
             } catch (error) {
-                console.error('Error deleting tea maker:', error);
+                console.error('Error deleting stock manager:', error);
                 Swal.fire(
                     'Error!',
-                    'Failed to delete tea maker.',
+                    'Failed to delete stock manager.',
                     'error'
                 );
             }
@@ -285,11 +285,11 @@ const TeaMakerManager = {
         const end = start + this.pageSize;
         const paginatedTeaMakers = this.allTeaMakers.slice(start, end);
 
-        this.renderTable(paginatedTeaMakers, 'tea-maker-table-body');
+        this.renderTable(paginatedTeaMakers, 'stock-manager-table-body');
 
         // Update pagination info
-        const total = this.allTeaMakers.length;
-        const info = document.getElementById('tea-maker-pagination-info');
+        const total = this.allStockManagers.length;
+        const info = document.getElementById('stock-manager-pagination-info');
         if (info) {
             const showingFrom = total === 0 ? 0 : start + 1;
             const showingTo = Math.min(end, total);
@@ -297,55 +297,55 @@ const TeaMakerManager = {
         }
 
         // Enable/disable buttons
-        document.getElementById('tea-maker-prev').disabled = this.currentPage === 1;
-        document.getElementById('tea-maker-next').disabled = end >= total;
+        document.getElementById('stock-manager-prev').disabled = this.currentPage === 1;
+        document.getElementById('stock-manager-next').disabled = end >= total;
     }
 };
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Tea Maker Manager
-    TeaMakerManager.refreshTable();
+    StockManager.refreshTable();
 
     // Set up search functionality for tea makers
-    const teaMakerSearch = document.getElementById('tea-maker-search');
-    if (teaMakerSearch) {
-        teaMakerSearch.addEventListener('input', async (e) => {
+    const stockManagerSearch = document.getElementById('stock-manager-search');
+    if (stockManagerSearch) {
+        stockManagerSearch.addEventListener('input', async (e) => {
             const keyword = e.target.value;
             if (keyword.length > 2) {
-                const results = await TeaMakerManager.search(keyword);
-                TeaMakerManager.renderTable(results, 'tea-maker-table-body');
+                const results = await StockManager.search(keyword);
+                StockManager.renderTable(results, 'stock-manager-table-body');
             } else if (keyword.length === 0) {
-                TeaMakerManager.refreshTable();
+                StockManager.refreshTable();
             }
         });
     }
 
     // Set up modal open buttons
-    document.getElementById('addTeaMakerBtn').addEventListener('click', () => {
+    document.getElementById('addStockManagerBtn').addEventListener('click', () => {
         // Reset form and set to create mode
-        document.getElementById('teaMakerForm').reset();
-        document.getElementById('teaMakerForm').onsubmit = async (e) => {
+        document.getElementById('stockManagerForm').reset();
+        document.getElementById('stockManagerForm').onsubmit = async (e) => {
             e.preventDefault();
-            const teaMakerData = {
-                fullName: document.getElementById('teaMakerName').value,
-                email: document.getElementById('teaMakerEmail').value,
-                phoneNumber: document.getElementById('teaMakerPhone').value,
-                basicSalary: parseFloat(document.getElementById('teaMakerSalary').value),
-                username: document.getElementById('teaMakerUsername').value,
-                password: document.getElementById('teaMakerPassword').value
+            const stockManagerData = {
+                fullName: document.getElementById('stockManagerName').value,
+                email: document.getElementById('stockManagerEmail').value,
+                phoneNumber: document.getElementById('stockManagerPhone').value,
+                basicSalary: parseFloat(document.getElementById('stockManagerSalary').value),
+                username: document.getElementById('stockManagerUsername').value,
+                password: document.getElementById('stockManagerPassword').value
             };
 
             try {
-                await TeaMakerManager.add(teaMakerData);
-                TeaMakerManager.refreshTable();
-                document.getElementById('teaMakerModal').style.display = 'none';
+                await StockManager.add(stockManagerData);
+                StockManager.refreshTable();
+                document.getElementById('stockManagerModal').style.display = 'none';
             } catch (error) {
-                console.error('Error adding tea maker:', error);
+                console.error('Error adding stock manager:', error);
             }
         };
 
-        document.getElementById('teaMakerModal').style.display = 'block';
+        document.getElementById('stockManagerModal').style.display = 'block';
     });
 
     // Close modals when clicking outside
@@ -367,17 +367,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Pagination event listeners
-document.getElementById('tea-maker-prev').addEventListener('click', () => {
-    if (TeaMakerManager.currentPage > 1) {
-        TeaMakerManager.currentPage--;
-        TeaMakerManager.renderPaginatedTable();
+document.getElementById('stock-manager-prev').addEventListener('click', () => {
+    if (StockManager.currentPage > 1) {
+        StockManager.currentPage--;
+        StockManager.renderPaginatedTable();
     }
 });
 
-document.getElementById('tea-maker-next').addEventListener('click', () => {
-    const totalPages = Math.ceil(TeaMakerManager.allTeaMakers.length / TeaMakerManager.pageSize);
-    if (TeaMakerManager.currentPage < totalPages) {
-        TeaMakerManager.currentPage++;
-        TeaMakerManager.renderPaginatedTable();
+document.getElementById('stock-manager-next').addEventListener('click', () => {
+    const totalPages = Math.ceil(StockManager.allStockManagers.length / StockManager.pageSize);
+    if (StockManager.currentPage < totalPages) {
+        StockManager.currentPage++;
+        StockManager.renderPaginatedTable();
     }
 });

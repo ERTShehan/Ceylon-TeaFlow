@@ -1,1518 +1,1177 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard - Ceylon TeaFlow</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              "tea-green": "#2E8B57",
-              "tea-green-light": "#3CB371",
-              "tea-gold": "#DAA520",
-              "tea-cream": "#FFF8E1",
-            },
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Ceylon TeaFlow</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            "tea-green": "#2E8B57",
+            "tea-green-light": "#3CB371",
+            "tea-gold": "#DAA520",
+            "tea-cream": "#FFF8E1",
           },
         },
-      };
-    </script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+      },
+    };
+  </script>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-      body {
-        font-family: "Poppins", sans-serif;
-      }
+    body {
+      font-family: "Poppins", sans-serif;
+    }
 
+    .sidebar {
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
       .sidebar {
-        transition: all 0.3s ease;
-      }
-
-      @media (max-width: 768px) {
-        .sidebar {
-          transform: translateX(-100%);
-          position: fixed;
-          z-index: 50;
-          height: 100vh;
-        }
-        .sidebar.active {
-          transform: translateX(0);
-        }
-      }
-
-      .stat-card {
-        transition: all 0.3s ease;
-      }
-
-      .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-      }
-
-      .dashboard-section {
-        transition: all 0.3s ease;
-      }
-
-      .nav-tab {
-        transition: all 0.2s ease;
-      }
-
-      .nav-tab.active {
-        background-color: #2e8b57;
-        color: white;
-      }
-
-      .modal {
-        display: none;
+        transform: translateX(-100%);
         position: fixed;
-        z-index: 100;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 50;
+        height: 100vh;
       }
-
-      .modal-content {
-        background-color: #fefefe;
-        margin: 2% auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 1000px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        max-height: 90vh;
-        overflow-y: auto;
+      .sidebar.active {
+        transform: translateX(0);
       }
+    }
 
-      .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
+    .stat-card {
+      transition: all 0.3s ease;
+    }
 
-      .close:hover {
-        color: black;
-      }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
 
-      .scroll-top {
-        display: none;
+    .dashboard-section {
+      transition: all 0.3s ease;
+    }
+
+    .nav-tab {
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab.active {
+      background-color: #2e8b57;
+      color: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 2% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 1000px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .scroll-top {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 99;
+      background-color: #2e8b57;
+      color: white;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 15px;
+      border-radius: 50%;
+      font-size: 18px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .scroll-top:hover {
+      background-color: #3cb371;
+    }
+
+    .sidebar-hidden {
+      transform: translateX(-100%) !important;
+    }
+
+    .main-content-full {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+
+    @media (min-width: 769px) {
+      .sidebar {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 99;
-        background-color: #2e8b57;
-        color: white;
-        border: none;
-        outline: none;
-        cursor: pointer;
-        padding: 10px 15px;
-        border-radius: 50%;
-        font-size: 18px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        height: 100vh;
+        z-index: 40;
       }
 
-      .scroll-top:hover {
-        background-color: #3cb371;
+      .main-content {
+        transition: margin-left 0.3s ease, width 0.3s ease;
+        margin-left: 16rem; /* w-64 = 16rem */
       }
+    }
 
-      .sidebar-hidden {
-        transform: translateX(-100%) !important;
-      }
+    .tea-product-form {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
 
-      .main-content-full {
-        margin-left: 0 !important;
-        width: 100% !important;
-      }
+    .tea-product-table-container {
+      max-height: 300px;
+      overflow-y: auto;
+    }
 
-      @media (min-width: 769px) {
-        .sidebar {
-          position: fixed;
-          height: 100vh;
-          z-index: 40;
-        }
+    /* New style for content sections */
+    .content-section {
+      display: none;
+    }
 
-        .main-content {
-          transition: margin-left 0.3s ease, width 0.3s ease;
-          margin-left: 16rem; /* w-64 = 16rem */
-        }
-      }
+    .content-section.active {
+      display: block;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+<!--mobile-->
+<div class="md:hidden fixed top-4 left-4 z-50">
+  <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
 
-      .tea-product-form {
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: 1.5rem;
-        margin-bottom: 1.5rem;
-      }
+<button id="scrollTopBtn" class="scroll-top">
+  <i class="fas fa-arrow-up"></i>
+</button>
 
-      .tea-product-table-container {
-        max-height: 300px;
-        overflow-y: auto;
-      }
-    </style>
-  </head>
-  <body class="bg-gray-100 min-h-screen">
-    <!--mobile-->
-    <div class="md:hidden fixed top-4 left-4 z-50">
-      <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
-        <i class="fas fa-bars"></i>
-      </button>
-    </div>
+<!-- Tea Product Modal -->
+<div id="teaProductModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">
+      Tea Product Management
+    </h2>
 
-    <button id="scrollTopBtn" class="scroll-top">
-      <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Tea Product Modal -->
-    <div id="teaProductModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">
-          Tea Product Management
-        </h2>
-
-        <!-- Form Section -->
-        <div class="tea-product-form">
-          <h3 class="text-lg font-semibold text-tea-green mb-3">
-            Add New Tea Product
-          </h3>
-          <form id="teaProductForm">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="mb-4">
-                <label class="block text-gray-700 mb-2" for="teaProductName"
-                  >Product Name</label
-                >
-                <select
-                  id="teaProductName"
-                  class="w-full p-2 border rounded"
-                  required
-                >
-                  <option value="">-- Select Tea Product --</option>
-                </select>
-              </div>
-
-              <div class="mb-4">
-                <label class="block text-gray-700 mb-2" for="teaProductPrice"
-                  >Price (LKR)</label
-                >
-                <input
-                  type="number"
-                  step="0.01"
-                  id="teaProductPrice"
-                  class="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block text-gray-700 mb-2" for="teaProductQuantity"
-                  >Quantity</label
-                >
-                <input
-                  type="text"
-                  id="teaProductQuantity"
-                  class="w-full p-2 border rounded"
-                  required
-                />
-              </div>
-            </div>
-            <div class="mb-4">
-              <label
-                class="block text-gray-700 mb-2"
-                for="teaProductDescription"
-                >Description</label
-              >
-              <textarea
-                id="teaProductDescription"
-                class="w-full p-2 border rounded"
-                rows="2"
-                required
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-            >
-              Add Tea Product
-            </button>
-          </form>
-        </div>
-
-        <!-- Table Section -->
-        <div>
-          <h3 class="text-lg font-semibold text-tea-green mb-3">
-            Existing Tea Products
-          </h3>
+    <!-- Form Section -->
+    <div class="tea-product-form">
+      <h3 class="text-lg font-semibold text-tea-green mb-3" id="formTitle">
+        Add New Tea Product
+      </h3>
+      <form id="teaProductForm">
+        <input type="hidden" id="teaProductId">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
-            <input
-              type="text"
-              id="teaProductSearch"
-              placeholder="Search tea products..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="tea-product-table-container">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50 sticky top-0">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Name</th>
-                  <th class="p-3 text-left">Price (LKR)</th>
-                  <th class="p-3 text-left">Quantity</th>
-                  <th class="p-3 text-left">Description</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="teaProductTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tea Maker Modal -->
-    <div id="teaMakerModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">Add Tea Maker</h2>
-        <form id="teaMakerForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerName"
-              >Full Name</label
-            >
-            <input
-              type="text"
-              id="teaMakerName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerEmail"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="teaMakerEmail"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerPhone"
-              >Phone Number</label
-            >
-            <input
-              type="text"
-              id="teaMakerPhone"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerSalary"
-              >Basic Salary</label
-            >
-            <input
-              type="text"
-              id="teaMakerSalary"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerUsername"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="teaMakerUsername"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaMakerPassword"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="teaMakerPassword"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit" id="teaMakerRegisterBtn"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-          >
-            Add Tea Maker
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Tea Maker Update Modal -->
-    <div id="teaMakerUpdateModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-teal-600 mb-4">Update Tea Maker</h2>
-        <form id="teaMakerUpdateForm">
-          <input type="hidden" id="updateTeaMakerId">
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerName">Full Name</label>
-            <input type="text" id="updateTeaMakerName" class="w-full p-2 border rounded" required />
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerEmail">Email</label>
-            <input type="email" id="updateTeaMakerEmail" class="w-full p-2 border rounded" required />
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerPhone">Phone Number</label>
-            <input type="text" id="updateTeaMakerPhone" class="w-full p-2 border rounded" required />
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerSalary">Basic Salary</label>
-            <input type="text" id="updateTeaMakerSalary" class="w-full p-2 border rounded" required />
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerUsername">Username</label>
-            <input type="text" id="updateTeaMakerUsername" class="w-full p-2 border rounded" required />
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="updateTeaMakerPassword">Password (Leave blank to keep current)</label>
-            <input type="password" id="updateTeaMakerPassword" class="w-full p-2 border rounded" placeholder="Enter new password only if changing" />
-          </div>
-
-          <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
-            Update Tea Maker
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Stock Manager Modal -->
-    <div id="stockManagerModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">Add Stock Manager</h2>
-        <form id="stockManagerForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerName"
-              >Full Name</label
-            >
-            <input
-              type="text"
-              id="stockManagerName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerEmail"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="stockManagerEmail"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerPhone"
-              >Phone Number</label
-            >
-            <input
-              type="text"
-              id="stockManagerPhone"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerSalary"
-              >Basic Salary</label
-            >
-            <input
-              type="text"
-              id="stockManagerSalary"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerUsername"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="stockManagerUsername"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="stockManagerPassword"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="stockManagerPassword"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-          >
-            Add Stock Manager
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Sales Manager Modal -->
-    <div id="salesManagerModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">Add Sales Manager</h2>
-        <form id="salesManagerForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerName"
-              >Full Name</label
-            >
-            <input
-              type="text"
-              id="salesManagerName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerEmail"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="salesManagerEmail"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerPhone"
-              >Phone Number</label
-            >
-            <input
-              type="text"
-              id="salesManagerPhone"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerSalary"
-              >Basic Salary</label
-            >
-            <input
-              type="text"
-              id="salesManagerSalary"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerUsername"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="salesManagerUsername"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="salesManagerPassword"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="salesManagerPassword"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-          >
-            Add Sales Manager
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Finance Manager Modal -->
-    <div id="financeManagerModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">
-          Add Finance Manager
-        </h2>
-        <form id="financeManagerForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerName"
-              >Full Name</label
-            >
-            <input
-              type="text"
-              id="financeManagerName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerEmail"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="financeManagerEmail"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerPhone"
-              >Phone Number</label
-            >
-            <input
-              type="text"
-              id="financeManagerPhone"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerSalary"
-              >Basic Salary</label
-            >
-            <input
-              type="text"
-              id="financeManagerSalary"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerUsername"
-              >Username</label
-            >
-            <input
-              type="text"
-              id="financeManagerUsername"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="financeManagerPassword"
-              >Password</label
-            >
-            <input
-              type="password"
-              id="financeManagerPassword"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-          >
-            Add Finance Manager
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Tea Card Modal -->
-    <div id="teaCardModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">
-          Add Tea Card Number
-        </h2>
-        <form id="teaCardForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="supplierName"
-              >Supplier Name</label
-            >
-            <input
-              type="text"
-              id="supplierName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="teaCardNumber"
-              >Tea Card Number</label
-            >
-            <input
-              type="text"
-              id="teaCardNumber"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
-          >
-            Add Tea Card
-          </button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Employee Modal -->
-    <div id="employeeModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 class="text-xl font-bold text-tea-green mb-4">Add Employee</h2>
-        <form id="employeeForm">
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeeName"
-              >Full Name</label
-            >
-            <input
-              type="text"
-              id="employeeName"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeeEmail"
-              >Email</label
-            >
-            <input
-              type="email"
-              id="employeeEmail"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeePhone"
-              >Phone Number</label
-            >
-            <input
-              type="text"
-              id="employeePhone"
-              class="w-full p-2 border rounded"
-              required
-            />
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeeAddress"
-              >Address</label
-            >
-            <textarea
-              id="employeeAddress"
-              class="w-full p-2 border rounded"
-              rows="3"
-              required
-            ></textarea>
-          </div>
-          <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeeDepartment"
-              >Department</label
+            <label class="block text-gray-700 mb-2" for="teaProductName"
+            >Product Name</label
             >
             <select
-              id="employeeDepartment"
-              class="w-full p-2 border rounded"
-              required
+                    id="teaProductName"
+                    class="w-full p-2 border rounded"
+                    required
             >
-              <option value="">Select Department</option>
-              <option value="production">Production</option>
-              <option value="packaging">Packaging</option>
-              <option value="quality">Quality Control</option>
-              <option value="logistics">Logistics</option>
-              <option value="administration">Administration</option>
+              <option value="" id="teaProductOption">-- Select Tea Product --</option>
             </select>
           </div>
+
           <div class="mb-4">
-            <label class="block text-gray-700 mb-2" for="employeeSalary"
-              >Basic Salary</label
+            <label class="block text-gray-700 mb-2" for="teaProductPrice"
+            >Price (LKR)</label
             >
             <input
-              type="text"
-              id="employeeSalary"
-              class="w-full p-2 border rounded"
-              required
+                    type="number"
+                    step="0.01"
+                    id="teaProductPrice"
+                    class="w-full p-2 border rounded"
+                    required
             />
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="teaProductQuantity"
+            >Quantity</label
+            >
+            <input
+                    type="text"
+                    id="teaProductQuantity"
+                    class="w-full p-2 border rounded"
+                    required
+            />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label
+                  class="block text-gray-700 mb-2"
+                  for="teaProductDescription"
+          >Description</label
+          >
+          <textarea
+                  id="teaProductDescription"
+                  class="w-full p-2 border rounded"
+                  rows="2"
+                  required
+          ></textarea>
+        </div>
+        <button
+                type="submit"
+                id="teaProductSubmitBtn"
+                class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+        >
+          Add Tea Product
+        </button>
+      </form>
+    </div>
+
+    <!-- Table Section -->
+    <div>
+      <h3 class="text-lg font-semibold text-tea-green mb-3">
+        Existing Tea Products
+      </h3>
+      <div class="mb-4">
+        <input
+                type="text"
+                id="teaProductSearch"
+                placeholder="Search tea products..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="tea-product-table-container">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50 sticky top-0">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">Price (LKR)</th>
+            <th class="p-3 text-left">Quantity</th>
+            <th class="p-3 text-left">Description</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="teaProductTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tea Maker Modal -->
+<div id="teaMakerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">Add Tea Maker</h2>
+    <form id="teaMakerForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerName"
+        >Full Name</label
+        >
+        <input
+                type="text"
+                id="teaMakerName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerEmail"
+        >Email</label
+        >
+        <input
+                type="email"
+                id="teaMakerEmail"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerPhone"
+        >Phone Number</label
+        >
+        <input
+                type="text"
+                id="teaMakerPhone"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerSalary"
+        >Basic Salary</label
+        >
+        <input
+                type="text"
+                id="teaMakerSalary"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerUsername"
+        >Username</label
+        >
+        <input
+                type="text"
+                id="teaMakerUsername"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaMakerPassword"
+        >Password</label
+        >
+        <input
+                type="password"
+                id="teaMakerPassword"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit" id="teaMakerRegisterBtn"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Tea Maker
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Tea Maker Update Modal -->
+<div id="teaMakerUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-teal-600 mb-4">Update Tea Maker</h2>
+    <form id="teaMakerUpdateForm">
+      <input type="hidden" id="updateTeaMakerId">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateTeaMakerName">Full Name</label>
+        <input type="text" id="updateTeaMakerName" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateTeaMakerEmail">Email</label>
+        <input type="email" id="updateTeaMakerEmail" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateTeaMakerPhone">Phone Number</label>
+        <input type="text" id="updateTeaMakerPhone" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateTeaMakerSalary">Basic Salary</label>
+        <input type="text" id="updateTeaMakerSalary" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateTeaMakerPassword">Password (Leave blank to keep current)</label>
+        <input type="password" id="updateTeaMakerPassword" class="w-full p-2 border rounded" placeholder="Enter new password only if changing" />
+      </div>
+
+      <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
+        Update Tea Maker
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Stock Manager Modal -->
+<div id="stockManagerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">Add Stock Manager</h2>
+    <form id="stockManagerForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerName"
+        >Full Name</label
+        >
+        <input
+                type="text"
+                id="stockManagerName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerEmail"
+        >Email</label
+        >
+        <input
+                type="email"
+                id="stockManagerEmail"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerPhone"
+        >Phone Number</label
+        >
+        <input
+                type="text"
+                id="stockManagerPhone"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerSalary"
+        >Basic Salary</label
+        >
+        <input
+                type="text"
+                id="stockManagerSalary"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerUsername"
+        >Username</label
+        >
+        <input
+                type="text"
+                id="stockManagerUsername"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="stockManagerPassword"
+        >Password</label
+        >
+        <input
+                type="password"
+                id="stockManagerPassword"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Stock Manager
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Stock Manager Update Modal -->
+<div id="stockManagerUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-teal-600 mb-4">Update Stock Manager</h2>
+    <form id="stockManagerUpdateForm">
+      <input type="hidden" id="updateStockManagerId">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateStockManagerName">Full Name</label>
+        <input type="text" id="updateStockManagerName" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateStockManagerEmail">Email</label>
+        <input type="email" id="updateStockManagerEmail" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateStockManagerPhone">Phone Number</label>
+        <input type="text" id="updateStockManagerPhone" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateStockManagerSalary">Basic Salary</label>
+        <input type="text" id="updateStockManagerSalary" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateStockManagerPassword">Password (Leave blank to keep current)</label>
+        <input type="password" id="updateStockManagerPassword" class="w-full p-2 border rounded" placeholder="Enter new password only if changing" />
+      </div>
+
+      <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
+        Update Stock Manager
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Sales Manager Modal -->
+<div id="salesManagerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">Add Sales Manager</h2>
+    <form id="salesManagerForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerName"
+        >Full Name</label
+        >
+        <input
+                type="text"
+                id="salesManagerName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerEmail"
+        >Email</label
+        >
+        <input
+                type="email"
+                id="salesManagerEmail"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerPhone"
+        >Phone Number</label
+        >
+        <input
+                type="text"
+                id="salesManagerPhone"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerSalary"
+        >Basic Salary</label
+        >
+        <input
+                type="text"
+                id="salesManagerSalary"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerUsername"
+        >Username</label
+        >
+        <input
+                type="text"
+                id="salesManagerUsername"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="salesManagerPassword"
+        >Password</label
+        >
+        <input
+                type="password"
+                id="salesManagerPassword"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Sales Manager
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Finance Manager Modal -->
+<div id="financeManagerModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">
+      Add Finance Manager
+    </h2>
+    <form id="financeManagerForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerName"
+        >Full Name</label
+        >
+        <input
+                type="text"
+                id="financeManagerName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerEmail"
+        >Email</label
+        >
+        <input
+                type="email"
+                id="financeManagerEmail"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerPhone"
+        >Phone Number</label
+        >
+        <input
+                type="text"
+                id="financeManagerPhone"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerSalary"
+        >Basic Salary</label
+        >
+        <input
+                type="text"
+                id="financeManagerSalary"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerUsername"
+        >Username</label
+        >
+        <input
+                type="text"
+                id="financeManagerUsername"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="financeManagerPassword"
+        >Password</label
+        >
+        <input
+                type="password"
+                id="financeManagerPassword"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Finance Manager
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Tea Card Modal -->
+<div id="teaCardModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">
+      Add Tea Card Number
+    </h2>
+    <form id="teaCardForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="supplierName"
+        >Supplier Name</label
+        >
+        <input
+                type="text"
+                id="supplierName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="teaCardNumber"
+        >Tea Card Number</label
+        >
+        <input
+                type="text"
+                id="teaCardNumber"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Tea Card
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Employee Modal -->
+<div id="employeeModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">Add Employee</h2>
+    <form id="employeeForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeeName"
+        >Full Name</label
+        >
+        <input
+                type="text"
+                id="employeeName"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeeEmail"
+        >Email</label
+        >
+        <input
+                type="email"
+                id="employeeEmail"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeePhone"
+        >Phone Number</label
+        >
+        <input
+                type="text"
+                id="employeePhone"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeeAddress"
+        >Address</label
+        >
+        <textarea
+                id="employeeAddress"
+                class="w-full p-2 border rounded"
+                rows="3"
+                required
+        ></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeeDepartment"
+        >Department</label
+        >
+        <select
+                id="employeeDepartment"
+                class="w-full p-2 border rounded"
+                required
+        >
+          <option value="">Select Department</option>
+          <option value="production">Production</option>
+          <option value="packaging">Packaging</option>
+          <option value="quality">Quality Control</option>
+          <option value="logistics">Logistics</option>
+          <option value="administration">Administration</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="employeeSalary"
+        >Basic Salary</label
+        >
+        <input
+                type="text"
+                id="employeeSalary"
+                class="w-full p-2 border rounded"
+                required
+        />
+      </div>
+      <button
+              type="submit"
+              class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+      >
+        Add Employee
+      </button>
+    </form>
+  </div>
+</div>
+
+<div class="flex">
+  <!-- Sidebar -->
+  <div
+          id="sidebar"
+          class="sidebar w-64 bg-tea-green text-white min-h-screen p-4"
+  >
+    <div class="flex items-center justify-center mb-8 mt-4">
+      <i class="fas fa-leaf text-3xl mr-2"></i>
+      <span class="text-xl font-semibold">Ceylon TeaFlow</span>
+    </div>
+
+    <div class="p-4 bg-tea-green-light rounded-lg mb-6">
+      <div class="flex items-center">
+        <div
+                class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-tea-green text-xl mr-3"
+        >
+          <i class="fas fa-user-tie"></i>
+        </div>
+        <div>
+          <h3 class="font-semibold">CEO Admin</h3>
+          <p class="text-sm">System Administrator</p>
+        </div>
+      </div>
+    </div>
+
+    <nav>
+      <ul class="space-y-2">
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg bg-tea-green-light"
+                  data-target="dashboard-content"
+          >
+            <i class="fas fa-tachometer-alt mr-3"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="tea-maker-management"
+          >
+            <i class="fas fa-user-cog mr-3"></i>
+            <span>Tea Maker Manage</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="stock-manager-management"
+          >
+            <i class="fas fa-boxes mr-3"></i>
+            <span>Stock Manager Manage</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="sales-manager-management"
+          >
+            <i class="fas fa-chart-line mr-3"></i>
+            <span>Sales Manager Manage</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="finance-manager-management"
+          >
+            <i class="fas fa-money-bill-wave mr-3"></i>
+            <span>Finance Manager Manage</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="tea-card-management"
+          >
+            <i class="fas fa-id-card mr-3"></i>
+            <span>Add Tea Card Number</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="#"
+                  class="nav-link flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+                  data-target="employee-management"
+          >
+            <i class="fas fa-users mr-3"></i>
+            <span>Employee Management</span>
+          </a>
+        </li>
+        <li>
+          <a
+                  href="../index.html"
+                  class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+          >
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            <span>Logout</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="mt-8 p-4 bg-tea-green-light rounded-lg">
+      <h4 class="font-semibold mb-2">System Status</h4>
+      <div class="flex items-center mb-1">
+        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+        <span class="text-sm">Operational</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+        <span class="text-sm">Last updated: Today, 12:45 PM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div
+          id="mainContent"
+          class="main-content flex-1 p-6 transition-all duration-300"
+  >
+    <!-- Dashboard Content -->
+    <div id="dashboard-content" class="content-section active">
+      <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-tea-green mb-2">
+              CEO Dashboard
+            </h1>
+            <p class="text-gray-600">
+              Comprehensive overview of tea factory operations and performance
+              metrics.
+            </p>
           </div>
           <button
-            type="submit"
-            class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+                  class="px-4 py-2 bg-tea-gold text-white rounded-lg hover:bg-yellow-600 transition"
+                  id="addTeaProductBtn"
           >
-            Add Employee
+            <i class="fas fa-plus mr-2"></i> Add Tea Product
           </button>
-        </form>
+        </div>
       </div>
-    </div>
 
-    <div class="flex">
-      <!-- Sidebar -->
-      <div
-        id="sidebar"
-        class="sidebar w-64 bg-tea-green text-white min-h-screen p-4"
-      >
-        <div class="flex items-center justify-center mb-8 mt-4">
-          <i class="fas fa-leaf text-3xl mr-2"></i>
-          <span class="text-xl font-semibold">Ceylon TeaFlow</span>
-        </div>
-
-        <div class="p-4 bg-tea-green-light rounded-lg mb-6">
-          <div class="flex items-center">
-            <div
-              class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-tea-green text-xl mr-3"
-            >
-              <i class="fas fa-user-tie"></i>
-            </div>
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-start">
             <div>
-              <h3 class="font-semibold">CEO Admin</h3>
-              <p class="text-sm">System Administrator</p>
+              <h3 class="text-gray-500">Total Suppliers</h3>
+              <p class="text-2xl font-bold text-tea-green">42</p>
             </div>
+            <div class="bg-tea-cream p-3 rounded-lg">
+              <i class="fas fa-truck-loading text-tea-green text-xl"></i>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">+3 this month</p>
+        </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-gray-500">Total Customers</h3>
+              <p class="text-2xl font-bold text-tea-green">156</p>
+            </div>
+            <div class="bg-tea-cream p-3 rounded-lg">
+              <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">+12 this month</p>
+        </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-gray-500">Monthly Revenue</h3>
+              <p class="text-2xl font-bold text-tea-green">LKR 1.2M</p>
+            </div>
+            <div class="bg-tea-cream p-3 rounded-lg">
+              <i class="fas fa-money-bill-wave text-tea-green text-xl"></i>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">+8% from last month</p>
+        </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-start">
+            <div>
+              <h3 class="text-gray-500">Tea Stock</h3>
+              <p class="text-2xl font-bold text-tea-green">2,450 kg</p>
+            </div>
+            <div class="bg-tea-cream p-3 rounded-lg">
+              <i class="fas fa-boxes text-tea-green text-xl"></i>
+            </div>
+          </div>
+          <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>
+        </div>
+      </div>
+
+      <!-- Charts Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <h2 class="text-xl font-semibold text-tea-green mb-4">
+            Monthly Revenue Trend
+          </h2>
+          <div class="h-64">
+            <canvas id="revenueChart"></canvas>
           </div>
         </div>
 
-        <nav>
-          <ul class="space-y-2">
-            <li>
-              <a
-                href="#"
-                class="flex items-center p-3 rounded-lg bg-tea-green-light"
-              >
-                <i class="fas fa-tachometer-alt mr-3"></i>
-                <span>Dashboard</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#tea-maker-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-user-cog mr-3"></i>
-                <span>Tea Maker Manage</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#stock-manager-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-boxes mr-3"></i>
-                <span>Stock Manager Manage</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#sales-manager-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-chart-line mr-3"></i>
-                <span>Sales Manager Manage</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#finance-manager-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-money-bill-wave mr-3"></i>
-                <span>Finance Manager Manage</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#tea-card-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-id-card mr-3"></i>
-                <span>Add Tea Card Number</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#employee-management"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-users mr-3"></i>
-                <span>Employee Management</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="../index.html"
-                class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
-              >
-                <i class="fas fa-sign-out-alt mr-3"></i>
-                <span>Logout</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-        <div class="mt-8 p-4 bg-tea-green-light rounded-lg">
-          <h4 class="font-semibold mb-2">System Status</h4>
-          <div class="flex items-center mb-1">
-            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span class="text-sm">Operational</span>
-          </div>
-          <div class="flex items-center">
-            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-            <span class="text-sm">Last updated: Today, 12:45 PM</span>
+        <div class="bg-white rounded-xl shadow-md p-6">
+          <h2 class="text-xl font-semibold text-tea-green mb-4">
+            Tea Stock by Type
+          </h2>
+          <div class="h-64">
+            <canvas id="teaTypeChart"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- Main Content -->
+      <!-- Tea Supply Monitoring -->
       <div
-        id="mainContent"
-        class="main-content flex-1 p-6 transition-all duration-300"
+              id="supply-monitoring"
+              class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
       >
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
-          <div class="flex justify-between items-center">
-            <div>
-              <h1 class="text-2xl font-bold text-tea-green mb-2">
-                CEO Dashboard
-              </h1>
-              <p class="text-gray-600">
-                Comprehensive overview of tea factory operations and performance
-                metrics.
-              </p>
-            </div>
-            <button
-              class="px-4 py-2 bg-tea-gold text-white rounded-lg hover:bg-yellow-600 transition"
-              id="addTeaProductBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Tea Product
-            </button>
+        <h2 class="text-xl font-semibold text-tea-green mb-4">
+          Tea Supply Monitoring
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-tea-cream p-4 rounded-lg">
+            <h3 class="font-medium text-tea-green">This Month's Supply</h3>
+            <p class="text-2xl font-bold">1,245 kg</p>
+            <p class="text-sm text-gray-600">From 42 suppliers</p>
+          </div>
+          <div class="bg-tea-cream p-4 rounded-lg">
+            <h3 class="font-medium text-tea-green">Average Quality Score</h3>
+            <p class="text-2xl font-bold">8.7/10</p>
+            <p class="text-sm text-gray-600">+0.3 from last month</p>
+          </div>
+          <div class="bg-tea-cream p-4 rounded-lg">
+            <h3 class="font-medium text-tea-green">Top Supplier</h3>
+            <p class="text-xl font-bold">Kamal Perera</p>
+            <p class="text-sm text-gray-600">215 kg supplied</p>
           </div>
         </div>
 
-        <!-- Stats Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="stat-card bg-white rounded-xl shadow-md p-6">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-gray-500">Total Suppliers</h3>
-                <p class="text-2xl font-bold text-tea-green">42</p>
-              </div>
-              <div class="bg-tea-cream p-3 rounded-lg">
-                <i class="fas fa-truck-loading text-tea-green text-xl"></i>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mt-2">+3 this month</p>
-          </div>
-
-          <div class="stat-card bg-white rounded-xl shadow-md p-6">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-gray-500">Total Customers</h3>
-                <p class="text-2xl font-bold text-tea-green">156</p>
-              </div>
-              <div class="bg-tea-cream p-3 rounded-lg">
-                <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mt-2">+12 this month</p>
-          </div>
-
-          <div class="stat-card bg-white rounded-xl shadow-md p-6">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-gray-500">Monthly Revenue</h3>
-                <p class="text-2xl font-bold text-tea-green">LKR 1.2M</p>
-              </div>
-              <div class="bg-tea-cream p-3 rounded-lg">
-                <i class="fas fa-money-bill-wave text-tea-green text-xl"></i>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mt-2">+8% from last month</p>
-          </div>
-
-          <div class="stat-card bg-white rounded-xl shadow-md p-6">
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="text-gray-500">Tea Stock</h3>
-                <p class="text-2xl font-bold text-tea-green">2,450 kg</p>
-              </div>
-              <div class="bg-tea-cream p-3 rounded-lg">
-                <i class="fas fa-boxes text-tea-green text-xl"></i>
-              </div>
-            </div>
-            <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>
+        <div class="mb-4">
+          <h3 class="font-medium mb-2">Recent Tea Deliveries</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+              <tr class="bg-gray-50">
+                <th class="p-2 text-left">Supplier</th>
+                <th class="p-2 text-left">Date</th>
+                <th class="p-2 text-left">Quantity</th>
+                <th class="p-2 text-left">Quality Score</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr class="border-b">
+                <td class="p-2">Kamal Perera</td>
+                <td class="p-2">Aug 22, 2025</td>
+                <td class="p-2">125 kg</td>
+                <td class="p-2">9.2/10</td>
+              </tr>
+              <tr class="border-b">
+                <td class="p-2">Nimal Fernando</td>
+                <td class="p-2">Aug 21, 2025</td>
+                <td class="p-2">98 kg</td>
+                <td class="p-2">8.5/10</td>
+              </tr>
+              <tr class="border-b">
+                <td class="p-2">Sunil Rathnayake</td>
+                <td class="p-2">Aug 20, 2025</td>
+                <td class="p-2">112 kg</td>
+                <td class="p-2">8.8/10</td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
+      </div>
 
-        <!-- Charts Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div class="bg-white rounded-xl shadow-md p-6">
-            <h2 class="text-xl font-semibold text-tea-green mb-4">
-              Monthly Revenue Trend
-            </h2>
+      <!-- Financial Overview -->
+      <div
+              id="financials"
+              class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+      >
+        <h2 class="text-xl font-semibold text-tea-green mb-4">
+          Financial Overview
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h3 class="font-medium mb-3">Revenue vs Expenses</h3>
             <div class="h-64">
-              <canvas id="revenueChart"></canvas>
+              <canvas id="financeChart"></canvas>
             </div>
           </div>
 
-          <div class="bg-white rounded-xl shadow-md p-6">
-            <h2 class="text-xl font-semibold text-tea-green mb-4">
-              Tea Stock by Type
-            </h2>
-            <div class="h-64">
-              <canvas id="teaTypeChart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tea Maker Management Section -->
-        <div
-          id="tea-maker-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Tea Maker Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addTeaMakerBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Tea Maker
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="tea-maker-search"
-              placeholder="Search by name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Full Name</th>
-                  <th class="p-3 text-left">Email</th>
-                  <th class="p-3 text-left">Phone number</th>
-                  <th class="p-3 text-left">Username</th>
-                  <th class="p-3 text-left">Status</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="tea-maker-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div id="tea-maker-pagination-info" class="text-sm text-gray-600">
-              Showing 1 to 3 of 3 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="tea-maker-prev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
+          <div>
+            <h3 class="font-medium mb-3">Recent Transactions</h3>
+            <div class="space-y-4">
+              <div
+                      class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
               >
-                Previous
-              </button>
-              <button
-                id="tea-maker-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Stock Manager Management Section -->
-        <div
-          id="stock-manager-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Stock Manager Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addStockManagerBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Stock Manager
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="stock-manager-search"
-              placeholder="Search by name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Full Name</th>
-                  <th class="p-3 text-left">Email</th>
-                  <th class="p-3 text-left">Phone number</th>
-                  <th class="p-3 text-left">Username</th>
-                  <th class="p-3 text-left">Status</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="stock-manager-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div
-              id="stock-manager-pagination-info"
-              class="text-sm text-gray-600"
-            >
-              Showing 1 to 2 of 2 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="stock-manager-prev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Previous
-              </button>
-              <button
-                id="stock-manager-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales Manager Management Section -->
-        <div
-          id="sales-manager-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Sales Manager Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addSalesManagerBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Sales Manager
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="sales-manager-search"
-              placeholder="Search by name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Full Name</th>
-                  <th class="p-3 text-left">Email</th>
-                  <th class="p-3 text-left">Phone number</th>
-                  <th class="p-3 text-left">Username</th>
-                  <th class="p-3 text-left">Status</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="sales-manager-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div
-              id="sales-manager-pagination-info"
-              class="text-sm text-gray-600"
-            >
-              Showing 1 to 2 of 2 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="sales-manager-prev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Previous
-              </button>
-              <button
-                id="sales-manager-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Finance Manager Management Section -->
-        <div
-          id="finance-manager-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Finance Manager Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addFinanceManagerBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Finance Manager
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="finance-manager-search"
-              placeholder="Search by name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Full Name</th>
-                  <th class="p-3 text-left">Email</th>
-                  <th class="p-3 text-left">Phone number</th>
-                  <th class="p-3 text-left">Username</th>
-                  <th class="p-3 text-left">Status</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="finance-manager-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div
-              id="finance-manager-pagination-info"
-              class="text-sm text-gray-600"
-            >
-              Showing 1 to 1 of 1 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="finance-manager-pprev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Previous
-              </button>
-              <button
-                id="finance-manager-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tea Card Management Section -->
-        <div
-          id="tea-card-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Tea Card Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addTeaCardBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Tea Card
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="tea-card-search"
-              placeholder="Search by supplier name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Card Number</th>
-                  <th class="p-3 text-left">Supplier Name</th>
-                  <th class="p-3 text-left">Registration Date</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="tea-card-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div id="tea-card-pagination-info" class="text-sm text-gray-600">
-              Showing 1 to 3 of 3 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="tea-card-prev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Previous
-              </button>
-              <button
-                id="tea-card-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Employee Management Section -->
-        <div
-          id="employee-management"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-semibold text-tea-green">
-              Employee Management
-            </h2>
-            <button
-              class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
-              id="addEmployeeBtn"
-            >
-              <i class="fas fa-plus mr-2"></i> Add Employee
-            </button>
-          </div>
-
-          <div class="mb-4">
-            <input
-              type="text"
-              id="employee-search"
-              placeholder="Search by name..."
-              class="w-full p-2 border rounded-lg"
-            />
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full">
-              <thead>
-                <tr class="bg-gray-50">
-                  <th class="p-3 text-left">ID</th>
-                  <th class="p-3 text-left">Name</th>
-                  <th class="p-3 text-left">Address</th>
-                  <th class="p-3 text-left">Phone number</th>
-                  <th class="p-3 text-left">Department</th>
-                  <th class="p-3 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="employee-table-body"></tbody>
-            </table>
-          </div>
-          <div class="mt-4 flex justify-between items-center">
-            <div id="employee-pagination-info" class="text-sm text-gray-600">
-              Showing 1 to 3 of 3 entries
-            </div>
-            <div class="flex space-x-2">
-              <button
-                id="employee-prev"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Previous
-              </button>
-              <button
-                id="employee-next"
-                class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
-                disabled
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tea Supply Monitoring -->
-        <div
-          id="supply-monitoring"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <h2 class="text-xl font-semibold text-tea-green mb-4">
-            Tea Supply Monitoring
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-tea-cream p-4 rounded-lg">
-              <h3 class="font-medium text-tea-green">This Month's Supply</h3>
-              <p class="text-2xl font-bold">1,245 kg</p>
-              <p class="text-sm text-gray-600">From 42 suppliers</p>
-            </div>
-            <div class="bg-tea-cream p-4 rounded-lg">
-              <h3 class="font-medium text-tea-green">Average Quality Score</h3>
-              <p class="text-2xl font-bold">8.7/10</p>
-              <p class="text-sm text-gray-600">+0.3 from last month</p>
-            </div>
-            <div class="bg-tea-cream p-4 rounded-lg">
-              <h3 class="font-medium text-tea-green">Top Supplier</h3>
-              <p class="text-xl font-bold">Kamal Perera</p>
-              <p class="text-sm text-gray-600">215 kg supplied</p>
-            </div>
-          </div>
-
-          <div class="mb-4">
-            <h3 class="font-medium mb-2">Recent Tea Deliveries</h3>
-            <div class="overflow-x-auto">
-              <table class="w-full">
-                <thead>
-                  <tr class="bg-gray-50">
-                    <th class="p-2 text-left">Supplier</th>
-                    <th class="p-2 text-left">Date</th>
-                    <th class="p-2 text-left">Quantity</th>
-                    <th class="p-2 text-left">Quality Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class="border-b">
-                    <td class="p-2">Kamal Perera</td>
-                    <td class="p-2">Aug 22, 2025</td>
-                    <td class="p-2">125 kg</td>
-                    <td class="p-2">9.2/10</td>
-                  </tr>
-                  <tr class="border-b">
-                    <td class="p-2">Nimal Fernando</td>
-                    <td class="p-2">Aug 21, 2025</td>
-                    <td class="p-2">98 kg</td>
-                    <td class="p-2">8.5/10</td>
-                  </tr>
-                  <tr class="border-b">
-                    <td class="p-2">Sunil Rathnayake</td>
-                    <td class="p-2">Aug 20, 2025</td>
-                    <td class="p-2">112 kg</td>
-                    <td class="p-2">8.8/10</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- Financial Overview -->
-        <div
-          id="financials"
-          class="dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
-        >
-          <h2 class="text-xl font-semibold text-tea-green mb-4">
-            Financial Overview
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h3 class="font-medium mb-3">Revenue vs Expenses</h3>
-              <div class="h-64">
-                <canvas id="financeChart"></canvas>
+                <div>
+                  <p class="font-medium">Supplier Payment</p>
+                  <p class="text-sm text-gray-600">Kamal Perera - TC784592</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-medium text-red-500">- LKR 45,000</p>
+                  <p class="text-sm text-gray-600">Aug 22, 2025</p>
+                </div>
               </div>
-            </div>
-
-            <div>
-              <h3 class="font-medium mb-3">Recent Transactions</h3>
-              <div class="space-y-4">
-                <div
-                  class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p class="font-medium">Supplier Payment</p>
-                    <p class="text-sm text-gray-600">Kamal Perera - TC784592</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-medium text-red-500">- LKR 45,000</p>
-                    <p class="text-sm text-gray-600">Aug 22, 2025</p>
-                  </div>
+              <div
+                      class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+              >
+                <div>
+                  <p class="font-medium">Product Sale</p>
+                  <p class="text-sm text-gray-600">Customer Order #TF-7842</p>
                 </div>
-                <div
-                  class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p class="font-medium">Product Sale</p>
-                    <p class="text-sm text-gray-600">Customer Order #TF-7842</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-medium text-tea-green">+ LKR 28,500</p>
-                    <p class="text-sm text-gray-600">Aug 21, 2025</p>
-                  </div>
+                <div class="text-right">
+                  <p class="font-medium text-tea-green">+ LKR 28,500</p>
+                  <p class="text-sm text-gray-600">Aug 21, 2025</p>
                 </div>
-                <div
-                  class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p class="font-medium">Equipment Maintenance</p>
-                    <p class="text-sm text-gray-600">Factory machinery</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-medium text-red-500">- LKR 12,300</p>
-                    <p class="text-sm text-gray-600">Aug 20, 2025</p>
-                  </div>
+              </div>
+              <div
+                      class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"
+              >
+                <div>
+                  <p class="font-medium">Equipment Maintenance</p>
+                  <p class="text-sm text-gray-600">Factory machinery</p>
+                </div>
+                <div class="text-right">
+                  <p class="font-medium text-red-500">- LKR 12,300</p>
+                  <p class="text-sm text-gray-600">Aug 20, 2025</p>
                 </div>
               </div>
             </div>
@@ -1521,417 +1180,771 @@
       </div>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="../js/teaMakerManagement.js"></script>
-    <script>
-      document
-        .getElementById("mobileMenuBtn")
-        .addEventListener("click", function () {
-          document.querySelector(".sidebar").classList.toggle("active");
+    <!-- Tea Maker Management Section -->
+    <div
+            id="tea-maker-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Tea Maker Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addTeaMakerBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Tea Maker
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="tea-maker-search"
+                placeholder="Search by name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Full Name</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Phone number</th>
+            <th class="p-3 text-left">Username</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="tea-maker-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div id="tea-maker-pagination-info" class="text-sm text-gray-600">
+          Showing 1 to 3 of 3 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="tea-maker-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="tea-maker-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stock Manager Management Section -->
+    <div
+            id="stock-manager-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Stock Manager Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addStockManagerBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Stock Manager
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="stock-manager-search"
+                placeholder="Search by name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Full Name</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Phone number</th>
+            <th class="p-3 text-left">Username</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="stock-manager-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div
+                id="stock-manager-pagination-info"
+                class="text-sm text-gray-600"
+        >
+          Showing 1 to 2 of 2 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="stock-manager-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="stock-manager-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sales Manager Management Section -->
+    <div
+            id="sales-manager-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Sales Manager Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addSalesManagerBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Sales Manager
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="sales-manager-search"
+                placeholder="Search by name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Full Name</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Phone number</th>
+            <th class="p-3 text-left">Username</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="sales-manager-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div
+                id="sales-manager-pagination-info"
+                class="text-sm text-gray-600"
+        >
+          Showing 1 to 2 of 2 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="sales-manager-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="sales-manager-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Finance Manager Management Section -->
+    <div
+            id="finance-manager-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Finance Manager Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addFinanceManagerBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Finance Manager
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="finance-manager-search"
+                placeholder="Search by name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Full Name</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Phone number</th>
+            <th class="p-3 text-left">Username</th>
+            <th class="p-3 text-left">Status</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="finance-manager-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div
+                id="finance-manager-pagination-info"
+                class="text-sm text-gray-600"
+        >
+          Showing 1 to 1 of 1 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="finance-manager-pprev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="finance-manager-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tea Card Management Section -->
+    <div
+            id="tea-card-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Tea Card Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addTeaCardBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Tea Card
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="tea-card-search"
+                placeholder="Search by supplier name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Card Number</th>
+            <th class="p-3 text-left">Supplier Name</th>
+            <th class="p-3 text-left">Registration Date</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="tea-card-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div id="tea-card-pagination-info" class="text-sm text-gray-600">
+          Showing 1 to 3 of 3 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="tea-card-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="tea-card-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Employee Management Section -->
+    <div
+            id="employee-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Employee Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="addEmployeeBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Employee
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="employee-search"
+                placeholder="Search by name..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Name</th>
+            <th class="p-3 text-left">Address</th>
+            <th class="p-3 text-left">Phone number</th>
+            <th class="p-3 text-left">Department</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="employee-table-body"></tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div id="employee-pagination-info" class="text-sm text-gray-600">
+          Showing 1 to 3 of 3 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="employee-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="employee-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="../js/teaMakerManagement.js"></script>
+<script src="../js/teaProduct.js"></script>
+<script>
+  // Navigation functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get all nav links
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // Add click event listeners to all nav links
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        // Get the target section ID
+        const targetId = this.getAttribute('data-target');
+
+        // Hide all content sections
+        document.querySelectorAll('.content-section').forEach(section => {
+          section.classList.remove('active');
         });
 
-      // Modal functionality
-      const modals = document.querySelectorAll(".modal");
-      const closeBtns = document.querySelectorAll(".close");
+        // Show the target section
+        document.getElementById(targetId).classList.add('active');
 
-      // Get all modal open buttons
-      const addTeaProductBtn = document.getElementById("addTeaProductBtn");
-      const addTeaMakerBtn = document.getElementById("addTeaMakerBtn");
-      const addStockManagerBtn = document.getElementById("addStockManagerBtn");
-      const addSalesManagerBtn = document.getElementById("addSalesManagerBtn");
-      const addFinanceManagerBtn = document.getElementById(
-        "addFinanceManagerBtn"
-      );
-      const addTeaCardBtn = document.getElementById("addTeaCardBtn");
-      const addEmployeeBtn = document.getElementById("addEmployeeBtn");
-
-      // Open modals
-      addTeaProductBtn.addEventListener("click", function () {
-        document.getElementById("teaProductModal").style.display = "block";
+        // Update active state in navigation
+        navLinks.forEach(navLink => {
+          navLink.classList.remove('bg-tea-green-light');
+        });
+        this.classList.add('bg-tea-green-light');
       });
+    });
 
-      addTeaMakerBtn.addEventListener("click", function () {
-        document.getElementById("teaMakerModal").style.display = "block";
-      });
+    // Initialize dashboard as active
+    document.querySelector('[data-target="dashboard-content"]').classList.add('bg-tea-green-light');
+  });
 
-      addStockManagerBtn.addEventListener("click", function () {
-        document.getElementById("stockManagerModal").style.display = "block";
-      });
-
-      addSalesManagerBtn.addEventListener("click", function () {
-        document.getElementById("salesManagerModal").style.display = "block";
-      });
-
-      addFinanceManagerBtn.addEventListener("click", function () {
-        document.getElementById("financeManagerModal").style.display = "block";
-      });
-
-      addTeaCardBtn.addEventListener("click", function () {
-        document.getElementById("teaCardModal").style.display = "block";
-      });
-
-      addEmployeeBtn.addEventListener("click", function () {
-        document.getElementById("employeeModal").style.display = "block";
-      });
-
-      // Close modals
-      closeBtns.forEach((btn) => {
-        btn.addEventListener("click", function () {
-          modals.forEach((modal) => {
-            modal.style.display = "none";
+  document
+          .getElementById("mobileMenuBtn")
+          .addEventListener("click", function () {
+            document.querySelector(".sidebar").classList.toggle("active");
           });
-        });
+
+  // Modal functionality
+  const modals = document.querySelectorAll(".modal");
+  const closeBtns = document.querySelectorAll(".close");
+
+  // Get all modal open buttons
+  const addTeaProductBtn = document.getElementById("addTeaProductBtn");
+  const addTeaMakerBtn = document.getElementById("addTeaMakerBtn");
+  const addStockManagerBtn = document.getElementById("addStockManagerBtn");
+  const addSalesManagerBtn = document.getElementById("addSalesManagerBtn");
+  const addFinanceManagerBtn = document.getElementById(
+          "addFinanceManagerBtn"
+  );
+  const addTeaCardBtn = document.getElementById("addTeaCardBtn");
+  const addEmployeeBtn = document.getElementById("addEmployeeBtn");
+
+  // Open modals
+  addTeaProductBtn.addEventListener("click", function () {
+    document.getElementById("teaProductModal").style.display = "block";
+  });
+
+  addTeaMakerBtn.addEventListener("click", function () {
+    document.getElementById("teaMakerModal").style.display = "block";
+  });
+
+  addStockManagerBtn.addEventListener("click", function () {
+    document.getElementById("stockManagerModal").style.display = "block";
+  });
+
+  addSalesManagerBtn.addEventListener("click", function () {
+    document.getElementById("salesManagerModal").style.display = "block";
+  });
+
+  addFinanceManagerBtn.addEventListener("click", function () {
+    document.getElementById("financeManagerModal").style.display = "block";
+  });
+
+  addTeaCardBtn.addEventListener("click", function () {
+    document.getElementById("teaCardModal").style.display = "block";
+  });
+
+  addEmployeeBtn.addEventListener("click", function () {
+    document.getElementById("employeeModal").style.display = "block";
+  });
+
+  // Close modals
+  closeBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      modals.forEach((modal) => {
+        modal.style.display = "none";
       });
+    });
+  });
 
-      // Close modal when clicking outside
-      window.addEventListener("click", function (event) {
-        modals.forEach((modal) => {
-          if (event.target === modal) {
-            modal.style.display = "none";
-          }
-        });
-      });
-
-      // Form submissions
-      // document
-      //   .getElementById("teaProductForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Tea Product added successfully!");
-      //     document.getElementById("teaProductModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("teaMakerForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Tea Maker added successfully!");
-      //     document.getElementById("teaMakerModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("stockManagerForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Stock Manager added successfully!");
-      //     document.getElementById("stockManagerModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("salesManagerForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Sales Manager added successfully!");
-      //     document.getElementById("salesManagerModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("financeManagerForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Finance Manager added successfully!");
-      //     document.getElementById("financeManagerModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("teaCardForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Tea card added successfully!");
-      //     document.getElementById("teaCardModal").style.display = "none";
-      //     this.reset();
-      //   });
-      //
-      // document
-      //   .getElementById("employeeForm")
-      //   .addEventListener("submit", function (e) {
-      //     e.preventDefault();
-      //     alert("Employee added successfully!");
-      //     document.getElementById("employeeModal").style.display = "none";
-      //     this.reset();
-      //   });
-
-      // Charts initialization
-      document.addEventListener("DOMContentLoaded", function () {
-        // Revenue Chart
-        const revenueCtx = document
-          .getElementById("revenueChart")
-          .getContext("2d");
-        new Chart(revenueCtx, {
-          type: "line",
-          data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
-            datasets: [
-              {
-                label: "Monthly Revenue (LKR)",
-                data: [
-                  850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
-                  1200000,
-                ],
-                borderColor: "#2E8B57",
-                backgroundColor: "rgba(46, 139, 87, 0.1)",
-                tension: 0.3,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        });
-
-        // Tea Type Chart
-        const teaTypeCtx = document
-          .getElementById("teaTypeChart")
-          .getContext("2d");
-        new Chart(teaTypeCtx, {
-          type: "doughnut",
-          data: {
-            labels: ["Ceylon Black", "Green Tea", "White Tea", "Herbal Blends"],
-            datasets: [
-              {
-                data: [45, 25, 15, 15],
-                backgroundColor: ["#2E8B57", "#3CB371", "#DAA520", "#FFD700"],
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        });
-
-        // Finance Chart
-        const financeCtx = document
-          .getElementById("financeChart")
-          .getContext("2d");
-        new Chart(financeCtx, {
-          type: "bar",
-          data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
-            datasets: [
-              {
-                label: "Revenue",
-                data: [
-                  850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
-                ],
-                backgroundColor: "#2E8B57",
-              },
-              {
-                label: "Expenses",
-                data: [620000, 650000, 680000, 720000, 690000, 710000, 750000],
-                backgroundColor: "#DAA520",
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              y: {
-                beginAtZero: true,
-              },
-            },
-          },
-        });
-      });
-
-      // Smooth scrolling for section links
-      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener("click", function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            target.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }
-        });
-      });
-
-      // Search functionality for tea product table in modal
-      const teaProductSearch = document.getElementById("teaProductSearch");
-      const teaProductTableBody = document.getElementById(
-        "teaProductTableBody"
-      );
-      const teaProductRows = teaProductTableBody.getElementsByTagName("tr");
-
-      teaProductSearch.addEventListener("input", function () {
-        const searchText = this.value.toLowerCase();
-
-        for (let i = 0; i < teaProductRows.length; i++) {
-          const cells = teaProductRows[i].getElementsByTagName("td");
-          let found = false;
-
-          for (let j = 0; j < cells.length; j++) {
-            const cellText = cells[j].textContent.toLowerCase();
-            if (cellText.includes(searchText)) {
-              found = true;
-              break;
-            }
-          }
-
-          teaProductRows[i].style.display = found ? "" : "none";
-        }
-      });
-
-      // Search functionality for other tables
-      function setupSearch(inputId, tableBodyId) {
-        const searchInput = document.getElementById(inputId);
-        const tableBody = document.getElementById(tableBodyId);
-        const rows = tableBody.getElementsByTagName("tr");
-
-        searchInput.addEventListener("input", function () {
-          const searchText = this.value.toLowerCase();
-
-          for (let i = 0; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName("td");
-            let found = false;
-
-            for (let j = 0; j < cells.length; j++) {
-              const cellText = cells[j].textContent.toLowerCase();
-              if (cellText.includes(searchText)) {
-                found = true;
-                break;
-              }
-            }
-
-            rows[i].style.display = found ? "" : "none";
-          }
-        });
+  // Close modal when clicking outside
+  window.addEventListener("click", function (event) {
+    modals.forEach((modal) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
       }
+    });
+  });
 
-      // Setup search for all tables
-      setupSearch("tea-maker-search", "tea-maker-table-body");
-      setupSearch("stock-manager-search", "stock-manager-table-body");
-      setupSearch("sales-manager-search", "sales-manager-table-body");
-      setupSearch("finance-manager-search", "finance-manager-table-body");
-      setupSearch("tea-card-search", "tea-card-table-body");
-      setupSearch("employee-search", "employee-table-body");
+  // Charts initialization
+  document.addEventListener("DOMContentLoaded", function () {
+    // Revenue Chart
+    const revenueCtx = document
+            .getElementById("revenueChart")
+            .getContext("2d");
+    new Chart(revenueCtx, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+        datasets: [
+          {
+            label: "Monthly Revenue (LKR)",
+            data: [
+              850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
+              1200000,
+            ],
+            borderColor: "#2E8B57",
+            backgroundColor: "rgba(46, 139, 87, 0.1)",
+            tension: 0.3,
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
 
-      // Auto-hide sidebar functionality
-      let lastScrollTop = 0;
-      const sidebar = document.getElementById("sidebar");
-      const mainContent = document.getElementById("mainContent");
-      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-      const scrollTopBtn = document.getElementById("scrollTopBtn");
+    // Tea Type Chart
+    const teaTypeCtx = document
+            .getElementById("teaTypeChart")
+            .getContext("2d");
+    new Chart(teaTypeCtx, {
+      type: "doughnut",
+      data: {
+        labels: ["Ceylon Black", "Green Tea", "White Tea", "Herbal Blends"],
+        datasets: [
+          {
+            data: [45, 25, 15, 15],
+            backgroundColor: ["#2E8B57", "#3CB371", "#DAA520", "#FFD700"],
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
 
-      // Track sidebar state
-      let sidebarHidden = false;
+    // Finance Chart
+    const financeCtx = document
+            .getElementById("financeChart")
+            .getContext("2d");
+    new Chart(financeCtx, {
+      type: "bar",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        datasets: [
+          {
+            label: "Revenue",
+            data: [
+              850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
+            ],
+            backgroundColor: "#2E8B57",
+          },
+          {
+            label: "Expenses",
+            data: [620000, 650000, 680000, 720000, 690000, 710000, 750000],
+            backgroundColor: "#DAA520",
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
+  });
 
-      // Function to show sidebar
-      function showSidebar() {
-        sidebar.classList.remove("sidebar-hidden");
-        if (window.innerWidth >= 769) {
-          mainContent.classList.remove("main-content-full");
-        }
-        sidebarHidden = false;
-      }
+  // Search functionality for tea product table in modal
+  const teaProductSearch = document.getElementById("teaProductSearch");
+  const teaProductTableBody = document.getElementById(
+          "teaProductTableBody"
+  );
+  const teaProductRows = teaProductTableBody.getElementsByTagName("tr");
 
-      // Function to hide sidebar
-      function hideSidebar() {
-        if (window.innerWidth >= 769 && !sidebar.classList.contains("active")) {
-          sidebar.classList.add("sidebar-hidden");
-          mainContent.classList.add("main-content-full");
-          sidebarHidden = true;
+  teaProductSearch.addEventListener("input", function () {
+    const searchText = this.value.toLowerCase();
+
+    for (let i = 0; i < teaProductRows.length; i++) {
+      const cells = teaProductRows[i].getElementsByTagName("td");
+      let found = false;
+
+      for (let j = 0; j < cells.length; j++) {
+        const cellText = cells[j].textContent.toLowerCase();
+        if (cellText.includes(searchText)) {
+          found = true;
+          break;
         }
       }
 
-      // Scroll event to hide/show sidebar
-      window.addEventListener("scroll", function () {
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
+      teaProductRows[i].style.display = found ? "" : "none";
+    }
+  });
 
-        // Show/hide scroll to top button
-        if (scrollTop > 300) {
-          scrollTopBtn.style.display = "block";
-        } else {
-          scrollTopBtn.style.display = "none";
-        }
+  // Search functionality for other tables
+  function setupSearch(inputId, tableBodyId) {
+    const searchInput = document.getElementById(inputId);
+    const tableBody = document.getElementById(tableBodyId);
+    const rows = tableBody.getElementsByTagName("tr");
 
-        // Auto-hide sidebar on scroll down, show on scroll up
-        if (window.innerWidth >= 769) {
-          if (scrollTop > lastScrollTop && scrollTop > 100) {
-            // Scrolling down - hide sidebar
-            hideSidebar();
-          } else if (scrollTop < lastScrollTop - 10) {
-            // Scrolling up - show sidebar
-            showSidebar();
+    searchInput.addEventListener("input", function () {
+      const searchText = this.value.toLowerCase();
+
+      for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName("td");
+        let found = false;
+
+        for (let j = 0; j < cells.length; j++) {
+          const cellText = cells[j].textContent.toLowerCase();
+          if (cellText.includes(searchText)) {
+            found = true;
+            break;
           }
         }
 
-        lastScrollTop = scrollTop;
-      });
+        rows[i].style.display = found ? "" : "none";
+      }
+    });
+  }
 
-      // Toggle sidebar with hamburger menu
-      mobileMenuBtn.addEventListener("click", function () {
-        sidebar.classList.toggle("active");
+  // Setup search for all tables
+  setupSearch("tea-maker-search", "tea-maker-table-body");
+  setupSearch("stock-manager-search", "stock-manager-table-body");
+  setupSearch("sales-manager-search", "sales-manager-table-body");
+  setupSearch("finance-manager-search", "finance-manager-table-body");
+  setupSearch("tea-card-search", "tea-card-table-body");
+  setupSearch("employee-search", "employee-table-body");
 
-        if (window.innerWidth < 769) {
-          // Mobile behavior
-          if (sidebar.classList.contains("active")) {
-            document.body.style.overflow = "hidden";
-          } else {
-            document.body.style.overflow = "auto";
-          }
-        } else {
-          // Desktop behavior
-          if (sidebar.classList.contains("sidebar-hidden") || sidebarHidden) {
-            showSidebar();
-          } else {
-            hideSidebar();
-          }
-        }
-      });
+  // Auto-hide sidebar functionality
+  let lastScrollTop = 0;
+  const sidebar = document.getElementById("sidebar");
+  const mainContent = document.getElementById("mainContent");
+  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const scrollTopBtn = document.getElementById("scrollTopBtn");
 
-      // Show sidebar when mouse enters the left edge of the screen
-      document.addEventListener("mousemove", function (e) {
-        if (window.innerWidth >= 769 && sidebarHidden && e.clientX < 20) {
-          showSidebar();
-        }
-      });
+  // Track sidebar state
+  let sidebarHidden = false;
 
-      // Hide sidebar when clicking outside on mobile
-      document.addEventListener("click", function (e) {
-        if (
-          window.innerWidth < 769 &&
-          sidebar.classList.contains("active") &&
-          !sidebar.contains(e.target) &&
-          e.target !== mobileMenuBtn
-        ) {
-          sidebar.classList.remove("active");
-          document.body.style.overflow = "auto";
-        }
-      });
+  // Function to show sidebar
+  function showSidebar() {
+    sidebar.classList.remove("sidebar-hidden");
+    if (window.innerWidth >= 769) {
+      mainContent.classList.remove("main-content-full");
+    }
+    sidebarHidden = false;
+  }
 
-      // Handle window resize
-      window.addEventListener("resize", function () {
-        if (window.innerWidth < 769) {
-          // Mobile view
-          sidebar.classList.remove("sidebar-hidden");
-          mainContent.classList.remove("main-content-full");
-          sidebarHidden = false;
-        } else {
-          // Desktop view
-          if (!sidebarHidden) {
-            showSidebar();
-          } else {
-            hideSidebar();
-          }
-        }
-      });
+  // Function to hide sidebar
+  function hideSidebar() {
+    if (window.innerWidth >= 769 && !sidebar.classList.contains("active")) {
+      sidebar.classList.add("sidebar-hidden");
+      mainContent.classList.add("main-content-full");
+      sidebarHidden = true;
+    }
+  }
 
-      // Scroll to top functionality
-      scrollTopBtn.addEventListener("click", function () {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    </script>
-  </body>
+  // Scroll event to hide/show sidebar
+  window.addEventListener("scroll", function () {
+    const scrollTop =
+            window.pageYOffset || document.documentElement.scrollTop;
+
+    // Show/hide scroll to top button
+    if (scrollTop > 300) {
+      scrollTopBtn.style.display = "block";
+    } else {
+      scrollTopBtn.style.display = "none";
+    }
+
+    // Auto-hide sidebar on scroll down, show on scroll up
+    if (window.innerWidth >= 769) {
+      if (scrollTop > lastScrollTop && scrollTop > 100) {
+        // Scrolling down - hide sidebar
+        hideSidebar();
+      } else if (scrollTop < lastScrollTop - 10) {
+        // Scrolling up - show sidebar
+        showSidebar();
+      }
+    }
+
+    lastScrollTop = scrollTop;
+  });
+
+  // Toggle sidebar with hamburger menu
+  mobileMenuBtn.addEventListener("click", function () {
+    sidebar.classList.toggle("active");
+
+    if (window.innerWidth < 769) {
+      // Mobile behavior
+      if (sidebar.classList.contains("active")) {
+        document.body.style.overflow = "hidden";
+      } else {
+        document.body.style.overflow = "auto";
+      }
+    } else {
+      // Desktop behavior
+      if (sidebar.classList.contains("sidebar-hidden") || sidebarHidden) {
+        showSidebar();
+      } else {
+        hideSidebar();
+      }
+    }
+  });
+
+  // Show sidebar when mouse enters the left edge of the screen
+  document.addEventListener("mousemove", function (e) {
+    if (window.innerWidth >= 769 && sidebarHidden && e.clientX < 20) {
+      showSidebar();
+    }
+  });
+
+  // Hide sidebar when clicking outside on mobile
+  document.addEventListener("click", function (e) {
+    if (
+            window.innerWidth < 769 &&
+            sidebar.classList.contains("active") &&
+            !sidebar.contains(e.target) &&
+            e.target !== mobileMenuBtn
+    ) {
+      sidebar.classList.remove("active");
+      document.body.style.overflow = "auto";
+    }
+  });
+
+  // Handle window resize
+  window.addEventListener("resize", function () {
+    if (window.innerWidth < 769) {
+      // Mobile view
+      sidebar.classList.remove("sidebar-hidden");
+      mainContent.classList.remove("main-content-full");
+      sidebarHidden = false;
+    } else {
+      // Desktop view
+      if (!sidebarHidden) {
+        showSidebar();
+      } else {
+        hideSidebar();
+      }
+    }
+  });
+
+  // Scroll to top functionality
+  scrollTopBtn.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>
+</body>
 </html>

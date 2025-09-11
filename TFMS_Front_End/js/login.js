@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             localStorage.setItem('ctf_access_token', auth.accessToken);
             localStorage.setItem('ctf_role', auth.role || '');
-            localStorage.setItem('ctf_name', auth.name || '');
             if (auth.accessExpiresAtEpochMs) {
                 localStorage.setItem('ctf_access_expires_at', String(auth.accessExpiresAtEpochMs));
             }

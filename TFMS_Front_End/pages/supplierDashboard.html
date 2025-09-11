@@ -354,33 +354,25 @@
                     </div>
                 </div>
 
-                <div>
-                    <h3 class="font-medium mb-3">Request Advance</h3>
-                    <form>
+                <div class="bg-teal-50 p-6 rounded-lg mb-8">
+                    <h3 class="font-medium text-xl mb-4 text-teal-800"><i class="fas fa-plus-circle mr-2"></i>Request Advance</h3>
+                    <form id="advanceForm">
                         <div class="mb-4">
                             <label class="block text-gray-700 mb-2">Amount (LKR)</label>
-                            <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter amount" max="45000">
-                        </div>
-                        <div class="mb-4">
-                            <label class="block text-gray-700 mb-2">Payment Method</label>
-                            <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
-                                <option>Bank Transfer</option>
-                                <option>Cash</option>
-                                <option>Mobile Payment</option>
-                            </select>
+                            <input type="number" id="amount" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter amount" max="45000" required>
                         </div>
                         <div class="mb-4">
                             <label class="block text-gray-700 mb-2">Reason (Optional)</label>
-                            <textarea class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" rows="2" placeholder="Brief reason for advance request"></textarea>
+                            <textarea id="reason" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" rows="2" placeholder="Brief reason for advance request"></textarea>
                         </div>
-                        <button type="submit" class="w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
-                            Submit Request
+                        <button type="submit" class="w-full py-3 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition">
+                            <i class="fas fa-paper-plane mr-2"></i>Submit Request
                         </button>
                     </form>
                 </div>
             </div>
 
-            <div>
+            <div id="recent-requests">
                 <h3 class="font-medium mb-3">Recent Advance Requests</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -391,22 +383,8 @@
                             <th class="p-3 text-left">Status</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr class="border-b">
-                            <td class="p-3">Aug 12, 2025</td>
-                            <td class="p-3">LKR 15,000</td>
-                            <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Approved</span></td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="p-3">Jul 28, 2025</td>
-                            <td class="p-3">LKR 10,000</td>
-                            <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Approved</span></td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="p-3">Jun 15, 2025</td>
-                            <td class="p-3">LKR 20,000</td>
-                            <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Approved</span></td>
-                        </tr>
+                        <tbody id="advanceRequestsTable">
+
                         </tbody>
                     </table>
                 </div>
@@ -415,6 +393,7 @@
     </div>
 </div>
 <script src="../js/supplier.js"></script>
+<script src="../js/applyAdvance.js"></script>
 <script>
     // Mobile menu toggle
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {

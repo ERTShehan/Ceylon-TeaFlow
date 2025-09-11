@@ -11,5 +11,6 @@ public class AdvancePaymentsDto {
     private String amount;
     private String date;
     private String reason;
+    private String supplierId;
     private String status;
 }

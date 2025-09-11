@@ -3,8 +3,7 @@ package lk.ijse.edu.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "advance_payments")
@@ -25,7 +24,8 @@ public class AdvancePayment {
     private String amount;
 
     @Column(nullable = false)
-    private LocalDate paymentDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date paymentDate;
 
     @Column(nullable = true)
     private String reason;

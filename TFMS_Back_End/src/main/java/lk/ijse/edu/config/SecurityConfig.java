@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,42 +26,48 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/login",
-                                "/auth/register/customer",
-                                "/auth/register/supplier",
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        auth->
+                                auth.requestMatchers(
+                                                "/auth/login",
+                                                "/auth/register/customer",
+                                                "/auth/register/supplier",
 //                                "/auth/saveAdmin",
-                                "/teaMaker/register",
-                                "/teaMaker/update",
-                                "/teaMaker/delete",
-                                "/teaMaker/getAll",
-                                "/teaMaker/search/*",
-                                "/teaMaker/changeStatus/*",
-                                "/stockManager/**",
-                                "/financeManager/**",
-                                "/salesManager/**",
-                                "/teaCard/**",
-                                "/teaProduct/**",
-                                "/customer/**",
-                                "/supplier/**"
-                        ).permitAll()
-                        .requestMatchers("/auth/teacards/**").hasRole("ADMIN")
-//                                .requestMatchers("/teaMaker/register").hasRole("ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults());
+                                                "/teaMaker/register",
+                                                "/teaMaker/update",
+                                                "/teaMaker/delete",
+                                                "/teaMaker/getAll",
+                                                "/teaMaker/search/*",
+                                                "/teaMaker/changeStatus/*",
+                                                "/stockManager/**",
+                                                "/financeManager/**",
+                                                "/salesManager/**",
+                                                "/teaCard/**",
+                                                "/teaProduct/**",
+                                                "/customer/**",
+                                                "/supplier/**"
+                                        ).permitAll()
+                                        .anyRequest().authenticated())
+                .sessionManagement(
+                        session->
+                                session.sessionCreationPolicy
+                                        (SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter,
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider p = new DaoAuthenticationProvider();
-        p.setUserDetailsService(userDetailsService);
-        p.setPasswordEncoder(passwordEncoder);
-        return p;
+        DaoAuthenticationProvider daoAuthenticationProvider
+                = new DaoAuthenticationProvider();
+        daoAuthenticationProvider
+                .setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider
+                .setPasswordEncoder(passwordEncoder);
+        return daoAuthenticationProvider;
+
     }
 }

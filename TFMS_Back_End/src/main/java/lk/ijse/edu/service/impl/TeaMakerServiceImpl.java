@@ -92,9 +92,9 @@ public class TeaMakerServiceImpl implements TeaMakerService {
     @Transactional
     @Override
     public String updateTeaMaker(TeaMakerDto teaMakerDto) {
-        if (userRepository.existsByUsername(teaMakerDto.getUsername())) {
-            throw new RuntimeException("Username already exists");
-        }
+//        if (userRepository.existsByUsername(teaMakerDto.getUsername())) {
+//            throw new RuntimeException("Username already exists");
+//        }
 
         if (teaMakerDto ==null||teaMakerDto.getId()==null){
             throw new IllegalArgumentException("Update Tea Maker DTO cannot be null");
@@ -110,7 +110,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
         existingTeaMaker.setStatus(teaMakerDto.getStatus());
 
         User existingUser = existingTeaMaker.getUser();
-        existingUser.setUsername(teaMakerDto.getUsername());
+//        existingUser.setUsername(teaMakerDto.getUsername());
         if (teaMakerDto.getPassword() != null && !teaMakerDto.getPassword().isEmpty()) {
             existingUser.setPassword(passwordEncoder.encode(teaMakerDto.getPassword()));
         }

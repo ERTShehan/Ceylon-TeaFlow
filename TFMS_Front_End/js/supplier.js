@@ -1,3 +1,5 @@
+const API_BASE = "http://localhost:8080";
+
 document.addEventListener('DOMContentLoaded', function() {
     // Function to fetch tea products from the backend
     function fetchTeaProducts() {
@@ -67,4 +69,55 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fetch tea products when the page loads
     fetchTeaProducts();
+
+    const form = document.getElementById("advanceForm");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const amount = document.getElementById("amount")?.value?.trim();
+        const reason = document.getElementById("reason")?.value?.trim();
+
+        if (!amount) {
+            alert("Please enter the advance amount.");
+            return;
+        }
+
+        // get token from login.js saved storage
+        const token = localStorage.getItem("ctf_access_token");
+        if (!token) {
+            alert("You must log in first.");
+            window.location.href = "./login.html";
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_BASE}/supplier/applyAdvance`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify({
+                    amount,
+                    reason
+                })
+            });
+
+            const body = await res.json().catch(() => null);
+
+            if (!res.ok) {
+                const msg = body?.data || body?.status || res.statusText || "Request failed";
+                throw new Error(msg);
+            }
+
+            alert(body?.data || "Advance application submitted successfully!");
+            form.reset();
+
+        } catch (err) {
+            console.error("Advance apply error:", err);
+            alert(err.message || "Error submitting advance payment.");
+        }
+    });
 });

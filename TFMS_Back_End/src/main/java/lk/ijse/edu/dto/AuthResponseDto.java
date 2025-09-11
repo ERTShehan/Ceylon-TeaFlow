@@ -9,5 +9,5 @@ public class AuthResponseDto {
     private String accessToken;
     private String role;
     private long accessExpiresAtEpochMs;
-    private String name;
+//    private String name;
 }
