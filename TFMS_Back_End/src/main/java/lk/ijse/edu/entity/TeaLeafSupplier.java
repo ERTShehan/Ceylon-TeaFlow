@@ -31,7 +31,7 @@ public class TeaLeafSupplier {
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<AdvancePayment> advancePayments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     private List<TeaLeafCount> teaLeafCounts = new ArrayList<>();
 
     @OneToOne

@@ -11,4 +11,6 @@ public interface TeaLeafSupplierRepository extends JpaRepository<TeaLeafSupplier
 
     @Query(value = "SELECT supplier_id FROM tea_leaf_supplier ORDER BY supplier_id DESC LIMIT 1", nativeQuery = true)
     String findLastSupplierId();
+
+    TeaLeafSupplier findByTeaCardNumber(String teaCardNumber);
 }
