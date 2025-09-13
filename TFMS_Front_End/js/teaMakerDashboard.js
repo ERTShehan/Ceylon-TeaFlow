@@ -1,8 +1,6 @@
-// teaLeafCount.js
 const API_BASE = "http://localhost:8080/teaMakerDashboard";
 
 document.addEventListener("DOMContentLoaded", () => {
-    // ===================== Toast System =====================
     if (!document.getElementById('toast-container')) {
         const toastContainer = document.createElement('div');
         toastContainer.id = 'toast-container';
@@ -73,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // ===================== Form Elements =====================
     const teaCardInput = document.getElementById("supplierTeaCardNumber");
     const supplierNameInput = document.getElementById("supplierName");
     const grossWeightInput = document.getElementById("teaGrossWeight");
@@ -87,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateMoistureWeightInput = document.getElementById("updateTeaMoistureWeight");
     const updateNetWeightInput = document.getElementById("updateTeaNetWeight");
 
-    // ===================== Helpers =====================
     function clearFormFields() {
         teaCardInput.value = '';
         supplierNameInput.value = '';
@@ -117,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateNetWeightInput.value = net > 0 ? net.toFixed(2) : 0;
     }
 
-    // ===================== Event Listeners =====================
     teaCardInput.addEventListener("blur", () => {
         const cardNo = teaCardInput.value.trim();
         if (cardNo) {
@@ -141,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
     [grossWeightInput, sackWeightInput, moistureWeightInput].forEach(i => i.addEventListener("input", calculateNetWeight));
     [updateGrossWeightInput, updateSackWeightInput, updateMoistureWeightInput].forEach(i => i.addEventListener("input", calculateNetWeightUpdate));
 
-    // Save New Tea Leaf Record
     saveBtn.addEventListener("click", (e) => {
         e.preventDefault();
 
@@ -169,6 +163,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     loadTodayRecords();
                     clearFormFields();
                     fetchQualityDistribution();
+                    loadTopSuppliers();
+                    fetchTodayRecords();
+                    fetchTotalWeightThisMonth();
+                    fetchBestSupplierToday();
                 } else {
                     showToast("Failed to save Tea Leaf Count", "error");
                 }
@@ -176,10 +174,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(() => showToast("Error saving Tea Leaf Count", "error"));
     });
 
-    // ===================== Load Today Records =====================
     loadTodayRecords();
 
-    // ===================== Modal Handling (Update) =====================
     document.querySelector("#teaLeafCountUpdateModal .close").addEventListener("click", () => {
         document.getElementById("teaLeafCountUpdateModal").classList.add("hidden");
     });
@@ -189,7 +185,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateTeaLeafRecord();
     });
 
-    // ===================== Modal Handling (All Records) =====================
     const allRecordsModal = document.getElementById("All-records");
     const allRecordsTableBody = document.getElementById("allRecordsTableBody");
     const loadMoreBtn = document.querySelector(".mt-6 button");
@@ -197,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     let allRecords = [];
 
-    // Open modal
     loadMoreBtn.addEventListener("click", () => {
         fetch(`${API_BASE}/getAllTeaLeafCounts`)
             .then(res => res.json())
@@ -209,7 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(() => showToast("Failed to load all records", "error"));
     });
 
-    // Close modal
     closeModalBtn.addEventListener("click", () => {
         allRecordsModal.classList.add("hidden");
     });
@@ -220,7 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Search
     searchInput.addEventListener("input", function () {
         const query = this.value.toLowerCase();
         const filtered = allRecords.filter(r =>
@@ -249,9 +241,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     fetchQualityDistribution();
+    loadTopSuppliers();
+    fetchTodayRecords();
+    fetchTotalWeightThisMonth();
+    fetchBestSupplierToday();
 });
 
-// ===================== Functions Outside =====================
 function loadTodayRecords() {
     fetch("http://localhost:8080/teaMakerDashboard/getAllTodayTeaLeafCounts")
         .then(res => res.json())
@@ -335,6 +330,10 @@ function updateTeaLeafRecord() {
                 showToast("Tea Leaf Count Updated Successfully!", "success");
                 document.getElementById("teaLeafCountUpdateModal").classList.add("hidden");
                 loadTodayRecords();
+                loadTopSuppliers();
+                fetchTodayRecords();
+                fetchTotalWeightThisMonth();
+                fetchBestSupplierToday();
             } else {
                 showToast("Failed to update Tea Leaf Count", "error");
             }
@@ -351,7 +350,7 @@ function fetchQualityDistribution() {
             return response.json();
         })
         .then(data => {
-            const dist = data.data; // APIResponse wrapper -> data
+            const dist = data.data;
 
             document.getElementById("quality-excellent-percentage").innerText =
                 `Excellent: ${dist.excellentPercentage.toFixed(1)}%`;
@@ -364,5 +363,171 @@ function fetchQualityDistribution() {
         })
         .catch(error => {
             console.error("Error loading quality distribution:", error);
+        });
+}
+
+const topSuppliersTableBody = document.getElementById("topSuppliersTableBody");
+const TOP_ENDPOINT = "http://localhost:8080/teaMakerDashboard/getTopSuppliers";
+
+function formatNumber(n) {
+    if (n == null) return "-";
+    return Number(n).toLocaleString();
+}
+
+function createTopSupplierRow(supplier) {
+    const tr = document.createElement("tr");
+
+    const tdName = document.createElement("td");
+    tdName.className = "p-3";
+    const nameText = document.createElement("div");
+    nameText.textContent = supplier.supplierName ?? "Unknown Supplier";
+    const cardDiv = document.createElement("div");
+    cardDiv.className = "text-xs font-thin";
+    cardDiv.textContent = `Tea Card: ${supplier.teaCardNumber ?? "-"}`;
+    tdName.appendChild(nameText);
+    tdName.appendChild(cardDiv);
+
+    const tdTotal = document.createElement("td");
+    tdTotal.className = "p-3";
+    tdTotal.textContent = `${formatNumber(supplier.totalSupplied)} units`;
+
+    tr.appendChild(tdName);
+    tr.appendChild(tdTotal);
+
+    return tr;
+}
+
+function showTopSuppliersLoading() {
+    topSuppliersTableBody.innerHTML = "";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 2;
+    td.className = "p-3 text-center";
+    td.textContent = "Loading...";
+    tr.appendChild(td);
+    topSuppliersTableBody.appendChild(tr);
+}
+
+function showTopSuppliersError(message) {
+    topSuppliersTableBody.innerHTML = "";
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 2;
+    td.className = "p-3 text-center text-red-600";
+    td.textContent = message || "Failed to load data";
+    tr.appendChild(td);
+    topSuppliersTableBody.appendChild(tr);
+}
+
+async function loadTopSuppliers() {
+    showTopSuppliersLoading();
+
+    try {
+        const res = await fetch(TOP_ENDPOINT, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            showTopSuppliersError(`Server error: ${res.status} ${res.statusText}`);
+            console.error("Server error response:", text);
+            return;
+        }
+
+        const apiResp = await res.json();
+        const data = apiResp?.data;
+
+        if (!Array.isArray(data) || data.length === 0) {
+            topSuppliersTableBody.innerHTML = `
+                <tr>
+                  <td colspan="2" class="p-3 text-center text-sm">No supplier data found for the past 30 days.</td>
+                </tr>`;
+            return;
+        }
+
+        topSuppliersTableBody.innerHTML = "";
+        data.slice(0, 5).forEach(item => {
+            const row = createTopSupplierRow(item);
+            topSuppliersTableBody.appendChild(row);
+        });
+
+    } catch (err) {
+        console.error(err);
+        showTopSuppliersError("Network error while fetching top suppliers.");
+    }
+}
+
+function fetchTodayRecords() {
+    fetch(`${API_BASE}/todayRecordsCount`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.code === 200) {
+                document.querySelector("#today-records-value").textContent = data.data;
+
+                const now = new Date();
+                const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                document.querySelector("#today-records-updated").textContent = `Last updated: ${formattedTime}`;
+            } else {
+                console.error("Error:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+}
+
+function fetchTotalWeightThisMonth() {
+    fetch(`${API_BASE}/totalWeightThisMonth`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.code === 200) {
+                const formattedWeight = new Intl.NumberFormat().format(data.data) + " kg";
+
+                document.querySelector("#total-weight-value").textContent = formattedWeight;
+            } else {
+                console.error("Error:", data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+}
+
+function fetchBestSupplierToday() {
+    fetch(`${API_BASE}/bestSupplierToday`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.code === 200) {
+                if (data.data) {
+                    const formattedWeight = new Intl.NumberFormat().format(data.data.totalSupplied) + " kg";
+
+                    document.querySelector("#best-supplier-weight").textContent = formattedWeight;
+                    document.querySelector("#best-supplier-name").textContent = data.data.supplierName;
+                } else {
+                    document.querySelector("#best-supplier-weight").textContent = "No Data";
+                    document.querySelector("#best-supplier-name").textContent = "No Supplier Found";
+                }
+            } else {
+                console.error("Error:", data.status);
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
         });
 }

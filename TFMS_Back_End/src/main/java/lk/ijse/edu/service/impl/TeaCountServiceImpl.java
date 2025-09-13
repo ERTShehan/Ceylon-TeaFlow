@@ -2,6 +2,7 @@ package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.QualityDistributionDto;
 import lk.ijse.edu.dto.TeaLeafCountDto;
+import lk.ijse.edu.dto.TopSupplierDto;
 import lk.ijse.edu.entity.QualityAssessment;
 import lk.ijse.edu.entity.TeaLeafCount;
 import lk.ijse.edu.entity.TeaLeafSupplier;
@@ -175,6 +176,19 @@ public class TeaCountServiceImpl implements TeaCountService {
                 .averagePercentage((average * 100.0) / total)
                 .poorPercentage((poor * 100.0) / total)
                 .build();
+    }
+
+    @Override
+    public List<TopSupplierDto> getTopSuppliers() {
+        List<Object[]> raw = teaCountRepository.findTopSuppliersNative();
+        return raw.stream()
+                .map(r -> new TopSupplierDto(
+                        (String) r[0],
+                        (String) r[1],
+                        (String) r[2],
+                        r[3] != null ? Double.valueOf(r[3].toString()) : 0.0
+                ))
+                .collect(Collectors.toList());
     }
 
 }

@@ -157,44 +157,46 @@
 
     <!-- Stats Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="stat-card bg-white rounded-xl shadow-md p-6">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-gray-500">Today's Records</h3>
-            <p class="text-2xl font-bold text-tea-green">18</p>
-          </div>
-          <div class="bg-tea-cream p-3 rounded-lg">
-            <i class="fas fa-clipboard-list text-tea-green text-xl"></i>
-          </div>
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-gray-500">Today's Records</h3>
+                    <p id="today-records-value" class="text-2xl font-bold text-tea-green">0</p>
+                </div>
+                <div class="bg-tea-cream p-3 rounded-lg">
+                    <i class="fas fa-clipboard-list text-tea-green text-xl"></i>
+                </div>
+            </div>
+            <p id="today-records-updated" class="text-sm text-gray-500 mt-2">Last updated: --:--</p>
         </div>
-        <p class="text-sm text-gray-500 mt-2">Last updated: 10:30 AM</p>
-      </div>
 
-      <div class="stat-card bg-white rounded-xl shadow-md p-6">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-gray-500">Total Weight</h3>
-            <p class="text-2xl font-bold text-tea-green">1,245 kg</p>
-          </div>
-          <div class="bg-tea-cream p-3 rounded-lg">
-            <i class="fas fa-weight-hanging text-tea-green text-xl"></i>
-          </div>
-        </div>
-        <p class="text-sm text-gray-500 mt-2">Raw tea leaves measured</p>
-      </div>
 
-      <div class="stat-card bg-white rounded-xl shadow-md p-6">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-gray-500">Avg. Quality Score</h3>
-            <p class="text-2xl font-bold text-tea-green">8.7/10</p>
-          </div>
-          <div class="bg-tea-cream p-3 rounded-lg">
-            <i class="fas fa-star text-tea-green text-xl"></i>
-          </div>
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-gray-500">Total Weight</h3>
+                    <p id="total-weight-value" class="text-2xl font-bold text-tea-green">0 kg</p>
+                </div>
+                <div class="bg-tea-cream p-3 rounded-lg">
+                    <i class="fas fa-weight-hanging text-tea-green text-xl"></i>
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Raw tea leaves measured this month</p>
         </div>
-        <p class="text-sm text-gray-500 mt-2">Based on today's records</p>
-      </div>
+
+        <div class="stat-card bg-white rounded-xl shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-gray-500">Best Supplier Today</h3>
+                    <p id="best-supplier-weight" class="text-2xl font-bold text-tea-green">0 kg</p>
+                    <p id="best-supplier-name" class="text-sm text-gray-500 mt-2">--</p>
+                </div>
+                <div class="bg-tea-cream p-3 rounded-lg">
+                    <i class="fas fa-star text-tea-green text-xl"></i>
+                </div>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">Based on today's records</p>
+        </div>
     </div>
 
     <!-- Record Tea Leaves Section -->
@@ -329,58 +331,24 @@
         </div>
       </div>
 
-      <h3 class="font-medium mb-3">Top Suppliers by Quality</h3>
+      <h3 class="font-medium mb-3">Top 5 Suppliers by Quantity(Past 30 days)</h3>
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead>
           <tr class="bg-gray-50">
             <th class="p-3 text-left">Supplier</th>
-            <th class="p-3 text-left">Avg. Quality Score</th>
             <th class="p-3 text-left">Total Supplied</th>
-            <th class="p-3 text-left">Status</th>
           </tr>
           </thead>
-          <tbody>
-          <tr class="border-b">
-            <td class="p-3">Kamal Perera</td>
-            <td class="p-3">9.2/10</td>
-            <td class="p-3">1,245 kg</td>
-            <td class="p-3">
-              <span class="quality-badge quality-excellent">Premium</span>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="p-3">Sunil Rathnayake</td>
-            <td class="p-3">8.8/10</td>
-            <td class="p-3">985 kg</td>
-            <td class="p-3">
-              <span class="quality-badge quality-excellent">Premium</span>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="p-3">Nimal Fernando</td>
-            <td class="p-3">8.5/10</td>
-            <td class="p-3">1,120 kg</td>
-            <td class="p-3">
-              <span class="quality-badge quality-good">Good</span>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="p-3">Chaminda Silva</td>
-            <td class="p-3">8.3/10</td>
-            <td class="p-3">875 kg</td>
-            <td class="p-3">
-              <span class="quality-badge quality-good">Good</span>
-            </td>
-          </tr>
-          <tr class="border-b">
-            <td class="p-3">Saman Kumara</td>
-            <td class="p-3">7.6/10</td>
-            <td class="p-3">756 kg</td>
-            <td class="p-3">
-              <span class="quality-badge quality-average">Average</span>
-            </td>
-          </tr>
+          <tbody id="topSuppliersTableBody">
+          <!-- Example row structure - you'll need to populate this dynamically -->
+<!--          <tr>-->
+<!--            <td class="p-3">-->
+<!--              Supplier Name-->
+<!--              <div class="text-xs font-thin">Tea Card: 1234567890</div>-->
+<!--            </td>-->
+<!--            <td class="p-3">100 units</td>-->
+<!--          </tr>-->
           </tbody>
         </table>
       </div>

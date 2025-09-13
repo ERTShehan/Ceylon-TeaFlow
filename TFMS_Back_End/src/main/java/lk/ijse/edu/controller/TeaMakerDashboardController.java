@@ -3,6 +3,7 @@ package lk.ijse.edu.controller;
 import lk.ijse.edu.dto.APIResponse;
 import lk.ijse.edu.dto.QualityDistributionDto;
 import lk.ijse.edu.dto.TeaLeafCountDto;
+import lk.ijse.edu.dto.TopSupplierDto;
 import lk.ijse.edu.service.TeaCountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -73,4 +74,49 @@ public class TeaMakerDashboardController {
 //        );
 //    }
 
+    @GetMapping("/getTopSuppliers")
+    public ResponseEntity<APIResponse<List<TopSupplierDto>>> getTopSuppliers() {
+        List<TopSupplierDto> data = teaCountService.getTopSuppliers();
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Top Suppliers Retrieved Successfully", data
+        ));
+    }
+
+    @GetMapping("/todayRecordsCount")
+    public ResponseEntity<APIResponse<Long>> todayRecordsCount() {
+        long count = teaCountService.getAllTodayTeaLeafCounts().size();
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Today's Records Count Retrieved Successfully", count
+        ));
+    }
+
+    @GetMapping("/totalWeightThisMonth")
+    public ResponseEntity<APIResponse<Double>> totalWeightThisMonth() {
+        double totalWeight = teaCountService.getAllTeaLeafCounts().stream()
+                .filter(count -> count.getDate().startsWith(java.time.LocalDate.now().withDayOfMonth(1).toString().substring(0, 7)))
+                .mapToDouble(count -> {
+                    try {
+                        return Double.parseDouble(count.getNetWeight());
+                    } catch (NumberFormatException e) {
+                        return 0.0;
+                    }
+                })
+                .sum();
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Total Weight This Month Retrieved Successfully", totalWeight
+        ));
+    }
+
+    @GetMapping("/bestSupplierToday")
+    public ResponseEntity<APIResponse<TopSupplierDto>> bestSupplierToday() {
+        List<TopSupplierDto> topSuppliers = teaCountService.getTopSuppliers();
+        if (topSuppliers.isEmpty()) {
+            return ResponseEntity.ok(new APIResponse<>(
+                    200, "No Suppliers Found Today", null
+            ));
+        }
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Best Supplier Today Retrieved Successfully", topSuppliers.get(0)
+        ));
+    }
 }
