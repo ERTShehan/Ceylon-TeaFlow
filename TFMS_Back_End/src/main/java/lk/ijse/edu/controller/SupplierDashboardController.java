@@ -101,4 +101,33 @@ public class SupplierDashboardController {
                 new APIResponse<>(200, "SUCCESS", dto)
         );
     }
+
+    @GetMapping("/totalTeaPacketRequestsMonth")
+    public ResponseEntity<APIResponse<Long>> getTotalTeaPacketRequestsThisMonth(Principal principal) {
+        String username = principal.getName();
+
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found for username: " + username));
+
+        long totalRequests = teaPacketRequestService.getTotalTeaPacketRequestsThisMonth(supplier.getSupplierId());
+
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "Total tea packet requests for this month retrieved", totalRequests)
+        );
+    }
+
+    @GetMapping("/getAllTeaPacketRequests")
+    public ResponseEntity<APIResponse<List<TeaPacketRequestDto>>> getAllTeaPacketRequests(Principal principal) {
+        String username = principal.getName();
+
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found for username: " + username));
+
+        List<TeaPacketRequestDto> requests = teaPacketRequestService.getAllRequestsBySupplier(supplier.getSupplierId());
+
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "All tea packet requests retrieved", requests)
+        );
+    }
+
 }

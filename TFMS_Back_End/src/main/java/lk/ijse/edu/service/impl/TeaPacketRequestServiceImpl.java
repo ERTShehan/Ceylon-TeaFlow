@@ -1,17 +1,19 @@
 package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.ApplyPacketResponseDto;
+import lk.ijse.edu.dto.TeaPacketRequestDto;
 import lk.ijse.edu.entity.*;
 import lk.ijse.edu.repository.TeaLeafSupplierRepository;
 import lk.ijse.edu.repository.TeaPacketRequestRepository;
 import lk.ijse.edu.repository.TeaProductRepository;
-import lk.ijse.edu.repository.UserRepository;
 import lk.ijse.edu.service.TeaPacketRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,7 +61,7 @@ public class TeaPacketRequestServiceImpl implements TeaPacketRequestService {
                 .supplier(supplier)
                 .product(product)
                 .requestDate(new Date())
-                .status(lk.ijse.edu.entity.OrderStatus.PENDING)
+                .status(OrderStatus.PENDING)
                 .build();
 
         teaPacketRequestRepository.save(request);
@@ -69,5 +71,26 @@ public class TeaPacketRequestServiceImpl implements TeaPacketRequestService {
                 supplier.getSupplierId(),
                 "Packet request submitted successfully!"
         );
+    }
+
+    @Override
+    public long getTotalTeaPacketRequestsThisMonth(String supplierId) {
+        return teaPacketRequestRepository.countRequestsForSupplierThisMonth(supplierId);
+    }
+
+    @Override
+    public List<TeaPacketRequestDto> getAllRequestsBySupplier(String supplierId) {
+        List<TeaPacketRequest> requests = teaPacketRequestRepository.findBySupplier_SupplierId(supplierId);
+
+        return requests.stream().map(r ->
+                TeaPacketRequestDto.builder()
+                        .requestId(r.getRequestId())
+                        .productName(r.getProduct().getName().name())
+                        .price(r.getProduct().getPrice())
+                        .weight(r.getProduct().getQuantity())
+                        .status(r.getStatus())
+                        .requestDate(r.getRequestDate())
+                        .build()
+        ).collect(Collectors.toList());
     }
 }

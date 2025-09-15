@@ -1,4 +1,5 @@
 const API_BASE = "http://localhost:8080";
+const token = localStorage.getItem("ctf_access_token");
 
 document.addEventListener("DOMContentLoaded", () => {
     let monthsBack = 3;
@@ -18,9 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     async function fetchCalendarData() {
-        const token = localStorage.getItem("ctf_access_token");
         const url = `${API_BASE}/supplier/supplierCalendarData?monthsBack=${monthsBack}`;
-
         const resp = await fetch(url, {
             method: "GET",
             headers: {
@@ -120,10 +119,64 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('month-amount').textContent = `LKR ${Math.round(monthTotal * 100)}`;
     }
 
-    renderCalendar();
-    loadAdvanceRequests();
-    fetchTeaProducts();
-    fetchMonthlyTotalAndDisplay();
+    const modal = document.getElementById("All-request");
+    const closeBtn = modal.querySelector(".close");
+    const loadBtn = document.getElementById("load-all-apply-packets-btn");
+    const tableBody = document.getElementById("allRequestsTableBody");
+    const searchInput = document.getElementById("searchInput");
+
+    loadBtn.addEventListener("click", async () => {
+        modal.classList.remove("hidden");
+        try {
+            const resp = await fetch(`${API_BASE}/supplier/getAllTeaPacketRequests`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!resp.ok) throw new Error("Failed to fetch requests");
+
+            const result = await resp.json();
+            if (result.code === 200 && result.data) {
+                renderRequestsTable(result.data);
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-3 text-red-500">No records found</td></tr>`;
+            }
+        } catch (err) {
+            console.error(err);
+            tableBody.innerHTML = `<tr><td colspan="5" class="text-center p-3 text-red-500">Error loading requests</td></tr>`;
+        }
+    });
+
+    closeBtn.addEventListener("click", () => {
+        modal.classList.add("hidden");
+    });
+
+    searchInput.addEventListener("keyup", () => {
+        const filter = searchInput.value.toLowerCase();
+        const rows = tableBody.querySelectorAll("tr");
+        rows.forEach(row => {
+            const productName = row.cells[1].textContent.toLowerCase();
+            row.style.display = productName.includes(filter) ? "" : "none";
+        });
+    });
+
+    function renderRequestsTable(data) {
+        tableBody.innerHTML = "";
+        data.forEach(req => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="p-3">${new Date(req.requestDate).toLocaleString()}</td>
+                <td class="p-3">${req.productName}</td>
+                <td class="p-3">${req.weight}</td>
+                <td class="p-3">Rs. ${req.price.toFixed(2)}</td>
+                <td class="p-3">${req.status}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
     const form = document.getElementById("advanceForm");
     if (form) {
@@ -142,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Show confirmation dialog
             const result = await Swal.fire({
                 title: 'Confirm Advance Request',
                 html: `You are requesting an advance of <b>LKR ${amount}</b>.<br>Reason: ${reason || 'No reason provided'}`,
@@ -154,21 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 cancelButtonText: 'Cancel'
             });
 
-            if (!result.isConfirmed) {
-                return;
-            }
-
-            const token = localStorage.getItem("ctf_access_token");
-            if (!token) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Authentication Required',
-                    text: 'You must log in first.',
-                }).then(() => {
-                    window.location.href = "./login.html";
-                });
-                return;
-            }
+            if (!result.isConfirmed) return;
 
             try {
                 const res = await fetch(`${API_BASE}/supplier/applyAdvance`, {
@@ -177,37 +215,187 @@ document.addEventListener("DOMContentLoaded", () => {
                         "Content-Type": "application/json",
                         "Authorization": "Bearer " + token
                     },
-                    body: JSON.stringify({
-                        amount,
-                        reason
-                    })
+                    body: JSON.stringify({ amount, reason })
                 });
 
                 const body = await res.json().catch(() => null);
-
                 if (!res.ok) {
                     const msg = body?.data || body?.status || res.statusText || "Request failed";
                     throw new Error(msg);
                 }
 
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: body?.data || 'Advance application submitted successfully!',
-                });
+                Swal.fire({ icon: 'success', title: 'Success!', text: body?.data || 'Advance submitted!' });
                 form.reset();
                 loadAdvanceRequests();
 
             } catch (err) {
                 console.error("Advance apply error:", err);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Submission Failed',
-                    text: err.message || 'Error submitting advance payment.',
-                });
+                Swal.fire({ icon: 'error', title: 'Submission Failed', text: err.message || 'Error submitting advance.' });
             }
         });
     }
+
+    async function loadAdvanceRequests() {
+        try {
+            const res = await fetch(`${API_BASE}/supplier/getAllAdvances`, {
+                headers: { "Authorization": "Bearer " + token }
+            });
+            const body = await res.json().catch(() => null);
+            if (!res.ok) throw new Error(body?.status || "Failed to load requests");
+            renderAdvanceRequests(body?.data || []);
+        } catch (err) {
+            console.error("Error loading advance requests:", err);
+            Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Error fetching advance requests' });
+        }
+    }
+
+    function renderAdvanceRequests(requests) {
+        const tbody = document.getElementById("advanceRequestsTable");
+        if (!tbody) return;
+
+        tbody.innerHTML = "";
+        if (!requests.length) {
+            tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-gray-500 text-center">No requests found</td></tr>`;
+            return;
+        }
+
+        requests.forEach(req => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td class="p-3">${new Date(req.date).toLocaleDateString()}</td>
+                <td class="p-3">LKR ${req.amount}</td>
+                <td class="p-3">
+                    <span class="px-2 py-1 rounded text-sm ${
+                req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                    req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                        'bg-red-100 text-red-700'
+            }">${req.status}</span>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function fetchTeaProducts() {
+        fetch(`${API_BASE}/supplier/teaProduction`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.data && Array.isArray(data.data)) {
+                    displayTeaProducts(data.data);
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching tea products:', err);
+                const container = document.getElementById('products-container');
+                if (container) {
+                    container.innerHTML =
+                        '<p class="text-red-500 text-center col-span-full">Failed to load products. Please try again later.</p>';
+                }
+            });
+    }
+
+    function displayTeaProducts(products) {
+        const productsContainer = document.getElementById('products-container');
+        if (!productsContainer) return;
+        productsContainer.innerHTML = '';
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card border rounded-lg p-4 hover:border-tea-green transition';
+
+            card.innerHTML = `
+                <h3 class="font-semibold">${escapeHtml(product.name)}</h3>
+                <p class="text-gray-600 text-sm mb-3">${escapeHtml(product.description)}</p>
+                <div class="flex justify-between items-center">
+                    <p class="text-tea-green font-semibold">LKR ${formatPrice(product.price)}</p>
+                    <p class="font-semibold">${escapeHtml(product.quantity)}</p>
+                </div>
+                <button class="apply-btn mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition"
+                    data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
+                    Apply now
+                </button>
+            `;
+            productsContainer.appendChild(card);
+        });
+
+        document.querySelectorAll('.apply-btn').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const productId = e.target.getAttribute('data-product-id');
+                const productName = e.target.getAttribute('data-product-name');
+
+                const result = await Swal.fire({
+                    title: 'Confirm Tea Packet Application',
+                    html: `You are applying for the tea packet: <b>${productName}</b>`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, apply now',
+                    cancelButtonText: 'Cancel'
+                });
+
+                if (!result.isConfirmed) return;
+
+                try {
+                    const response = await fetch(`${API_BASE}/supplier/applyPacket?productId=${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            "Authorization": "Bearer " + token,
+                            "Content-Type": "application/json"
+                        }
+                    });
+
+                    const resJson = await response.json();
+                    if (resJson.code === 200) {
+                        Swal.fire({ icon: 'success', title: 'Success!', text: 'Request submitted successfully!' });
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Application Failed', text: 'Failed to submit request' });
+                    }
+                } catch (err) {
+                    console.error("Error:", err);
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while submitting your request' });
+                }
+                loadMonthlyPacketRequestsAndDisplay();
+            });
+        });
+    }
+
+    function escapeHtml(text) {
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+        return text.toString().replace(/[&<>"']/g, m => map[m]);
+    }
+
+    function formatPrice(price) {
+        return parseFloat(price).toFixed(2);
+    }
+
+    async function fetchMonthlyPacketRequests() {
+        try {
+            const resp = await fetch(`${API_BASE}/supplier/totalTeaPacketRequestsMonth`, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                }
+            });
+            const json = await resp.json();
+            return json.data || 0;
+        } catch {
+            return 0;
+        }
+    }
+
+    async function loadMonthlyPacketRequestsAndDisplay() {
+        const total = await fetchMonthlyPacketRequests();
+        const element = document.querySelector("#tea-packets-count");
+        if (element) element.textContent = `${total} units`;
+    }
+
+    renderCalendar();
+    loadAdvanceRequests();
+    fetchTeaProducts();
+    fetchMonthlyTotalAndDisplay();
+    loadMonthlyPacketRequestsAndDisplay();
 });
 
 async function fetchMonthlyTotalAndDisplay() {
@@ -219,204 +407,8 @@ async function fetchMonthlyTotal() {
     const token = localStorage.getItem("ctf_access_token");
     const resp = await fetch(`${API_BASE}/supplier/getSupplierMonthlyTotal`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
-        }
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" }
     });
-
-    if (!resp.ok) {
-        console.error("Failed to fetch monthly total");
-        return 0;
-    }
     const json = await resp.json();
     return json.data || 0;
-}
-
-async function loadAdvanceRequests() {
-    const token = localStorage.getItem("ctf_access_token");
-    if (!token) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Authentication Required',
-            text: 'You must log in first.',
-        }).then(() => {
-            window.location.href = "./login.html";
-        });
-        return;
-    }
-
-    try {
-        const res = await fetch(`${API_BASE}/supplier/getAllAdvances`, {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        const body = await res.json().catch(() => null);
-        if (!res.ok) throw new Error(body?.status || "Failed to load requests");
-
-        const requests = body?.data || [];
-        renderAdvanceRequests(requests);
-
-    } catch (err) {
-        console.error("Error loading advance requests:", err);
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: err.message || 'Error fetching advance requests',
-        });
-    }
-}
-
-function renderAdvanceRequests(requests) {
-    const tbody = document.getElementById("advanceRequestsTable");
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    if (!requests.length) {
-        tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-gray-500 text-center">No requests found</td></tr>`;
-        return;
-    }
-
-    requests.forEach(req => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td class="p-3">${new Date(req.date).toLocaleDateString()}</td>
-            <td class="p-3">LKR ${req.amount}</td>
-            <td class="p-3">
-                <span class="px-2 py-1 rounded text-sm ${
-            req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                    'bg-red-100 text-red-700'
-        }">${req.status}</span>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-function fetchTeaProducts() {
-    fetch(`${API_BASE}/supplier/teaProduction`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.data && Array.isArray(data.data)) {
-                displayTeaProducts(data.data);
-            } else {
-                console.error('Unexpected data format:', data);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching tea products:', error);
-            const container = document.getElementById('products-container');
-            if (container) {
-                container.innerHTML =
-                    '<p class="text-red-500 text-center col-span-full">Failed to load products. Please try again later.</p>';
-            }
-        });
-}
-
-function displayTeaProducts(products) {
-    const productsContainer = document.getElementById('products-container');
-    if (!productsContainer) return;
-
-    productsContainer.innerHTML = '';
-
-    products.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'product-card border rounded-lg p-4 hover:border-tea-green transition';
-
-        productCard.innerHTML = `
-            <h3 class="font-semibold">${escapeHtml(product.name)}</h3>
-            <p class="text-gray-600 text-sm mb-3">${escapeHtml(product.description)}</p>
-            <div class="flex justify-between items-center">
-                <p class="text-tea-green font-semibold">LKR ${formatPrice(product.price)}</p>
-                <p class="font-semibold">${escapeHtml(product.quantity)}</p>
-            </div>
-            <button class="apply-btn mt-4 w-full py-2 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition" 
-                data-product-id="${product.id}" data-product-name="${escapeHtml(product.name)}">
-                Apply now
-            </button>
-        `;
-
-        productsContainer.appendChild(productCard);
-    });
-
-    // attach event listeners
-    document.querySelectorAll('.apply-btn').forEach(button => {
-        button.addEventListener('click', async (e) => {
-            const productId = e.target.getAttribute('data-product-id');
-            const productName = e.target.getAttribute('data-product-name');
-            const token = localStorage.getItem("ctf_access_token");
-
-            // Show confirmation dialog
-            const result = await Swal.fire({
-                title: 'Confirm Tea Packet Application',
-                html: `You are applying for the tea packet: <b>${productName}</b>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, apply now',
-                cancelButtonText: 'Cancel'
-            });
-
-            if (!result.isConfirmed) {
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}/supplier/applyPacket?productId=${productId}`, {
-                    method: 'POST',
-                    headers: {
-                        "Authorization": "Bearer " + token,
-                        "Content-Type": "application/json"
-                    }
-                });
-
-                const result = await response.json();
-                if (result.code === 200) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Request submitted successfully!',
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Application Failed',
-                        text: 'Failed to submit request',
-                    });
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while submitting your request',
-                });
-            }
-        });
-    });
-}
-
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.toString().replace(/[&<>"']/g, function (m) { return map[m]; });
-}
-
-function formatPrice(price) {
-    return parseFloat(price).toFixed(2);
 }
