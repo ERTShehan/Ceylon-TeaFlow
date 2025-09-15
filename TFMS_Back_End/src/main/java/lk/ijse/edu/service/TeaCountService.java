@@ -1,5 +1,6 @@
 package lk.ijse.edu.service;
 
+import lk.ijse.edu.dto.DaySupplyDto;
 import lk.ijse.edu.dto.QualityDistributionDto;
 import lk.ijse.edu.dto.TeaLeafCountDto;
 import lk.ijse.edu.dto.TopSupplierDto;
@@ -14,4 +15,6 @@ public interface TeaCountService {
     List<TeaLeafCountDto> getAllTeaLeafCounts();
     QualityDistributionDto getTodayQualityDistribution();
     List<TopSupplierDto> getTopSuppliers();
+    List<DaySupplyDto> getSupplierCalendarData(String supplierId, int monthsBack);
+    double getSupplierMonthlyTotal(String supplierId);
 }

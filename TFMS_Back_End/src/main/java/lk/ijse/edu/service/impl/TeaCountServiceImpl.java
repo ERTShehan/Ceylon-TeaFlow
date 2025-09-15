@@ -1,5 +1,6 @@
 package lk.ijse.edu.service.impl;
 
+import lk.ijse.edu.dto.DaySupplyDto;
 import lk.ijse.edu.dto.QualityDistributionDto;
 import lk.ijse.edu.dto.TeaLeafCountDto;
 import lk.ijse.edu.dto.TopSupplierDto;
@@ -15,7 +16,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,6 +31,7 @@ import java.util.stream.Collectors;
 public class TeaCountServiceImpl implements TeaCountService {
     private final TeaCountRepository teaCountRepository;
     private final TeaLeafSupplierRepository teaLeafSupplierRepository;
+    private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private String generateNextTeaCountId(String lastId) {
         if (lastId == null) return "TLC-000-001";
@@ -189,6 +198,77 @@ public class TeaCountServiceImpl implements TeaCountService {
                         r[3] != null ? Double.valueOf(r[3].toString()) : 0.0
                 ))
                 .collect(Collectors.toList());
+    }
+
+    private double parseNetWeight(String netStr) {
+        if (netStr == null) return 0.0;
+        // extract first number-like substring
+        Pattern p = Pattern.compile("([0-9]+(?:\\.[0-9]+)?)");
+        Matcher m = p.matcher(netStr);
+        if (m.find()) {
+            try {
+                return Double.parseDouble(m.group(1));
+            } catch (NumberFormatException ex) {
+                return 0.0;
+            }
+        }
+        return 0.0;
+    }
+
+    @Override
+    public List<DaySupplyDto> getSupplierCalendarData(String supplierId, int monthsBack) {
+        // calculate start and end dates
+        LocalDate today = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(today);
+        YearMonth startMonth = currentMonth.minusMonths(monthsBack);
+
+        LocalDate startDate = startMonth.atDay(1);
+        LocalDate endDate = currentMonth.atEndOfMonth();
+
+        String fromStr = startDate.format(fmt); // "yyyy-MM-dd"
+        String toStr = endDate.format(fmt);
+
+        List<TeaLeafCount> counts = teaCountRepository.findBySupplierSupplierIdAndDateBetween(supplierId, fromStr, toStr);
+
+        // aggregate by date string (exact match of date value)
+        Map<String, Double> agg = new TreeMap<>(); // sorted by date
+        for (TeaLeafCount t : counts) {
+            String d = t.getDate();
+            double val = parseNetWeight(t.getNetWeight());
+            agg.put(d, agg.getOrDefault(d, 0.0) + val);
+        }
+
+        // Ensure every date in range exists in result (optional: include zeros)
+        List<DaySupplyDto> result = new ArrayList<>();
+        LocalDate cursor = startDate;
+        while (!cursor.isAfter(endDate)) {
+            String ds = cursor.format(fmt);
+            double total = agg.getOrDefault(ds, 0.0);
+            result.add(new DaySupplyDto(ds, total));
+            cursor = cursor.plusDays(1);
+        }
+
+        // return only dates for the months range, sorted
+        return result;
+    }
+
+    @Override
+    public double getSupplierMonthlyTotal(String supplierId) {
+        LocalDate today = LocalDate.now();
+        YearMonth currentMonth = YearMonth.from(today);
+
+        LocalDate startDate = currentMonth.atDay(1);
+        LocalDate endDate = currentMonth.atEndOfMonth();
+
+        String fromStr = startDate.format(fmt); // yyyy-MM-dd
+        String toStr = endDate.format(fmt);
+
+        List<TeaLeafCount> counts =
+                teaCountRepository.findBySupplierSupplierIdAndDateBetween(supplierId, fromStr, toStr);
+
+        return counts.stream()
+                .mapToDouble(c -> parseNetWeight(c.getNetWeight()))
+                .sum();
     }
 
 }

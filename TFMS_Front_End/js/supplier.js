@@ -1,7 +1,6 @@
 const API_BASE = "http://localhost:8080";
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to fetch tea products from the backend
     function fetchTeaProducts() {
         fetch('http://localhost:8080/supplier/teaProduction')
             .then(response => {
@@ -19,16 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error fetching tea products:', error);
-                // Display error message in the products container
                 document.getElementById('products-container').innerHTML =
                     '<p class="text-red-500 text-center col-span-full">Failed to load products. Please try again later.</p>';
             });
     }
 
-    // Function to display tea products in the UI
     function displayTeaProducts(products) {
         const productsContainer = document.getElementById('products-container');
-        productsContainer.innerHTML = ''; // Clear any existing content
+        productsContainer.innerHTML = '';
 
         products.forEach(product => {
             const productCard = document.createElement('div');
@@ -50,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Helper function to escape HTML characters
     function escapeHtml(text) {
         const map = {
             '&': '&amp;',
@@ -62,12 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
-    // Helper function to format price
     function formatPrice(price) {
         return parseFloat(price).toFixed(2);
     }
 
-    // Fetch tea products when the page loads
     fetchTeaProducts();
 
     const form = document.getElementById("advanceForm");
@@ -84,7 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // get token from login.js saved storage
         const token = localStorage.getItem("ctf_access_token");
         if (!token) {
             alert("You must log in first.");
@@ -114,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             alert(body?.data || "Advance application submitted successfully!");
             form.reset();
+            loadAdvanceRequests();
 
         } catch (err) {
             console.error("Advance apply error:", err);

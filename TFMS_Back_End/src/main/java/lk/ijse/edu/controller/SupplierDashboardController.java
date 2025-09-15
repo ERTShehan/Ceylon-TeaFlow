@@ -1,9 +1,11 @@
 package lk.ijse.edu.controller;
 
-import lk.ijse.edu.dto.APIResponse;
-import lk.ijse.edu.dto.AdvancePaymentsDto;
-import lk.ijse.edu.dto.TeaProductDto;
+import lk.ijse.edu.dto.*;
+import lk.ijse.edu.entity.TeaLeafSupplier;
+import lk.ijse.edu.repository.TeaLeafSupplierRepository;
 import lk.ijse.edu.service.AdvancePaymentService;
+import lk.ijse.edu.service.TeaCountService;
+import lk.ijse.edu.service.TeaPacketRequestService;
 import lk.ijse.edu.service.TeaProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,9 @@ import java.util.List;
 public class SupplierDashboardController {
     private final TeaProductService teaProductService;
     private final AdvancePaymentService advancePaymentService;
+    private final TeaCountService teaCountService;
+    private final TeaLeafSupplierRepository teaLeafSupplierRepository;
+    private final TeaPacketRequestService teaPacketRequestService;
 
     @GetMapping("/teaProduction")
     public ResponseEntity<APIResponse<List<TeaProductDto>>> getTeaProducts() {
@@ -33,7 +38,7 @@ public class SupplierDashboardController {
             @RequestBody AdvancePaymentsDto advancePaymentsDto,
             Principal principal
     ) {
-        String username = principal.getName(); // login unā user name (DB 'users' table eke username)
+        String username = principal.getName(); // login una user name (DB 'users' table eke username)
         String response = advancePaymentService.saveAdvancePayment(advancePaymentsDto, username);
 
         return new ResponseEntity<>(new APIResponse<>(
@@ -52,5 +57,48 @@ public class SupplierDashboardController {
                 "Advance Requests Retrieved Successfully",
                 requests
         ));
+    }
+
+    @GetMapping("/supplierCalendarData")
+    public ResponseEntity<APIResponse<List<DaySupplyDto>>> getSupplierCalendarData(
+            @RequestParam(defaultValue = "3") int monthsBack,
+            Principal principal) {
+
+        String username = principal.getName();
+
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found for username: " + username));
+
+        List<DaySupplyDto> data = teaCountService.getSupplierCalendarData(supplier.getSupplierId(), monthsBack);
+
+        APIResponse<List<DaySupplyDto>> resp =
+                new APIResponse<>(200, "Supplier calendar data retrieved", data);
+        return ResponseEntity.ok(resp);
+    }
+
+    @GetMapping("/getSupplierMonthlyTotal")
+    public ResponseEntity<APIResponse<Double>> getMonthlySupplyTotal(Principal principal) {
+        String username = principal.getName();
+
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found for username: " + username));
+
+        double total = teaCountService.getSupplierMonthlyTotal(supplier.getSupplierId());
+
+        APIResponse<Double> resp = new APIResponse<>(200, "Monthly total retrieved", total);
+        return ResponseEntity.ok(resp);
+    }
+
+    @PostMapping("/applyPacket")
+    public ResponseEntity<APIResponse<ApplyPacketResponseDto>> applyPacket(
+            @RequestParam String productId,
+            Principal principal) {
+
+        String username = principal.getName();
+        ApplyPacketResponseDto dto = teaPacketRequestService.applyPacket(productId, username);
+
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "SUCCESS", dto)
+        );
     }
 }

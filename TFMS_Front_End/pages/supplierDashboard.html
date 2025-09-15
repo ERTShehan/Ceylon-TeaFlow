@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplier Dashboard - Ceylon TeaFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
@@ -151,14 +152,15 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Monthly Supply</h3>
-                        <p class="text-2xl font-bold text-tea-green">1,245 kg</p>
+                        <p id="monthly-supply-total" class="text-2xl font-bold text-tea-green">0 kg</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-leaf text-tea-green text-xl"></i>
                     </div>
                 </div>
-                <p class="text-sm text-gray-500 mt-2">Updated: Today, 10:30 AM</p>
+                <p class="text-sm text-gray-500 mt-2">Updated: Today</p>
             </div>
+
 
             <div class="bg-white rounded-xl shadow-md p-6">
                 <div class="flex justify-between items-start">
@@ -250,74 +252,35 @@
             <h2 class="text-xl font-semibold text-tea-green mb-4">Monthly Supply History</h2>
 
             <div class="mb-6 flex justify-between items-center">
-                <h3 class="text-lg font-medium">August 2025</h3>
+                <h3 id="calendar-month-label" class="text-lg font-medium">August 2025</h3>
                 <div class="flex space-x-2">
-                    <button class="px-3 py-1 bg-tea-cream rounded-lg hover:bg-tea-green hover:text-white transition">
+                    <button id="prev-month" class="px-3 py-1 bg-tea-cream rounded-lg hover:bg-tea-green hover:text-white transition">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="px-3 py-1 bg-tea-cream rounded-lg hover:bg-tea-green hover:text-white transition">
+                    <button id="next-month" class="px-3 py-1 bg-tea-cream rounded-lg hover:bg-tea-green hover:text-white transition">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Calendar View -->
-            <div class="grid grid-cols-7 gap-2 mb-6">
-                <div class="text-center text-gray-500 font-medium">Sun</div>
-                <div class="text-center text-gray-500 font-medium">Mon</div>
-                <div class="text-center text-gray-500 font-medium">Tue</div>
-                <div class="text-center text-gray-500 font-medium">Wed</div>
-                <div class="text-center text-gray-500 font-medium">Thu</div>
-                <div class="text-center text-gray-500 font-medium">Fri</div>
-                <div class="text-center text-gray-500 font-medium">Sat</div>
-
-                <!-- Empty days before the start of the month -->
-                <div class="calendar-day p-2 text-center text-gray-300"></div>
-                <div class="calendar-day p-2 text-center text-gray-300"></div>
-                <div class="calendar-day p-2 text-center text-gray-300"></div>
-                <div class="calendar-day p-2 text-center text-gray-300"></div>
-
-                <!-- Days with data -->
-                <div class="calendar-day p-2 text-center">1</div>
-                <div class="calendar-day p-2 text-center">2</div>
-                <div class="calendar-day has-data p-2 text-center rounded-lg border border-tea-green">
-                    3
-                    <div class="text-xs text-tea-green">45 kg</div>
-                </div>
-
-                <!-- More days... -->
-                <div class="calendar-day p-2 text-center">4</div>
-                <div class="calendar-day p-2 text-center">5</div>
-                <div class="calendar-day p-2 text-center">6</div>
-                <div class="calendar-day has-data p-2 text-center rounded-lg border border-tea-green">
-                    7
-                    <div class="text-xs text-tea-green">52 kg</div>
-                </div>
-                <div class="calendar-day p-2 text-center">8</div>
-                <div class="calendar-day p-2 text-center">9</div>
-                <div class="calendar-day p-2 text-center">10</div>
-
-                <!-- Continue for the rest of the month with some sample data -->
-                <!-- For brevity, I'll just show a few more sample days -->
-                <div class="calendar-day has-data p-2 text-center rounded-lg border border-tea-green">
-                    14
-                    <div class="text-xs text-tea-green">125 kg</div>
-                </div>
-                <!-- Remaining days would be implemented similarly in a real application -->
+            <div id="calendar-grid" class="grid grid-cols-7 gap-2 mb-6">
+                <!-- headers will be rendered by JS -->
             </div>
 
             <div class="bg-gray-50 p-4 rounded-lg">
-                <h4 class="font-medium text-tea-green mb-2">August Summary</h4>
+                <h4 class="font-medium text-tea-green mb-2">Month Summary</h4>
                 <div class="flex justify-between mb-1">
-                    <span>Total Supplied: 1,245 kg</span>
-                    <span>LKR 124,500</span>
+                    <span id="month-total-supplied">Total Supplied: 0 kg</span>
+                    <span id="month-amount">LKR 0</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="progress-bar bg-tea-green h-2 rounded-full" style="width: 75%"></div>
+                    <div id="month-progress" class="progress-bar bg-tea-green h-2 rounded-full" style="width: 0%"></div>
                 </div>
-                <p class="text-sm text-gray-500 mt-2">75% of monthly target achieved</p>
+                <p id="month-target-text" class="text-sm text-gray-500 mt-2">0% of monthly target achieved</p>
             </div>
         </div>
+
 
         <!-- Shop Section -->
         <div id="shop" class="bg-white rounded-xl shadow-md p-6 mb-8">
@@ -392,15 +355,15 @@
         </div>
     </div>
 </div>
-<script src="../js/supplier.js"></script>
-<script src="../js/applyAdvance.js"></script>
+<!--<script src="../js/supplier.js"></script>-->
+<!--<script src="../js/applyAdvance.js"></script>-->
+<!--<script src="../js/calendar.js"></script>-->
+<script src="../js/supplierDashboard.js"></script>
 <script>
-    // Mobile menu toggle
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {
         document.querySelector('.sidebar').classList.toggle('active');
     });
 
-    // Simple quantity adjusters for tea packets
     document.querySelectorAll('.bg-gray-200').forEach(button => {
         button.addEventListener('click', function() {
             const input = this.parentElement.querySelector('input');
@@ -412,7 +375,6 @@
         });
     });
 
-    // Animate progress bars on scroll into view
     function animateProgressBars() {
         document.querySelectorAll('.progress-bar').forEach(bar => {
             const rect = bar.getBoundingClientRect();
@@ -423,7 +385,6 @@
     }
 
     window.addEventListener('scroll', animateProgressBars);
-    // Initial call
     animateProgressBars();
 </script>
 </body>

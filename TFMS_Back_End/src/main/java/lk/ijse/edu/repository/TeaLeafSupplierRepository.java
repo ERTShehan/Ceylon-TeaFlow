@@ -1,9 +1,12 @@
 package lk.ijse.edu.repository;
 
 import lk.ijse.edu.entity.TeaLeafSupplier;
+import lk.ijse.edu.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface TeaLeafSupplierRepository extends JpaRepository<TeaLeafSupplier, String> {
@@ -13,4 +16,6 @@ public interface TeaLeafSupplierRepository extends JpaRepository<TeaLeafSupplier
     String findLastSupplierId();
 
     TeaLeafSupplier findByTeaCardNumber(String teaCardNumber);
+
+    Optional<TeaLeafSupplier> findByUserUsername(String username);
 }

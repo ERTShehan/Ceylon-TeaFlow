@@ -32,4 +32,8 @@ public interface TeaCountRepository extends JpaRepository<TeaLeafCount, String> 
             LIMIT 5
             """, nativeQuery = true)
     List<Object[]> findTopSuppliersNative();
+
+    List<TeaLeafCount> findBySupplierSupplierIdAndDateBetween(String supplierId, String fromDate, String toDate);
+
+//    List<TeaLeafCount> findBySupplierSupplierIdAndDateStartingWith(String supplierId, String datePrefix);
 }
