@@ -31,5 +31,5 @@ public class AdvancePayment {
     private String reason;
 
     @Enumerated(EnumType.STRING)
-    private AdvanceStatus status;
+    private RequestStatus status;
 }

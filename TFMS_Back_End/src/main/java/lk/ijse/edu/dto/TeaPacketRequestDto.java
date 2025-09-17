@@ -1,6 +1,7 @@
 package lk.ijse.edu.dto;
 
 import lk.ijse.edu.entity.OrderStatus;
+import lk.ijse.edu.entity.RequestStatus;
 import lombok.*;
 
 import java.util.Date;
@@ -15,6 +16,6 @@ public class TeaPacketRequestDto {
     private String productName;
     private double price;
     private String weight;
-    private OrderStatus status;
+    private RequestStatus status;
     private Date requestDate;
 }

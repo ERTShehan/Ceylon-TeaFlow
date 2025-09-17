@@ -2,7 +2,7 @@ package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.AdvancePaymentsDto;
 import lk.ijse.edu.entity.AdvancePayment;
-import lk.ijse.edu.entity.AdvanceStatus;
+import lk.ijse.edu.entity.RequestStatus;
 import lk.ijse.edu.entity.TeaLeafSupplier;
 import lk.ijse.edu.entity.User;
 import lk.ijse.edu.repository.AdvancePaymentRepository;
@@ -65,7 +65,7 @@ public class AdvancePaymentServiceImpl implements AdvancePaymentService {
                 .amount(advancePaymentsDto.getAmount())
                 .paymentDate(new Date())
                 .reason(advancePaymentsDto.getReason())
-                .status(AdvanceStatus.PENDING)
+                .status(RequestStatus.PENDING)
                 .build();
 
         advancePaymentRepository.save(advancePayment);

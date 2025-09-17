@@ -1,6 +1,6 @@
 package lk.ijse.edu.entity;
 
-public enum AdvanceStatus {
+public enum RequestStatus {
     PENDING,
     APPROVED,
     REJECTED

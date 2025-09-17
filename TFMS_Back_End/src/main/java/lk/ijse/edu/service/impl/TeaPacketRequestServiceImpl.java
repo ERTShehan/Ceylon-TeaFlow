@@ -61,7 +61,7 @@ public class TeaPacketRequestServiceImpl implements TeaPacketRequestService {
                 .supplier(supplier)
                 .product(product)
                 .requestDate(new Date())
-                .status(OrderStatus.PENDING)
+                .status(RequestStatus.PENDING)
                 .build();
 
         teaPacketRequestRepository.save(request);

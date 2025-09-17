@@ -1,6 +1,11 @@
 const API_BASE = "http://localhost:8080";
 const token = localStorage.getItem("ctf_access_token");
 
+
+let currentPage = 1;
+const itemsPerPage = 5;
+let allAdvanceRequests = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     let monthsBack = 3;
     let currentYearMonth = new Date();
@@ -178,63 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    const form = document.getElementById("advanceForm");
-    if (form) {
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const amount = document.getElementById("amount")?.value?.trim();
-            const reason = document.getElementById("reason")?.value?.trim();
-
-            if (!amount) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Missing Amount',
-                    text: 'Please enter the advance amount.',
-                });
-                return;
-            }
-
-            const result = await Swal.fire({
-                title: 'Confirm Advance Request',
-                html: `You are requesting an advance of <b>LKR ${amount}</b>.<br>Reason: ${reason || 'No reason provided'}`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, submit request',
-                cancelButtonText: 'Cancel'
-            });
-
-            if (!result.isConfirmed) return;
-
-            try {
-                const res = await fetch(`${API_BASE}/supplier/applyAdvance`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": "Bearer " + token
-                    },
-                    body: JSON.stringify({ amount, reason })
-                });
-
-                const body = await res.json().catch(() => null);
-                if (!res.ok) {
-                    const msg = body?.data || body?.status || res.statusText || "Request failed";
-                    throw new Error(msg);
-                }
-
-                Swal.fire({ icon: 'success', title: 'Success!', text: body?.data || 'Advance submitted!' });
-                form.reset();
-                loadAdvanceRequests();
-
-            } catch (err) {
-                console.error("Advance apply error:", err);
-                Swal.fire({ icon: 'error', title: 'Submission Failed', text: err.message || 'Error submitting advance.' });
-            }
-        });
-    }
-
     async function loadAdvanceRequests() {
         try {
             const res = await fetch(`${API_BASE}/supplier/getAllAdvances`, {
@@ -242,38 +190,104 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const body = await res.json().catch(() => null);
             if (!res.ok) throw new Error(body?.status || "Failed to load requests");
-            renderAdvanceRequests(body?.data || []);
+
+            allAdvanceRequests = body?.data || [];
+            currentPage = 1;
+            renderAdvanceRequests();
+
         } catch (err) {
             console.error("Error loading advance requests:", err);
             Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Error fetching advance requests' });
         }
     }
 
-    function renderAdvanceRequests(requests) {
+    function renderAdvanceRequests() {
         const tbody = document.getElementById("advanceRequestsTable");
+        const paginationControls = document.getElementById("pagination-controls");
+
         if (!tbody) return;
 
+        // clear
         tbody.innerHTML = "";
-        if (!requests.length) {
+        paginationControls.innerHTML = "";
+
+        if (!allAdvanceRequests.length) {
             tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-gray-500 text-center">No requests found</td></tr>`;
             return;
         }
 
-        requests.forEach(req => {
+        const totalPages = Math.ceil(allAdvanceRequests.length / itemsPerPage);
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, allAdvanceRequests.length);
+        const pageData = allAdvanceRequests.slice(startIndex, endIndex);
+
+        pageData.forEach(req => {
             const row = document.createElement("tr");
+
+            let statusClass = "status-pending";
+            if (req.status === 'APPROVED') statusClass = "status-approved";
+            if (req.status === 'REJECTED') statusClass = "status-rejected";
+
             row.innerHTML = `
-                <td class="p-3">${new Date(req.date).toLocaleDateString()}</td>
-                <td class="p-3">LKR ${req.amount}</td>
-                <td class="p-3">
-                    <span class="px-2 py-1 rounded text-sm ${
-                req.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                    req.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                        'bg-red-100 text-red-700'
-            }">${req.status}</span>
-                </td>
-            `;
+            <td class="p-3">${new Date(req.date).toLocaleDateString()}</td>
+            <td class="p-3">LKR ${req.amount.toLocaleString()}</td>
+            <td class="p-3">
+                <span class="${statusClass}">${req.status}</span>
+            </td>
+        `;
             tbody.appendChild(row);
         });
+
+        renderPaginationControls(totalPages);
+    }
+
+    function renderPaginationControls(totalPages) {
+        const paginationControls = document.getElementById("pagination-controls");
+        if (totalPages <= 1) return;
+
+        paginationControls.className = "flex justify-center gap-2 mt-4"; // wrapper styles
+
+        function createButton(label, disabled, active, onClick) {
+            const btn = document.createElement("button");
+            btn.innerHTML = label;
+
+            btn.className =
+                "px-3 py-1 rounded-md border text-sm font-medium transition " +
+                (disabled
+                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    : active
+                        ? "bg-tea-green text-white border-tea-green"
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-tea-green hover:text-white");
+
+            btn.disabled = disabled;
+            if (!disabled) btn.addEventListener("click", onClick);
+            return btn;
+        }
+
+        paginationControls.appendChild(
+            createButton("&laquo;", currentPage === 1, false, () => {
+                currentPage--;
+                renderAdvanceRequests();
+            })
+        );
+
+        const startPage = Math.max(1, currentPage - 2);
+        const endPage = Math.min(totalPages, startPage + 4);
+        for (let i = startPage; i <= endPage; i++) {
+            paginationControls.appendChild(
+                createButton(i, false, i === currentPage, () => {
+                    currentPage = i;
+                    renderAdvanceRequests();
+                })
+            );
+        }
+
+        paginationControls.appendChild(
+            createButton("&raquo;", currentPage === totalPages, false, () => {
+                currentPage++;
+                renderAdvanceRequests();
+            })
+        );
     }
 
     function fetchTeaProducts() {
@@ -397,6 +411,8 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchMonthlyTotalAndDisplay();
     loadMonthlyPacketRequestsAndDisplay();
     new SupplierDashboard();
+    loadAdvanceAvailability();
+    loadAccountBalance();
 });
 
 async function fetchMonthlyTotalAndDisplay() {
@@ -413,6 +429,188 @@ async function fetchMonthlyTotal() {
     const json = await resp.json();
     return json.data || 0;
 }
+
+async function loadAdvanceAvailability() {
+    try {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+
+        const resp = await fetch(`${API_BASE}/supplier/getSupplierMonthlyTotal?year=${year}&month=${month}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!resp.ok) throw new Error("Failed to fetch monthly total");
+
+        const result = await resp.json();
+        const totalPrice = result?.data?.totalPrice || 0;
+
+        const available = totalPrice * 0.6;
+        console.log(available);
+
+        document.getElementById("advance-available-amount").textContent =
+            `LKR ${available.toLocaleString()}`;
+        document.getElementById("advance-progress").style.width = "60%";
+        document.getElementById("advance-text").textContent =
+            "60% of your monthly earnings available";
+
+        window.MAX_ADVANCE_AMOUNT = available;
+
+    } catch (err) {
+        console.error("Error loading advance availability:", err);
+    }
+}
+
+async function loadAccountBalance() {
+    try {
+        const token = localStorage.getItem("ctf_access_token");
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+
+        const resp = await fetch(
+            `${API_BASE}/supplier/getSupplierMonthlyTotal?year=${year}&month=${month}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+
+        const body = await resp.json();
+        if (!resp.ok) throw new Error(body?.status || "Failed to fetch balance");
+
+        const totalPrice = body?.data?.totalPrice || 0;
+
+        const balanceEl = document.querySelector("#account-balance-amount");
+        if (balanceEl) {
+            balanceEl.textContent = `LKR ${totalPrice.toLocaleString()}`;
+        }
+
+    } catch (err) {
+        console.error("Error loading account balance:", err);
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to load account balance."
+        });
+    }
+}
+
+
+document.getElementById("advanceForm")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const amount = parseFloat(document.getElementById("amount").value.trim());
+    const reason = document.getElementById("reason").value.trim();
+
+    if (isNaN(amount) || amount <= 0) {
+        Swal.fire({ icon: 'warning', title: 'Invalid Amount', text: 'Please enter a valid advance amount.' });
+        return;
+    }
+
+    if (amount > window.MAX_ADVANCE_AMOUNT) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Limit Exceeded',
+            text: `You can only request up to LKR ${window.MAX_ADVANCE_AMOUNT.toLocaleString()}.`
+        });
+        return;
+    }
+
+    const result = await Swal.fire({
+        title: 'Confirm Advance Request',
+        html: `You are requesting an advance of <b>LKR ${amount}</b>.<br>Reason: ${reason || 'No reason provided'}`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, submit request',
+        cancelButtonText: 'Cancel'
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+        const res = await fetch(`${API_BASE}/supplier/applyAdvance`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ amount, reason })
+        });
+
+        const body = await res.json();
+        if (!res.ok) throw new Error(body?.status || "Submission failed");
+
+        Swal.fire({ icon: 'success', title: 'Success', text: body?.data || "Advance submitted successfully!" });
+        e.target.reset();
+        loadAdvanceRequests();
+
+    } catch (err) {
+        console.error("Advance apply error:", err);
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message || "Error submitting advance" });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const downloadBtn = document.querySelector("#downloadBillBtn");
+    if (!downloadBtn) return;
+
+    downloadBtn.addEventListener("click", async () => {
+        const yearEl = document.getElementById("yearSelect");
+        const monthEl = document.getElementById("monthSelect");
+
+        if (!yearEl || !monthEl) {
+            console.error("Year or Month select element not found!");
+            return;
+        }
+
+        const year = yearEl.value;
+        const month = monthEl.value;
+        const token = localStorage.getItem("ctf_access_token");
+
+        console.log("Year:", year, "Month:", month);
+
+        try {
+            const resp = await fetch(
+                `${API_BASE}/supplier/downloadMonthlyBill?year=${year}&month=${month}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    }
+                }
+            );
+
+            if (!resp.ok) {
+                const errorText = await resp.text();
+                throw new Error(errorText || "Failed to download bill");
+            }
+
+            const blob = await resp.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            window.open(url, "_blank");
+
+        } catch (err) {
+            console.error("Error downloading monthly bill:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Download Failed",
+                text: "Could not generate monthly bill. Please try again."
+            });
+        }
+    });
+});
+
+
 
 class SupplierDashboard {
     constructor() {

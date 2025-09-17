@@ -25,7 +25,7 @@ public class TeaPacketRequest {
     private TeaProduct product;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
+    private RequestStatus status;
 
     private Date requestDate;
 

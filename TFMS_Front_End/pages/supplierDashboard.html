@@ -51,8 +51,8 @@
     }
 
     .main-content {
-      height: 100vh; /* Full viewport height */
-      overflow-y: auto; /* Enable scrolling for main content */
+      height: 100vh;
+      overflow-y: auto;
     }
 
     .calendar-day {
@@ -141,6 +141,16 @@
             <span>Advance Payment</span>
           </a>
         </li>
+        <!-- New Monthly Tea Bill Navigation Item -->
+        <li>
+          <a
+                  href="#monthly-tea-bill"
+                  class="flex items-center p-3 rounded-lg hover:bg-tea-green-light"
+          >
+            <i class="fas fa-file-invoice-dollar mr-3"></i>
+            <span>Monthly Tea Bill</span>
+          </a>
+        </li>
         <li>
           <a
                   href="#account"
@@ -209,7 +219,9 @@
         <div class="flex justify-between items-start">
           <div>
             <h3 class="text-gray-500">Account Balance</h3>
-            <p class="text-2xl font-bold text-tea-green">LKR 56,780</p>
+            <p id="account-balance-amount" class="text-2xl font-bold text-tea-green">
+              LKR 0
+            </p>
           </div>
           <div class="bg-tea-cream p-3 rounded-lg">
             <i class="fas fa-wallet text-tea-green text-xl"></i>
@@ -314,6 +326,44 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Monthly Tea Bill Modal -->
+    <div id="monthly-tea-bill-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="modal-content bg-white p-6 rounded-lg shadow-lg w-11/12 max-w-md relative">
+        <span class="close absolute top-2 right-3 text-2xl cursor-pointer">&times;</span>
+        <h2 class="text-xl font-semibold text-tea-green mb-4">
+          <i class="fas fa-file-invoice-dollar mr-2"></i>Monthly Tea Bill
+        </h2>
+        <div class="mb-4">
+          <label class="block text-gray-700 mb-2">Select Year</label>
+          <select id="yearSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+            <option>2025</option>
+            <option>2024</option>
+            <option>2023</option>
+          </select>
+        </div>
+        <div class="mb-6">
+          <label class="block text-gray-700 mb-2">Select Month</label>
+          <select id="monthSelect" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8" selected>August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+        <button id="downloadBillBtn" class="w-full py-3 bg-tea-green text-white rounded-lg font-semibold hover:bg-tea-green-light transition">
+          <i class="fas fa-download mr-2"></i>Download Bill
+        </button>
       </div>
     </div>
 
@@ -453,22 +503,23 @@
           <h3 class="font-medium mb-3">Available for Advance</h3>
           <div class="bg-gray-50 p-4 rounded-lg">
             <div class="text-center mb-4">
-              <div class="text-3xl font-bold text-tea-green">
-                LKR 45,000
+              <div id="advance-available-amount" class="text-3xl font-bold text-tea-green">
+                LKR 0
               </div>
               <p class="text-gray-600">Based on your recent supplies</p>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
-              <div
-                      class="progress-bar bg-tea-green h-2 rounded-full"
-                      style="width: 60%"
-              ></div>
+              <div id="advance-progress"
+                   class="progress-bar bg-tea-green h-2 rounded-full"
+                   style="width: 0%">
+              </div>
             </div>
-            <p class="text-sm text-gray-500 text-center">
-              60% of your monthly earnings available
+            <p id="advance-text" class="text-sm text-gray-500 text-center">
+              Loading...
             </p>
           </div>
         </div>
+
 
         <div class="bg-teal-50 p-6 rounded-lg mb-8">
           <h3 class="font-medium text-xl mb-4 text-teal-800">
@@ -520,6 +571,7 @@
             </thead>
             <tbody id="advanceRequestsTable"></tbody>
           </table>
+          <div id="pagination-controls" class="flex gap-2 mt-4"></div>
         </div>
       </div>
     </div>
@@ -535,6 +587,27 @@
           .addEventListener("click", function () {
             document.querySelector(".sidebar").classList.toggle("active");
           });
+
+  document.querySelectorAll('a[href="#monthly-tea-bill"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('monthly-tea-bill-modal').classList.remove('hidden');
+    });
+  });
+
+  document.querySelectorAll('.modal .close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
+      this.closest('.modal').classList.add('hidden');
+    });
+  });
+
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+      }
+    });
+  });
 
   document.querySelectorAll(".bg-gray-200").forEach((button) => {
     button.addEventListener("click", function () {

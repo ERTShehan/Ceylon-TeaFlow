@@ -1,5 +1,12 @@
 package lk.ijse.edu.controller;
 
+import com.lowagie.text.*;
+import com.lowagie.text.Font;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import jakarta.servlet.http.HttpServletResponse;
 import lk.ijse.edu.dto.*;
 import lk.ijse.edu.entity.TeaLeafSupplier;
 import lk.ijse.edu.repository.TeaLeafSupplierRepository;
@@ -9,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -23,6 +32,7 @@ public class SupplierDashboardController {
     private final TeaLeafSupplierRepository teaLeafSupplierRepository;
     private final TeaPacketRequestService teaPacketRequestService;
     private final SupplierTotalPriceService supplierTotalPriceService;
+    private final SupplierBillService supplierBillService;
 
     @GetMapping("/teaProduction")
     public ResponseEntity<APIResponse<List<TeaProductDto>>> getTeaProducts() {
@@ -146,5 +156,70 @@ public class SupplierDashboardController {
         );
     }
 
+    @GetMapping(value = "/getMonthlyBillRecord", params = {"year", "month"})
+    public ResponseEntity<APIResponse<MonthlyBillRecordDto>> getMonthlyBillRecord(
+            Principal principal,
+            @RequestParam int year,
+            @RequestParam int month) {
 
+        String username = principal.getName();
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        MonthlyBillRecordDto dto = supplierBillService.getMonthlyBill(supplier.getSupplierId(), year, month);
+        return ResponseEntity.ok(new APIResponse<>(200, "Monthly Bill Retrieved", dto));
+    }
+
+    @GetMapping(value = "/downloadMonthlyBill", params = {"year", "month"})
+    public void downloadMonthlyBill(HttpServletResponse response,
+                                    Principal principal,
+                                    @RequestParam int year,
+                                    @RequestParam int month) throws IOException {
+
+        String username = principal.getName();
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        MonthlyBillRecordDto dto = supplierBillService.getMonthlyBill(supplier.getSupplierId(), year, month);
+
+        response.setContentType("application/pdf");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=MonthlyBill-" + year + "-" + month + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        Document doc = new Document(PageSize.A4);
+        PdfWriter.getInstance(doc, response.getOutputStream());
+
+        doc.open();
+
+        Font titleFont = new Font(Font.HELVETICA, 20, Font.BOLD, Color.GREEN.darker());
+        Paragraph title = new Paragraph("Ceylon TeaFlow - Monthly Tea Bill", titleFont);
+        title.setAlignment(Paragraph.ALIGN_CENTER);
+        doc.add(title);
+
+        doc.add(new Paragraph(" "));
+
+        PdfPTable table = new PdfPTable(3);
+        table.setWidthPercentage(100);
+
+        table.addCell(getCell("Supplier Name:", dto.getSupplierName()));
+        table.addCell(getCell("Tea Card Number:", dto.getTeaCardNumber()));
+        table.addCell(getCell("Year:", String.valueOf(dto.getYear())));
+        table.addCell(getCell("Month:", String.valueOf(dto.getMonth())));
+        table.addCell(getCell("Total Weight:", dto.getTotalWeight() + " kg"));
+        table.addCell(getCell("Unit Price:", "LKR " + dto.getUnitPrice()));
+        table.addCell(getCell("Advance Payment:", "LKR " + dto.getAdvancePayment()));
+        table.addCell(getCell("Tea Packet Cost:", "LKR " + dto.getTeaPacketCost()));
+        table.addCell(getCell("Net Total Price:", "LKR " + dto.getTotalPrice()));
+
+        doc.add(table);
+
+        doc.close();
+    }
+
+    private PdfPCell getCell(String label, String value) {
+        PdfPCell cell = new PdfPCell(new Phrase(label + " " + value));
+        cell.setBorder(Rectangle.NO_BORDER);
+        return cell;
+    }
 }
