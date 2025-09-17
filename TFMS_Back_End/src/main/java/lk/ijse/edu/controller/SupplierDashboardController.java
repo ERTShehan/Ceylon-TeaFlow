@@ -3,10 +3,7 @@ package lk.ijse.edu.controller;
 import lk.ijse.edu.dto.*;
 import lk.ijse.edu.entity.TeaLeafSupplier;
 import lk.ijse.edu.repository.TeaLeafSupplierRepository;
-import lk.ijse.edu.service.AdvancePaymentService;
-import lk.ijse.edu.service.TeaCountService;
-import lk.ijse.edu.service.TeaPacketRequestService;
-import lk.ijse.edu.service.TeaProductService;
+import lk.ijse.edu.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,7 @@ public class SupplierDashboardController {
     private final TeaCountService teaCountService;
     private final TeaLeafSupplierRepository teaLeafSupplierRepository;
     private final TeaPacketRequestService teaPacketRequestService;
+    private final SupplierTotalPriceService supplierTotalPriceService;
 
     @GetMapping("/teaProduction")
     public ResponseEntity<APIResponse<List<TeaProductDto>>> getTeaProducts() {
@@ -129,5 +127,24 @@ public class SupplierDashboardController {
                 new APIResponse<>(200, "All tea packet requests retrieved", requests)
         );
     }
+
+    @GetMapping(value = "/getSupplierMonthlyTotal", params = {"year", "month"})
+    public ResponseEntity<APIResponse<MonthlySupplySummaryDto>> getSupplierMonthlyTotal(Principal principal,
+            @RequestParam int year,
+            @RequestParam int month
+            ) {
+
+        String username = principal.getName();
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        MonthlySupplySummaryDto summary =
+                supplierTotalPriceService.getSupplierMonthlyTotalPrice(supplier.getSupplierId(), year, month);
+
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "Monthly supply summary retrieved successfully", summary)
+        );
+    }
+
 
 }

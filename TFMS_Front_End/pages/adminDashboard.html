@@ -182,6 +182,60 @@
   <i class="fas fa-arrow-up"></i>
 </button>
 
+<!-- Tea Leaf Price Modal -->
+<div id="teaLeafPriceModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-tea-green mb-4">
+      Tea Leaf Price Management
+    </h2>
+
+    <!-- Form Section -->
+    <div class="tea-product-form">
+      <h3 class="text-lg font-semibold text-tea-green mb-3">
+        Set Tea Leaf Price
+      </h3>
+      <form id="teaLeafPriceForm">
+        <input type="hidden" id="teaLeafPriceId">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="effectiveMonth"
+            >Effective Month</label
+            >
+            <input
+                    type="month"
+                    id="effectiveMonth"
+                    class="w-full p-2 border rounded"
+                    required
+            />
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-gray-700 mb-2" for="pricePerKg"
+            >Price Per Kg (LKR)</label
+            >
+            <input
+                    type="number"
+                    step="0.01"
+                    id="pricePerKg"
+                    class="w-full p-2 border rounded"
+                    required
+            />
+          </div>
+        </div>
+        <button
+                type="submit"
+                id="teaLeafPriceSubmitBtn"
+                class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
+        >
+          Set Price
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>
+
 <!-- Tea Product Modal -->
 <div id="teaProductModal" class="modal">
   <div class="modal-content">
@@ -923,7 +977,7 @@
                   data-target="leaf-price-management"
           >
             <i class="fas fa-tag mr-3"></i>
-            <span>Change Tea Leaf Price</span>
+            <span>Add Tea Leaf Price</span>
           </a>
         </li>
         <li>
@@ -1186,6 +1240,70 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tea Leaf Price Management Section -->
+    <div
+            id="leaf-price-management"
+            class="content-section dashboard-section bg-white rounded-xl shadow-md p-6 mb-8"
+    >
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-xl font-semibold text-tea-green">
+          Tea Leaf Price Management
+        </h2>
+        <button
+                class="px-4 py-2 bg-tea-green text-white rounded-lg hover:bg-tea-green-light transition"
+                id="changeTeaLeafPriceBtn"
+        >
+          <i class="fas fa-plus mr-2"></i> Add Tea Leaf Price
+        </button>
+      </div>
+
+      <div class="mb-4">
+        <input
+                type="text"
+                id="leaf-price-search"
+                placeholder="Search by month..."
+                class="w-full p-2 border rounded-lg"
+        />
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead>
+          <tr class="bg-gray-50">
+            <th class="p-3 text-left">ID</th>
+            <th class="p-3 text-left">Effective Month</th>
+            <th class="p-3 text-left">Price Per Kg (LKR)</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="leaf-price-table-body">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-4 flex justify-between items-center">
+        <div id="leaf-price-pagination-info" class="text-sm text-gray-600">
+          Showing 1 to 3 of 3 entries
+        </div>
+        <div class="flex space-x-2">
+          <button
+                  id="leaf-price-prev"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Previous
+          </button>
+          <button
+                  id="leaf-price-next"
+                  class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
+                  disabled
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
@@ -1645,6 +1763,7 @@
   );
   const addTeaCardBtn = document.getElementById("addTeaCardBtn");
   const addEmployeeBtn = document.getElementById("addEmployeeBtn");
+  const changeTeaLeafPriceBtn = document.getElementById("changeTeaLeafPriceBtn");
 
   // Open modals
   addTeaProductBtn.addEventListener("click", function () {
@@ -1673,6 +1792,10 @@
 
   addEmployeeBtn.addEventListener("click", function () {
     document.getElementById("employeeModal").style.display = "block";
+  });
+
+  changeTeaLeafPriceBtn.addEventListener("click", function () {
+    document.getElementById("teaLeafPriceModal").style.display = "block";
   });
 
   // Close modals

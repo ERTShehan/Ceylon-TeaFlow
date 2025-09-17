@@ -36,4 +36,15 @@ public interface TeaCountRepository extends JpaRepository<TeaLeafCount, String> 
     List<TeaLeafCount> findBySupplierSupplierIdAndDateBetween(String supplierId, String fromDate, String toDate);
 
 //    List<TeaLeafCount> findBySupplierSupplierIdAndDateStartingWith(String supplierId, String datePrefix);
+
+    @Query("SELECT COALESCE(SUM(CAST(t.netWeight AS double)), 0) " +
+            "FROM TeaLeafCount t " +
+            "WHERE t.supplier.supplierId = :supplierId " +
+            "AND FUNCTION('YEAR', FUNCTION('STR_TO_DATE', t.date, '%Y-%m-%d')) = :year " +
+            "AND FUNCTION('MONTH', FUNCTION('STR_TO_DATE', t.date, '%Y-%m-%d')) = :month")
+    double getTotalBySupplierAndMonth(@Param("supplierId") String supplierId,
+                                      @Param("year") int year,
+                                      @Param("month") int month);
+
+
 }
