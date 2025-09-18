@@ -22,9 +22,10 @@ public class TeaMakerDashboardController {
     @PostMapping("/addTeaLeafCount")
     public ResponseEntity<APIResponse<String>> addTeaCount(@RequestBody TeaLeafCountDto teaLeafCountDto) {
         return new ResponseEntity<>(new APIResponse<>(
-                201, "Tea Leaf Count Added Successfully", teaCountService.addTeaLeafCount(teaLeafCountDto)
+                201, "Tea Leaf Count Added & Email Sent Successfully", teaCountService.addTeaLeafCount(teaLeafCountDto)
         ), HttpStatus.CREATED);
     }
+
 
     @GetMapping("/getSupplierByCard/{cardNumber}")
     public ResponseEntity<APIResponse<String>> getSupplierByCard(@PathVariable String cardNumber) {
@@ -44,11 +45,13 @@ public class TeaMakerDashboardController {
 
     @PutMapping("/updateTeaLeafCount")
     public ResponseEntity<APIResponse<String>> updateTeaLeafCount(@RequestBody TeaLeafCountDto dto) {
-
         return ResponseEntity.ok(new APIResponse<>(
-                200, "Tea Leaf Count updated Successfully", teaCountService.updateTeaLeafCount(dto)
+                200,
+                "Tea Leaf Count updated Successfully",
+                teaCountService.updateTeaLeafCount(dto) // Email auto yawanna service ekedi
         ));
     }
+
 
 
     @GetMapping("/getAllTeaLeafCounts")

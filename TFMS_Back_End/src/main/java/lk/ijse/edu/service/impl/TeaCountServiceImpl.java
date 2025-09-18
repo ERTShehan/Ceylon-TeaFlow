@@ -10,6 +10,7 @@ import lk.ijse.edu.entity.TeaLeafSupplier;
 import lk.ijse.edu.exception.ResourceNotFound;
 import lk.ijse.edu.repository.TeaCountRepository;
 import lk.ijse.edu.repository.TeaLeafSupplierRepository;
+import lk.ijse.edu.service.SupplierEmailService;
 import lk.ijse.edu.service.TeaCountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class TeaCountServiceImpl implements TeaCountService {
     private final TeaCountRepository teaCountRepository;
     private final TeaLeafSupplierRepository teaLeafSupplierRepository;
     private final DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final SupplierEmailService supplierEmailService;
 
     private String generateNextTeaCountId(String lastId) {
         if (lastId == null) return "TLC-000-001";
@@ -91,7 +93,19 @@ public class TeaCountServiceImpl implements TeaCountService {
                 .build();
 
         teaCountRepository.save(teaLeafCount);
-        System.out.println(teaLeafCount);
+
+        supplierEmailService.sendTeaLeafRecordEmail(
+                supplier.getEmail(),
+                teaLeafCount.getDate(),
+                teaLeafCountDto.getTeaCardNumber(),
+                supplier.getFirstName() + " " + supplier.getLastName(),
+                teaLeafCountDto.getGrossWeight(),
+                teaLeafCountDto.getSackWeight(),
+                teaLeafCountDto.getMoistureWeight(),
+                teaLeafCountDto.getNetWeight(),
+                teaLeafCountDto.getQuality()
+        );
+
         return "Tea Leaf Count Added Successfully";
     }
 
@@ -125,7 +139,7 @@ public class TeaCountServiceImpl implements TeaCountService {
     @Override
     public String updateTeaLeafCount(TeaLeafCountDto dto) {
         TeaLeafCount existing = teaCountRepository.findById(dto.getId())
-                .orElseThrow(() -> new RuntimeException("Tea Leaf Count not found"));
+                .orElseThrow(() -> new RuntimeException("Tea Leaf Count Id not found"));
 
 //        existing.setTeaCardNumber(dto.getTeaCardNumber());
 //        existing.setSupplierName(dto.getSupplierName());
@@ -136,6 +150,22 @@ public class TeaCountServiceImpl implements TeaCountService {
         existing.setNote(dto.getNote());
 
         teaCountRepository.save(existing);
+
+        TeaLeafSupplier supplier = existing.getSupplier();
+        if (supplier != null && supplier.getEmail() != null) {
+            supplierEmailService.sendTeaLeafRecordUpdateEmail(
+                    supplier.getEmail(),
+                    existing.getDate(),
+                    existing.getTeaCardNumber(),
+                    supplier.getFirstName() + " " + supplier.getLastName(),
+                    existing.getGrossWeight(),
+                    existing.getSackWeight(),
+                    existing.getMoistureWeight(),
+                    existing.getNetWeight(),
+                    String.valueOf(existing.getQuality())
+            );
+        }
+
         return "Tea Leaf Count Updated Successfully";
     }
 
