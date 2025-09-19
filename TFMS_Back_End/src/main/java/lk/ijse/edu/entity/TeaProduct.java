@@ -24,7 +24,7 @@ public class TeaProduct {
     @Column(nullable = false)
     private double price;
 
-    private String quantity; //(packet weight)
+    private String quantity; //(packet weight) 100g, 250g, 500g, 1kg
     private String description;
 
     @OneToMany(mappedBy = "product")

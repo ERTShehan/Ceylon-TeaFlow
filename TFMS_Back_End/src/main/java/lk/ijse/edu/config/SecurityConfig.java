@@ -53,7 +53,8 @@ public class SecurityConfig {
                                                 "/teaMakerDashboard/applyTeaProductRequest/*",
                                                 "/addTeaLeafPrice/*",
                                                 "/supplier/totalTeaPacketRequestsMonth/**",
-                                                "/adminDashboard/**"
+                                                "/adminDashboard/**",
+                                                "/stockDashboard/**"
                                         ).permitAll()
                                         .anyRequest().authenticated())
                 .sessionManagement(

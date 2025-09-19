@@ -5,5 +5,6 @@ public enum TeaProductName {
     GREEN_TEA,
     WHITE_TEA,
     OOLONG_TEA,
-    HERBAL_TEA
+    HERBAL_TEA,
+    BOPF_TEA
 }

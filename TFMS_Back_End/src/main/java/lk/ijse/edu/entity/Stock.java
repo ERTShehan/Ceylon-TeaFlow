@@ -23,7 +23,7 @@ public class Stock {
     @JoinColumn(name = "product_id", nullable = false, unique = true)
     private TeaProduct product;
 
-    private Integer quantity;
+    private String quantity;
 
 //    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<StockManager> stockManagers = new ArrayList<>();
