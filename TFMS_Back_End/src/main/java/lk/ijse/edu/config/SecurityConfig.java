@@ -45,13 +45,15 @@ public class SecurityConfig {
                                                 "/salesManager/**",
                                                 "/teaCard/**",
                                                 "/teaProduct/**",
+                                                "/employee/**",
                                                 "/customer/**",
                                                 "/supplier/**",
                                                 "/teaMakerDashboard/***",
                                                 "/teaMakerDashboard/getSupplierByCard/*",
                                                 "/teaMakerDashboard/applyTeaProductRequest/*",
                                                 "/addTeaLeafPrice/*",
-                                                "/supplier/totalTeaPacketRequestsMonth/**"
+                                                "/supplier/totalTeaPacketRequestsMonth/**",
+                                                "/adminDashboard/**"
                                         ).permitAll()
                                         .anyRequest().authenticated())
                 .sessionManagement(

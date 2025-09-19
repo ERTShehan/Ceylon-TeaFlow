@@ -54,9 +54,9 @@ public class StockManagerServiceImpl implements StockManagerService {
             throw new RuntimeException("Username already exists");
         }
 
-        if (stockManagerDto ==null){
-            throw new IllegalArgumentException("Register Stock Manager DTO cannot be null");
-        }
+//        if (stockManagerDto ==null){
+//            throw new IllegalArgumentException("Register Stock Manager DTO cannot be null");
+//        }
 
         String lastId = stockManagerRepository.findLastStockManagerId();
         String newStockManagerId = generateNextStockManagerId(lastId);
@@ -75,7 +75,7 @@ public class StockManagerServiceImpl implements StockManagerService {
         userRepository.save(user);
 
         StockManager stockManager = StockManager.builder()
-                .StockManagerId(newStockManagerId)
+                .stockManagerId(newStockManagerId)
                 .fullName(stockManagerDto.getFullName())
                 .email(stockManagerDto.getEmail())
                 .phoneNumber(stockManagerDto.getPhoneNumber())

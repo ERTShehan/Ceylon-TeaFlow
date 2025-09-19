@@ -40,6 +40,13 @@ public class AddTeaLeafPriceServiceImpl implements AddTeaLeafPriceService {
 
     @Override
     public String addTeaLeafPrice(AddTeaLeafPriceDto addTeaLeafPriceDto) {
+        String effectiveMonth = String.valueOf(addTeaLeafPriceDto.getYearMonth());
+
+        boolean exists = addTeaLeafPriceRepository.existsByEffectiveMonth(effectiveMonth);
+        if (exists) {
+            throw new IllegalArgumentException("Tea leaf price for " + effectiveMonth + " already exists!");
+        }
+
         String lastId = addTeaLeafPriceRepository.findLastTeaLeafPriceId();
         String newTeaLeafPriceId = generateNextLeafPriceId(lastId);
 

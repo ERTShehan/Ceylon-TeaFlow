@@ -13,7 +13,7 @@ import java.util.List;
 public interface StockManagerRepository extends JpaRepository<StockManager, String> {
     @Transactional
     @Modifying
-    @Query("UPDATE StockManager sm SET sm.status = CASE WHEN sm.status = 'Active' THEN 'Inactive' ELSE 'Active' END WHERE sm.StockManagerId = ?1")
+    @Query("UPDATE StockManager sm SET sm.status = CASE WHEN sm.status = 'Active' THEN 'Inactive' ELSE 'Active' END WHERE sm.stockManagerId = ?1")
     void updateStockManagerStatus(String id);
 
     @Query(value = "SELECT stock_manager_id FROM stock_managers ORDER BY stock_manager_id DESC LIMIT 1", nativeQuery = true)

@@ -1,4 +1,3 @@
-// teaProductManagement.js
 $(document).ready(function() {
     let isEditMode = false;
     let teaProducts = [];

@@ -12,4 +12,6 @@ public interface AddTeaLeafPriceRepository extends JpaRepository<TeaLeafPrice, S
     @Query(value = "SELECT tea_leaf_price_id FROM tea_leaf_price ORDER BY tea_leaf_price_id DESC LIMIT 1", nativeQuery = true)
     String findLastTeaLeafPriceId();
     Optional<TeaLeafPrice> findByEffectiveMonth(String effectiveMonth);
+
+    boolean existsByEffectiveMonth(String effectiveMonth);
 }

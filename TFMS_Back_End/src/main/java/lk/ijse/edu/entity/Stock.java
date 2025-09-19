@@ -25,8 +25,8 @@ public class Stock {
 
     private Integer quantity;
 
-    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<StockManager> stockManagers = new ArrayList<>();
+//    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<StockManager> stockManagers = new ArrayList<>();
 
     @UpdateTimestamp
     private LocalDateTime lastUpdated;

@@ -16,7 +16,6 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// API call helper function
 async function apiCall(endpoint, method = 'GET', data = null) {
     const url = `${API_BASE_URL}${endpoint}`;
     const options = {
@@ -33,7 +32,6 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     try {
         const response = await fetch(url, options);
         if (!response.ok) {
-            // Try to get error details from response
             let errorDetails = '';
             try {
                 const errorResponse = await response.json();
@@ -160,7 +158,6 @@ const TeaMakerManager = {
             btn.addEventListener('click', async (e) => {
                 const id = e.target.getAttribute('data-id');
 
-                // SweetAlert confirmation for status change
                 const result = await Swal.fire({
                     title: 'Are you sure?',
                     text: 'Do you want to change the status of this tea maker?',
@@ -192,10 +189,8 @@ const TeaMakerManager = {
             const maker = teaMakers.find(m => m.id === id);
 
             if (maker) {
-                // Store the original username to check if it changed later
                 document.getElementById('teaMakerUpdateForm').dataset.originalUsername = maker.username;
 
-                // Populate the update form
                 document.getElementById('updateTeaMakerId').value = maker.id;
                 document.getElementById('updateTeaMakerName').value = maker.fullName;
                 document.getElementById('updateTeaMakerEmail').value = maker.email;
@@ -203,7 +198,6 @@ const TeaMakerManager = {
                 document.getElementById('updateTeaMakerSalary').value = maker.basicSalary;
                 document.getElementById('updateTeaMakerPassword').value = '';
 
-                // Set up the update form submission
                 const updateForm = document.getElementById('teaMakerUpdateForm');
                 updateForm.onsubmit = async (e) => {
                     e.preventDefault();
@@ -214,10 +208,9 @@ const TeaMakerManager = {
                         email: document.getElementById('updateTeaMakerEmail').value,
                         phoneNumber: document.getElementById('updateTeaMakerPhone').value,
                         basicSalary: parseFloat(document.getElementById('updateTeaMakerSalary').value),
-                        status: maker.status // Include the current status
+                        status: maker.status
                     };
 
-                    // Only include password if provided
                     const password = document.getElementById('updateTeaMakerPassword').value;
                     if (password) {
                         updatedData.password = password;
@@ -229,11 +222,9 @@ const TeaMakerManager = {
                         document.getElementById('teaMakerUpdateModal').style.display = 'none';
                     } catch (error) {
                         console.error('Error updating tea maker:', error);
-                        // Error is already shown by apiCall
                     }
                 };
 
-                // Show the update modal
                 document.getElementById('teaMakerUpdateModal').style.display = 'block';
             }
         } catch (error) {
@@ -243,7 +234,6 @@ const TeaMakerManager = {
     },
 
     async deleteHandler(id) {
-        // SweetAlert confirmation for delete
         const result = await Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -287,7 +277,6 @@ const TeaMakerManager = {
 
         this.renderTable(paginatedTeaMakers, 'tea-maker-table-body');
 
-        // Update pagination info
         const total = this.allTeaMakers.length;
         const info = document.getElementById('tea-maker-pagination-info');
         if (info) {
@@ -296,18 +285,14 @@ const TeaMakerManager = {
             info.textContent = `Showing ${showingFrom} to ${showingTo} of ${total} entries`;
         }
 
-        // Enable/disable buttons
         document.getElementById('tea-maker-prev').disabled = this.currentPage === 1;
         document.getElementById('tea-maker-next').disabled = end >= total;
     }
 };
 
-// Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Tea Maker Manager
     TeaMakerManager.refreshTable();
 
-    // Set up search functionality for tea makers
     const teaMakerSearch = document.getElementById('tea-maker-search');
     if (teaMakerSearch) {
         teaMakerSearch.addEventListener('input', async (e) => {
@@ -321,9 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Set up modal open buttons
     document.getElementById('addTeaMakerBtn').addEventListener('click', () => {
-        // Reset form and set to create mode
         document.getElementById('teaMakerForm').reset();
         document.getElementById('teaMakerForm').onsubmit = async (e) => {
             e.preventDefault();
@@ -348,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('teaMakerModal').style.display = 'block';
     });
 
-    // Close modals when clicking outside
     window.addEventListener('click', function(event) {
         const modals = document.querySelectorAll('.modal');
         modals.forEach(modal => {
@@ -358,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close modals with close buttons
     document.querySelectorAll('.close').forEach(btn => {
         btn.addEventListener('click', function() {
             this.closest('.modal').style.display = 'none';
@@ -366,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Pagination event listeners
 document.getElementById('tea-maker-prev').addEventListener('click', () => {
     if (TeaMakerManager.currentPage > 1) {
         TeaMakerManager.currentPage--;

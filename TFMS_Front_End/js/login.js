@@ -47,11 +47,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const role = auth.role || '';
             if (role === 'CUSTOMER') {
-                window.location.href = './customerDashboard.html';
+                window.location.href = '../pages/customerDashboard.html';
             } else if (role === 'TEA_LEAF_SUPPLIER') {
-                window.location.href = './supplierDashboard.html';
+                window.location.href = '../pages/supplierDashboard.html';
             } else if (role === 'ADMIN') {
-                window.location.href = './adminDashboard.html';
+                window.location.href = '../pages/adminDashboard.html';
+            } else if (role === 'TEA_MAKER') {
+                window.location.href = '../pages/teaMakerDashboard.html';
+            } else {
+                alert('Unknown user role. Cannot redirect.');
             }
 
         } catch (err) {

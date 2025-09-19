@@ -30,6 +30,8 @@
 
     body {
       font-family: "Poppins", sans-serif;
+      font-size: 14px; /* Adjusted from default 16px */
+      line-height: 1.5;
     }
 
     .sidebar {
@@ -168,10 +170,69 @@
     .content-section.active {
       display: block;
     }
+
+    h1 {
+      font-size: 1.625rem;
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: 1.375rem;
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+
+    .text-xl {
+      font-size: 1.125rem !important;
+    }
+
+    .text-2xl {
+      font-size: 1.375rem !important;
+    }
+
+    .text-3xl {
+      font-size: 1.625rem !important;
+    }
+
+    .text-sm {
+      font-size: 0.8125rem !important;
+    }
+
+    .table th, .table td {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+    }
+
+    .stat-card p {
+      font-size: 1.125rem;
+    }
+
+    .sidebar {
+      font-size: 0.875rem;
+    }
+
+    .btn, button {
+      font-size: 0.875rem;
+    }
+
+    input, select, textarea {
+      font-size: 0.875rem;
+    }
+
+    .modal h2 {
+      font-size: 1.25rem;
+    }
+
+    .modal h3 {
+      font-size: 1rem;
+    }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
-<!--mobile-->
 <div class="md:hidden fixed top-4 left-4 z-50">
   <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
     <i class="fas fa-bars"></i>
@@ -671,6 +732,46 @@
   </div>
 </div>
 
+<!-- Sales Manager Update Modal -->
+<div id="salesManagerUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-teal-600 mb-4">Update Sales Manager</h2>
+    <form id="salesManagerUpdateForm">
+      <input type="hidden" id="updateSalesManagerId">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateSalesManagerName">Full Name</label>
+        <input type="text" id="updateSalesManagerName" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateSalesManagerEmail">Email</label>
+        <input type="email" id="updateSalesManagerEmail" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateSalesManagerPhone">Phone Number</label>
+        <input type="text" id="updateSalesManagerPhone" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateSalesManagerSalary">Basic Salary</label>
+        <input type="text" id="updateSalesManagerSalary" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateSalesManagerPassword">Password (Leave blank to keep current)</label>
+        <input type="password" id="updateSalesManagerPassword" class="w-full p-2 border rounded" placeholder="Enter new password only if changing" />
+      </div>
+
+      <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
+        Update Sales Manager
+      </button>
+    </form>
+  </div>
+</div>
+
 <!-- Finance Manager Modal -->
 <div id="financeManagerModal" class="modal">
   <div class="modal-content">
@@ -755,6 +856,46 @@
   </div>
 </div>
 
+<!-- Finance Manager Update Modal -->
+<div id="financeManagerUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-teal-600 mb-4">Update Finance Manager</h2>
+    <form id="financeManagerUpdateForm">
+      <input type="hidden" id="updateFinanceManagerId">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateFinanceManagerName">Full Name</label>
+        <input type="text" id="updateFinanceManagerName" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateFinanceManagerEmail">Email</label>
+        <input type="email" id="updateFinanceManagerEmail" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateFinanceManagerPhone">Phone Number</label>
+        <input type="text" id="updateFinanceManagerPhone" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateFinanceManagerSalary">Basic Salary</label>
+        <input type="text" id="updateFinanceManagerSalary" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateFinanceManagerPassword">Password (Leave blank to keep current)</label>
+        <input type="password" id="updateFinanceManagerPassword" class="w-full p-2 border rounded" placeholder="Enter new password only if changing" />
+      </div>
+
+      <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
+        Update Finance Manager
+      </button>
+    </form>
+  </div>
+</div>
+
 <!-- Tea Card Modal -->
 <div id="teaCardModal" class="modal">
   <div class="modal-content">
@@ -795,6 +936,7 @@
   </div>
 </div>
 
+
 <!-- Employee Modal -->
 <div id="employeeModal" class="modal">
   <div class="modal-content">
@@ -812,16 +954,17 @@
                 required
         />
       </div>
+
       <div class="mb-4">
-        <label class="block text-gray-700 mb-2" for="employeeEmail"
-        >Email</label
+        <label class="block text-gray-700 mb-2" for="employeeAddress"
+        >Address</label
         >
-        <input
-                type="email"
-                id="employeeEmail"
+        <textarea
+                id="employeeAddress"
                 class="w-full p-2 border rounded"
+                rows="3"
                 required
-        />
+        ></textarea>
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 mb-2" for="employeePhone"
@@ -835,32 +978,15 @@
         />
       </div>
       <div class="mb-4">
-        <label class="block text-gray-700 mb-2" for="employeeAddress"
-        >Address</label
-        >
-        <textarea
-                id="employeeAddress"
-                class="w-full p-2 border rounded"
-                rows="3"
-                required
-        ></textarea>
-      </div>
-      <div class="mb-4">
         <label class="block text-gray-700 mb-2" for="employeeDepartment"
         >Department</label
         >
-        <select
+        <input
+                type="text"
                 id="employeeDepartment"
                 class="w-full p-2 border rounded"
                 required
-        >
-          <option value="">Select Department</option>
-          <option value="production">Production</option>
-          <option value="packaging">Packaging</option>
-          <option value="quality">Quality Control</option>
-          <option value="logistics">Logistics</option>
-          <option value="administration">Administration</option>
-        </select>
+        />
       </div>
       <div class="mb-4">
         <label class="block text-gray-700 mb-2" for="employeeSalary"
@@ -878,6 +1004,46 @@
               class="w-full bg-tea-green text-white py-2 rounded hover:bg-tea-green-light"
       >
         Add Employee
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Employee Update Modal -->
+<div id="employeeUpdateModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2 class="text-xl font-bold text-teal-600 mb-4">Update Employee Details</h2>
+    <form id="employeeUpdateForm">
+      <input type="hidden" id="updateEmployeeId">
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateEmployeeName">Full Name</label>
+        <input type="text" id="updateEmployeeName" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateEmployeeAddress">Address</label>
+        <input type="text" id="updateEmployeeAddress" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateEmployeePhone">Phone Number</label>
+        <input type="text" id="updateEmployeePhone" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateEmployeeDepartment">Department</label>
+        <input type="text" id="updateEmployeeDepartment" class="w-full p-2 border rounded" required />
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-gray-700 mb-2" for="updateEmployeeSalary">Basic Salary</label>
+        <input type="text" id="updateEmployeeSalary" class="w-full p-2 border rounded" required />
+      </div>
+
+      <button type="submit" class="w-full bg-teal-600 text-white py-2 rounded hover:bg-teal-700">
+        Update Department Details
       </button>
     </form>
   </div>
@@ -1048,20 +1214,20 @@
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-gray-500">Total Suppliers</h3>
-              <p class="text-2xl font-bold text-tea-green">42</p>
+              <p id="totalSuppliers" class="text-2xl font-bold text-tea-green">0</p>
             </div>
             <div class="bg-tea-cream p-3 rounded-lg">
               <i class="fas fa-truck-loading text-tea-green text-xl"></i>
             </div>
           </div>
-          <p class="text-sm text-gray-500 mt-2">+3 this month</p>
+          <p id="newSuppliers" class="text-sm text-gray-500 mt-2">+0 this month</p>
         </div>
 
         <div class="stat-card bg-white rounded-xl shadow-md p-6">
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-gray-500">Total Customers</h3>
-              <p class="text-2xl font-bold text-tea-green">156</p>
+              <p id="totalCustomers" class="text-2xl font-bold text-tea-green">0</p>
             </div>
             <div class="bg-tea-cream p-3 rounded-lg">
               <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
@@ -1069,6 +1235,7 @@
           </div>
           <p class="text-sm text-gray-500 mt-2">+12 this month</p>
         </div>
+
 
         <div class="stat-card bg-white rounded-xl shadow-md p-6">
           <div class="flex justify-between items-start">
@@ -1400,7 +1567,7 @@
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full">
+        <table class="w-full" id="stockManagerTable">
           <thead>
           <tr class="bg-gray-50">
             <th class="p-3 text-left">ID</th>
@@ -1675,6 +1842,7 @@
             <th class="p-3 text-left">Address</th>
             <th class="p-3 text-left">Phone number</th>
             <th class="p-3 text-left">Department</th>
+            <th class="p-3 text-left">Salary</th>
             <th class="p-3 text-left">Actions</th>
           </tr>
           </thead>
@@ -1687,7 +1855,7 @@
         </div>
         <div class="flex space-x-2">
           <button
-                  id="employee-prev"
+                  id="employee-pprev"
                   class="px-3 py-1 bg-gray-200 rounded-lg hover:bg-gray-300"
                   disabled
           >
@@ -1709,29 +1877,29 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="../js/teaMakerManagement.js"></script>
 <script src="../js/teaProduct.js"></script>
+<script src="../js/stockManagerManagement.js"></script>
+<script src="../js/salesManagerManagement.js"></script>
+<script src="../js/financeManagerManagement.js"></script>
+<script src="../js/teaCardManagement.js"></script>
+<script src="../js/teaLeafPriceManagement.js"></script>
+<script src="../js/employeeManagement.js"></script>
+<script src="../js/adminDashboardData.js"></script>
 <script>
-  // Navigation functionality
   document.addEventListener('DOMContentLoaded', function() {
-    // Get all nav links
     const navLinks = document.querySelectorAll('.nav-link');
 
-    // Add click event listeners to all nav links
     navLinks.forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault();
 
-        // Get the target section ID
         const targetId = this.getAttribute('data-target');
 
-        // Hide all content sections
         document.querySelectorAll('.content-section').forEach(section => {
           section.classList.remove('active');
         });
 
-        // Show the target section
         document.getElementById(targetId).classList.add('active');
 
-        // Update active state in navigation
         navLinks.forEach(navLink => {
           navLink.classList.remove('bg-tea-green-light');
         });
@@ -1739,7 +1907,6 @@
       });
     });
 
-    // Initialize dashboard as active
     document.querySelector('[data-target="dashboard-content"]').classList.add('bg-tea-green-light');
   });
 
@@ -1750,10 +1917,9 @@
           });
 
   // Modal functionality
-  const modals = document.querySelectorAll(".modal");
-  const closeBtns = document.querySelectorAll(".close");
+  // const modals = document.querySelectorAll(".modal");
+  // const closeBtns = document.querySelectorAll(".close");
 
-  // Get all modal open buttons
   const addTeaProductBtn = document.getElementById("addTeaProductBtn");
   const addTeaMakerBtn = document.getElementById("addTeaMakerBtn");
   const addStockManagerBtn = document.getElementById("addStockManagerBtn");
@@ -1765,7 +1931,6 @@
   const addEmployeeBtn = document.getElementById("addEmployeeBtn");
   const changeTeaLeafPriceBtn = document.getElementById("changeTeaLeafPriceBtn");
 
-  // Open modals
   addTeaProductBtn.addEventListener("click", function () {
     document.getElementById("teaProductModal").style.display = "block";
   });
@@ -1799,26 +1964,24 @@
   });
 
   // Close modals
-  closeBtns.forEach((btn) => {
-    btn.addEventListener("click", function () {
-      modals.forEach((modal) => {
-        modal.style.display = "none";
-      });
-    });
-  });
+  // closeBtns.forEach((btn) => {
+  //   btn.addEventListener("click", function () {
+  //     modals.forEach((modal) => {
+  //       modal.style.display = "none";
+  //     });
+  //   });
+  // });
+  //
+  // // Close modal when clicking outside
+  // window.addEventListener("click", function (event) {
+  //   modals.forEach((modal) => {
+  //     if (event.target === modal) {
+  //       modal.style.display = "none";
+  //     }
+  //   });
+  // });
 
-  // Close modal when clicking outside
-  window.addEventListener("click", function (event) {
-    modals.forEach((modal) => {
-      if (event.target === modal) {
-        modal.style.display = "none";
-      }
-    });
-  });
-
-  // Charts initialization
   document.addEventListener("DOMContentLoaded", function () {
-    // Revenue Chart
     const revenueCtx = document
             .getElementById("revenueChart")
             .getContext("2d");
@@ -1902,77 +2065,14 @@
     });
   });
 
-  // Search functionality for tea product table in modal
-  const teaProductSearch = document.getElementById("teaProductSearch");
-  const teaProductTableBody = document.getElementById(
-          "teaProductTableBody"
-  );
-  const teaProductRows = teaProductTableBody.getElementsByTagName("tr");
-
-  teaProductSearch.addEventListener("input", function () {
-    const searchText = this.value.toLowerCase();
-
-    for (let i = 0; i < teaProductRows.length; i++) {
-      const cells = teaProductRows[i].getElementsByTagName("td");
-      let found = false;
-
-      for (let j = 0; j < cells.length; j++) {
-        const cellText = cells[j].textContent.toLowerCase();
-        if (cellText.includes(searchText)) {
-          found = true;
-          break;
-        }
-      }
-
-      teaProductRows[i].style.display = found ? "" : "none";
-    }
-  });
-
-  // Search functionality for other tables
-  function setupSearch(inputId, tableBodyId) {
-    const searchInput = document.getElementById(inputId);
-    const tableBody = document.getElementById(tableBodyId);
-    const rows = tableBody.getElementsByTagName("tr");
-
-    searchInput.addEventListener("input", function () {
-      const searchText = this.value.toLowerCase();
-
-      for (let i = 0; i < rows.length; i++) {
-        const cells = rows[i].getElementsByTagName("td");
-        let found = false;
-
-        for (let j = 0; j < cells.length; j++) {
-          const cellText = cells[j].textContent.toLowerCase();
-          if (cellText.includes(searchText)) {
-            found = true;
-            break;
-          }
-        }
-
-        rows[i].style.display = found ? "" : "none";
-      }
-    });
-  }
-
-  // Setup search for all tables
-  setupSearch("tea-maker-search", "tea-maker-table-body");
-  setupSearch("stock-manager-search", "stock-manager-table-body");
-  setupSearch("sales-manager-search", "sales-manager-table-body");
-  setupSearch("finance-manager-search", "finance-manager-table-body");
-  setupSearch("tea-card-search", "tea-card-table-body");
-  setupSearch("employee-search", "employee-table-body");
-
-  // Auto-hide sidebar functionality
   let lastScrollTop = 0;
   const sidebar = document.getElementById("sidebar");
   const mainContent = document.getElementById("mainContent");
   const mobileMenuBtn = document.getElementById("mobileMenuBtn");
   const scrollTopBtn = document.getElementById("scrollTopBtn");
 
-  // Track sidebar state
   let sidebarHidden = false;
 
-  // Function to show sidebar
   function showSidebar() {
     sidebar.classList.remove("sidebar-hidden");
     if (window.innerWidth >= 769) {
@@ -1981,7 +2081,6 @@
     sidebarHidden = false;
   }
 
-  // Function to hide sidebar
   function hideSidebar() {
     if (window.innerWidth >= 769 && !sidebar.classList.contains("active")) {
       sidebar.classList.add("sidebar-hidden");
@@ -1990,25 +2089,20 @@
     }
   }
 
-  // Scroll event to hide/show sidebar
   window.addEventListener("scroll", function () {
     const scrollTop =
             window.pageYOffset || document.documentElement.scrollTop;
 
-    // Show/hide scroll to top button
     if (scrollTop > 300) {
       scrollTopBtn.style.display = "block";
     } else {
       scrollTopBtn.style.display = "none";
     }
 
-    // Auto-hide sidebar on scroll down, show on scroll up
     if (window.innerWidth >= 769) {
       if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Scrolling down - hide sidebar
         hideSidebar();
       } else if (scrollTop < lastScrollTop - 10) {
-        // Scrolling up - show sidebar
         showSidebar();
       }
     }
@@ -2016,19 +2110,16 @@
     lastScrollTop = scrollTop;
   });
 
-  // Toggle sidebar with hamburger menu
   mobileMenuBtn.addEventListener("click", function () {
     sidebar.classList.toggle("active");
 
     if (window.innerWidth < 769) {
-      // Mobile behavior
       if (sidebar.classList.contains("active")) {
         document.body.style.overflow = "hidden";
       } else {
         document.body.style.overflow = "auto";
       }
     } else {
-      // Desktop behavior
       if (sidebar.classList.contains("sidebar-hidden") || sidebarHidden) {
         showSidebar();
       } else {
@@ -2037,14 +2128,12 @@
     }
   });
 
-  // Show sidebar when mouse enters the left edge of the screen
   document.addEventListener("mousemove", function (e) {
     if (window.innerWidth >= 769 && sidebarHidden && e.clientX < 20) {
       showSidebar();
     }
   });
 
-  // Hide sidebar when clicking outside on mobile
   document.addEventListener("click", function (e) {
     if (
             window.innerWidth < 769 &&
@@ -2057,15 +2146,12 @@
     }
   });
 
-  // Handle window resize
   window.addEventListener("resize", function () {
     if (window.innerWidth < 769) {
-      // Mobile view
       sidebar.classList.remove("sidebar-hidden");
       mainContent.classList.remove("main-content-full");
       sidebarHidden = false;
     } else {
-      // Desktop view
       if (!sidebarHidden) {
         showSidebar();
       } else {
@@ -2074,7 +2160,6 @@
     }
   });
 
-  // Scroll to top functionality
   scrollTopBtn.addEventListener("click", function () {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });

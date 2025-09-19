@@ -71,7 +71,7 @@ public class TeaMakerServiceImpl implements TeaMakerService {
                 .username(teaMakerDto.getUsername())
                 .password(passwordEncoder.encode(teaMakerDto.getPassword()))
                 .createdAt(new Date())
-                .role(SystemUserRole.TEAM_MAKER)
+                .role(SystemUserRole.TEA_MAKER)
                 .build();
 
         TeaMaker teaMaker = TeaMaker.builder()

@@ -12,7 +12,7 @@ import lombok.*;
 @Builder
 public class StockManager {
     @Id
-    private String StockManagerId;
+    private String stockManagerId;
 
     private String fullName;
     private String email;
@@ -20,9 +20,9 @@ public class StockManager {
     private String basicSalary;
     private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "stock_id", nullable = false)
-    private Stock stock;
+//    @ManyToOne
+//    @JoinColumn(name = "stock_id", nullable = false)
+//    private Stock stock;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
