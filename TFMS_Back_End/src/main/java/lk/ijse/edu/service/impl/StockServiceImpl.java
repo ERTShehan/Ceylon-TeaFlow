@@ -2,6 +2,7 @@ package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.AddNewStockDto;
 import lk.ijse.edu.dto.StockHistoryDto;
+import lk.ijse.edu.dto.StockReportDto;
 import lk.ijse.edu.dto.StockResponseDto;
 import lk.ijse.edu.entity.Stock;
 import lk.ijse.edu.entity.TeaProduct;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -110,5 +113,20 @@ public class StockServiceImpl implements StockService {
     public Long getTotalStockQuantity() {
         Long total = stockRepository.findTotalStockQuantity();
         return total != null ? total : 0L;
+    }
+
+    @Override
+    public List<StockReportDto> getStockSummary() {
+        List<Stock> stocks = stockRepository.findAll();
+
+        Map<TeaProductName, Integer> summary = stocks.stream()
+                .collect(Collectors.groupingBy(
+                        Stock::getName,
+                        Collectors.summingInt(s -> Integer.parseInt(s.getQuantity()))
+                ));
+
+        return summary.entrySet().stream()
+                .map(e -> new StockReportDto(e.getKey(), String.valueOf(e.getValue())))
+                .collect(Collectors.toList());
     }
 }

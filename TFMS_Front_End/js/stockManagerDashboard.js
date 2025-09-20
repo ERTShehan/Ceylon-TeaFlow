@@ -191,6 +191,13 @@ document.querySelector("#add-stock form").addEventListener("submit", async funct
     }
 });
 
+document
+    .querySelector("#stockReportButtons button")
+    .addEventListener("click", function () {
+        window.open("http://localhost:8080/stockDashboard/downloadReport", "_blank");
+    });
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     loadStockLevels();

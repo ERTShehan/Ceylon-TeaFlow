@@ -2,6 +2,7 @@ package lk.ijse.edu.service;
 
 import lk.ijse.edu.dto.AddNewStockDto;
 import lk.ijse.edu.dto.StockHistoryDto;
+import lk.ijse.edu.dto.StockReportDto;
 import lk.ijse.edu.dto.StockResponseDto;
 import org.springframework.data.domain.Page;
 
@@ -12,4 +13,5 @@ public interface StockService {
     String addNewStock(AddNewStockDto dto);
     Page<StockHistoryDto> getStockHistory(int page, int size, String filter);
     Long getTotalStockQuantity();
+    List<StockReportDto> getStockSummary();
 }
