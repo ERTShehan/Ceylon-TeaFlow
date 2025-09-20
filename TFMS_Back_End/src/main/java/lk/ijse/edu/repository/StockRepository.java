@@ -1,8 +1,11 @@
 package lk.ijse.edu.repository;
 
 import lk.ijse.edu.entity.Stock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +20,10 @@ public interface StockRepository extends JpaRepository<Stock, String> {
 
     @Query("SELECT s.name, SUM(CAST(s.quantity AS int)) FROM Stock s GROUP BY s.name")
     List<Object[]> findGroupedStockLevels();
+
+    @Query("SELECT s FROM Stock s ORDER BY s.dateTime DESC")
+    Page<Stock> findAllByOrderByDateTimeDesc(Pageable pageable);
+
+    @Query("SELECT s FROM Stock s WHERE s.type = :type ORDER BY s.dateTime DESC")
+    Page<Stock> findByTypeOrderByDateTimeDesc(@Param("type") String type, Pageable pageable);
 }

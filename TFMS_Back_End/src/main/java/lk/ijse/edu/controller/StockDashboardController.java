@@ -2,10 +2,12 @@ package lk.ijse.edu.controller;
 
 import lk.ijse.edu.dto.APIResponse;
 import lk.ijse.edu.dto.AddNewStockDto;
+import lk.ijse.edu.dto.StockHistoryDto;
 import lk.ijse.edu.dto.StockResponseDto;
 import lk.ijse.edu.service.StockService;
 import lk.ijse.edu.service.TeaProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,17 @@ public class StockDashboardController {
     public ResponseEntity<APIResponse<String>> addTeaProductInStock(@RequestBody AddNewStockDto addNewStockDto){
         return ResponseEntity.ok(new APIResponse<>(
                 200, "Stock update successfully", stockService.addNewStock(addNewStockDto)
+        ));
+    }
+
+    @GetMapping("/getStockHistory")
+    public ResponseEntity<APIResponse<Page<StockHistoryDto>>> getStockHistory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "ALL") String filter) {
+
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Done", stockService.getStockHistory(page, size, filter)
         ));
     }
 }

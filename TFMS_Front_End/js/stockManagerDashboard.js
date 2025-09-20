@@ -1,4 +1,6 @@
 const API_BASE_URL = "http://localhost:8080";
+let currentPage = 0;
+let currentFilter = "ALL";
 
 async function loadStockLevels() {
     try {
@@ -55,6 +57,73 @@ async function loadTeaProducts() {
     }
 }
 
+async function loadStockHistory(page = 0, filter = "ALL") {
+    try {
+        const res = await fetch(
+            `${API_BASE_URL}/stockDashboard/getStockHistory?page=${page}&size=5&filter=${filter}`
+        );
+        const result = await res.json();
+
+        if (result.code === 200) {
+            const data = result.data;
+            populateStockHistoryTable(data.content);
+            renderPagination(data.totalPages, page);
+        }
+    } catch (err) {
+        console.error("Error loading stock history:", err);
+    }
+}
+
+function populateStockHistoryTable(stocks) {
+    const tbody = document.getElementById("stockHistoryTableBody");
+    tbody.innerHTML = "";
+
+    stocks.forEach(s => {
+        const badge =
+            s.type === "INCOMING"
+                ? `<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span>`
+                : `<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Outgoing</span>`;
+
+        tbody.innerHTML += `
+          <tr class="border-b hover:bg-gray-50">
+              <td class="p-3">${s.date}</td>
+              <td class="p-3">${s.teaType}</td>
+              <td class="p-3">${s.expiryDate}</td>
+              <td class="p-3">${s.quantity}</td>
+              <td class="p-3">${s.note ?? "-"}</td>
+              <td class="p-3">${badge}</td>
+          </tr>
+        `;
+    });
+}
+
+function renderPagination(totalPages, activePage) {
+    const container = document.getElementById("pagination");
+    container.innerHTML = "";
+    for (let i = 0; i < totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.className =
+            "mx-1 px-3 py-1 rounded-lg " +
+            (i === activePage
+                ? "bg-tea-green text-white"
+                : "bg-gray-200 hover:bg-tea-green hover:text-white");
+        btn.textContent = i + 1;
+        btn.onclick = () => {
+            currentPage = i;
+            loadStockHistory(i, currentFilter);
+        };
+        container.appendChild(btn);
+    }
+}
+
+document.querySelectorAll("#stock-history button").forEach(btn => {
+    btn.addEventListener("click", e => {
+        currentFilter = e.target.textContent.toUpperCase();
+        currentPage = 0;
+        loadStockHistory(0, currentFilter);
+    });
+});
+
 function formatProductName(name) {
     return name.replace(/_/g, " ").toLowerCase()
         .replace(/\b\w/g, c => c.toUpperCase());
@@ -95,6 +164,7 @@ document.querySelector("#add-stock form").addEventListener("submit", async funct
         if (result.code === 200) {
             alert(result.data);
             form.reset();
+            loadStockHistory();
             await loadStockLevels();
         } else {
             alert("Failed to add stock!");
@@ -108,4 +178,5 @@ document.querySelector("#add-stock form").addEventListener("submit", async funct
 document.addEventListener("DOMContentLoaded", () => {
     loadStockLevels();
     loadTeaProducts();
+    loadStockHistory();
 });

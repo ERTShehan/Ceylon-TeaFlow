@@ -1,6 +1,7 @@
 package lk.ijse.edu.service.impl;
 
 import lk.ijse.edu.dto.AddNewStockDto;
+import lk.ijse.edu.dto.StockHistoryDto;
 import lk.ijse.edu.dto.StockResponseDto;
 import lk.ijse.edu.entity.Stock;
 import lk.ijse.edu.entity.TeaProduct;
@@ -9,6 +10,9 @@ import lk.ijse.edu.repository.StockRepository;
 import lk.ijse.edu.repository.TeaProductRepository;
 import lk.ijse.edu.service.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -74,9 +78,31 @@ public class StockServiceImpl implements StockService {
                 .expiryDate(LocalDateTime.parse(dto.getExpiryDate()))
                 .notes(dto.getNotes())
                 .dateTime(LocalDateTime.now())
+                .type("INCOMING")
                 .build();
 
         stockRepository.save(stock);
         return "Stock saved for " + teaName;
+    }
+
+    @Override
+    public Page<StockHistoryDto> getStockHistory(int page, int size, String filter) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Stock> stockPage;
+
+        if ("ALL".equalsIgnoreCase(filter)) {
+            stockPage = stockRepository.findAllByOrderByDateTimeDesc(pageable);
+        } else {
+            stockPage = stockRepository.findByTypeOrderByDateTimeDesc(filter.toUpperCase(), pageable);
+        }
+
+        return stockPage.map(s -> new StockHistoryDto(
+                s.getDateTime().toLocalDate().toString(),
+                s.getName().name(),
+                s.getExpiryDate() != null ? s.getExpiryDate().toLocalDate().toString() : "-",
+                s.getQuantity(),
+                s.getNotes(),
+                s.getType()
+        ));
     }
 }

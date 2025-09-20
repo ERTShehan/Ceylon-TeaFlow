@@ -28,4 +28,7 @@ public class Stock {
     private LocalDateTime dateTime;
     private LocalDateTime expiryDate;
     private String notes;
+
+    @Column(nullable = false)
+    private String type; // "INCOMING" or "OUTGOING"
 }
