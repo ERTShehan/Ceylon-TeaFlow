@@ -26,4 +26,7 @@ public interface StockRepository extends JpaRepository<Stock, String> {
 
     @Query("SELECT s FROM Stock s WHERE s.type = :type ORDER BY s.dateTime DESC")
     Page<Stock> findByTypeOrderByDateTimeDesc(@Param("type") String type, Pageable pageable);
+
+    @Query("SELECT SUM(CAST(s.quantity AS long)) FROM Stock s WHERE s.type = 'INCOMING'")
+    Long findTotalStockQuantity();
 }

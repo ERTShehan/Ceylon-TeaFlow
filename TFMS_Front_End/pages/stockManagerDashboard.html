@@ -171,20 +171,20 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Total Stock</h3>
-                        <p class="text-2xl font-bold text-tea-green">2,450 kg</p>
+                        <p id="total-stock-quantity" class="text-2xl font-bold text-tea-green">0 kg</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-boxes text-tea-green text-xl"></i>
                     </div>
                 </div>
-                <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>
+<!--                <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>-->
             </div>
 
             <div class="stat-card bg-white rounded-xl shadow-md p-6">
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Tea Varieties</h3>
-                        <p class="text-2xl font-bold text-tea-green">12</p>
+                        <p class="text-2xl font-bold text-tea-green">6</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-list text-tea-green text-xl"></i>
@@ -257,7 +257,7 @@
                         <th class="p-3 text-left">Date</th>
                         <th class="p-3 text-left">Tea Type</th>
                         <th class="p-3 text-left">Exp. date</th>
-                        <th class="p-3 text-left">Quantity</th>
+                        <th class="p-3 text-left">Quantity (kg)</th>
                         <th class="p-3 text-left">Note</th>
                         <th class="p-3 text-left">Type</th>
                     </tr>
@@ -274,29 +274,27 @@
         <div id="reports" class="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-tea-green mb-4">Stock Reports</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="bg-tea-cream p-4 rounded-lg">
-                    <h3 class="font-medium text-tea-green mb-3">Monthly Stock Movement</h3>
-                    <div class="h-64">
-                        <canvas id="stockMovementChart"></canvas>
-                    </div>
-                </div>
+<!--            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">-->
+<!--                <div class="bg-tea-cream p-4 rounded-lg">-->
+<!--                    <h3 class="font-medium text-tea-green mb-3">Monthly Stock Movement</h3>-->
+<!--                    <div class="h-64">-->
+<!--                        <canvas id="stockMovementChart"></canvas>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div class="bg-tea-cream p-4 rounded-lg">
-                    <h3 class="font-medium text-tea-green mb-3">Stock Distribution by Type</h3>
-                    <div class="h-64">
-                        <canvas id="stockDistributionChart"></canvas>
-                    </div>
-                </div>
-            </div>
+<!--                <div class="bg-tea-cream p-4 rounded-lg">-->
+<!--                    <h3 class="font-medium text-tea-green mb-3">Stock Distribution by Type</h3>-->
+<!--                    <div class="h-64">-->
+<!--                        <canvas id="stockDistributionChart"></canvas>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
 
             <div class="flex space-x-4 mb-4">
                 <button class="px-4 py-2 bg-tea-green text-white rounded-lg">
                     <i class="fas fa-download mr-2"></i> Download Stock Report
                 </button>
-                <button class="px-4 py-2 border border-tea-green text-tea-green rounded-lg">
-                    <i class="fas fa-print mr-2"></i> Print Report
-                </button>
+
             </div>
         </div>
     </div>
@@ -308,57 +306,57 @@
         document.querySelector('.sidebar').classList.toggle('active');
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const stockMovementCtx = document.getElementById('stockMovementChart').getContext('2d');
-        new Chart(stockMovementCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
-                datasets: [{
-                    label: 'Incoming Stock (kg)',
-                    data: [1250, 1320, 1100, 1450, 1380, 1520, 1680, 1745],
-                    borderColor: '#2E8B57',
-                    backgroundColor: 'rgba(46, 139, 87, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }, {
-                    label: 'Outgoing Stock (kg)',
-                    data: [980, 1050, 920, 1120, 1080, 1250, 1320, 1280],
-                    borderColor: '#DAA520',
-                    backgroundColor: 'rgba(218, 165, 32, 0.1)',
-                    tension: 0.3,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-
-        const stockDistributionCtx = document.getElementById('stockDistributionChart').getContext('2d');
-        new Chart(stockDistributionCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Ceylon Black', 'Green Tea', 'White Tea', 'Earl Grey', 'Chamomile', 'Oolong'],
-                datasets: [{
-                    data: [850, 720, 450, 120, 95, 115],
-                    backgroundColor: [
-                        '#2E8B57',
-                        '#3CB371',
-                        '#DAA520',
-                        '#FFD700',
-                        '#F4A460',
-                        '#CD853F'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     const stockMovementCtx = document.getElementById('stockMovementChart').getContext('2d');
+    //     new Chart(stockMovementCtx, {
+    //         type: 'line',
+    //         data: {
+    //             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+    //             datasets: [{
+    //                 label: 'Incoming Stock (kg)',
+    //                 data: [1250, 1320, 1100, 1450, 1380, 1520, 1680, 1745],
+    //                 borderColor: '#2E8B57',
+    //                 backgroundColor: 'rgba(46, 139, 87, 0.1)',
+    //                 tension: 0.3,
+    //                 fill: true
+    //             }, {
+    //                 label: 'Outgoing Stock (kg)',
+    //                 data: [980, 1050, 920, 1120, 1080, 1250, 1320, 1280],
+    //                 borderColor: '#DAA520',
+    //                 backgroundColor: 'rgba(218, 165, 32, 0.1)',
+    //                 tension: 0.3,
+    //                 fill: true
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false
+    //         }
+    //     });
+    //
+    //     const stockDistributionCtx = document.getElementById('stockDistributionChart').getContext('2d');
+    //     new Chart(stockDistributionCtx, {
+    //         type: 'doughnut',
+    //         data: {
+    //             labels: ['Ceylon Black', 'Green Tea', 'White Tea', 'Earl Grey', 'Chamomile', 'Oolong'],
+    //             datasets: [{
+    //                 data: [850, 720, 450, 120, 95, 115],
+    //                 backgroundColor: [
+    //                     '#2E8B57',
+    //                     '#3CB371',
+    //                     '#DAA520',
+    //                     '#FFD700',
+    //                     '#F4A460',
+    //                     '#CD853F'
+    //                 ]
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false
+    //         }
+    //     });
+    // });
 </script>
 </body>
 </html>

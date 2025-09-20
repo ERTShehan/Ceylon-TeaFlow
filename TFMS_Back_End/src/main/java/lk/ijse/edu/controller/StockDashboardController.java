@@ -52,4 +52,11 @@ public class StockDashboardController {
                 200, "Done", stockService.getStockHistory(page, size, filter)
         ));
     }
+
+    @GetMapping("/getTotalStockQuantity")
+    public ResponseEntity<APIResponse<Long>> getTotalStockQuantity() {
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Total stock quantity retrieved successfully", stockService.getTotalStockQuantity()
+        ));
+    }
 }

@@ -196,30 +196,82 @@ public class SupplierDashboardController {
         Paragraph title = new Paragraph("Ceylon TeaFlow - Monthly Tea Bill", titleFont);
         title.setAlignment(Paragraph.ALIGN_CENTER);
         doc.add(title);
-
         doc.add(new Paragraph(" "));
 
-        PdfPTable table = new PdfPTable(3);
-        table.setWidthPercentage(100);
+        Font headerFont = new Font(Font.HELVETICA, 12, Font.BOLD, Color.WHITE);
+        Font cellFont = new Font(Font.HELVETICA, 11, Font.NORMAL, Color.BLACK);
 
-        table.addCell(getCell("Supplier Name:", dto.getSupplierName()));
-        table.addCell(getCell("Tea Card Number:", dto.getTeaCardNumber()));
-        table.addCell(getCell("Year:", String.valueOf(dto.getYear())));
-        table.addCell(getCell("Month:", String.valueOf(dto.getMonth())));
-        table.addCell(getCell("Total Weight:", dto.getTotalWeight() + " kg"));
-        table.addCell(getCell("Unit Price:", "LKR " + dto.getUnitPrice()));
-        table.addCell(getCell("Advance Payment:", "LKR " + dto.getAdvancePayment()));
-        table.addCell(getCell("Tea Packet Cost:", "LKR " + dto.getTeaPacketCost()));
-        table.addCell(getCell("Net Total Price:", "LKR " + dto.getTotalPrice()));
+        PdfPTable infoTable = new PdfPTable(2);
+        infoTable.setWidthPercentage(90);
+        infoTable.setSpacingBefore(10);
+        infoTable.setSpacingAfter(20);
+        infoTable.setWidths(new float[]{3, 5});
 
-        doc.add(table);
+        addInfoRow(infoTable, "Supplier Name", dto.getSupplierName(), cellFont);
+        addInfoRow(infoTable, "Tea Card Number", dto.getTeaCardNumber(), cellFont);
+        addInfoRow(infoTable, "Year", String.valueOf(dto.getYear()), cellFont);
+        addInfoRow(infoTable, "Month", String.valueOf(dto.getMonth()), cellFont);
+        doc.add(infoTable);
+
+        PdfPTable billTable = new PdfPTable(2);
+        billTable.setWidthPercentage(90);
+        billTable.setSpacingBefore(10);
+        billTable.setWidths(new float[]{4, 4});
+
+        PdfPCell header1 = new PdfPCell(new Phrase("Description", headerFont));
+        header1.setBackgroundColor(new Color(34, 139, 34));
+        header1.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header1.setPadding(6);
+        billTable.addCell(header1);
+
+        PdfPCell header2 = new PdfPCell(new Phrase("Amount", headerFont));
+        header2.setBackgroundColor(new Color(34, 139, 34));
+        header2.setHorizontalAlignment(Element.ALIGN_CENTER);
+        header2.setPadding(6);
+        billTable.addCell(header2);
+
+        addBillRow(billTable, "Total Weight", dto.getTotalWeight() + " kg", cellFont);
+        addBillRow(billTable, "Unit Price", "LKR " + dto.getUnitPrice(), cellFont);
+        addBillRow(billTable, "Advance Payment", "LKR " + dto.getAdvancePayment(), cellFont);
+        addBillRow(billTable, "Tea Packet Cost", "LKR " + dto.getTeaPacketCost(), cellFont);
+
+        Font totalFont = new Font(Font.HELVETICA, 12, Font.BOLD, Color.RED.darker());
+        PdfPCell totalLabel = new PdfPCell(new Phrase("Net Total Price", totalFont));
+        totalLabel.setHorizontalAlignment(Element.ALIGN_LEFT);
+        totalLabel.setPadding(8);
+        billTable.addCell(totalLabel);
+
+        PdfPCell totalValue = new PdfPCell(new Phrase("LKR " + dto.getTotalPrice(), totalFont));
+        totalValue.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        totalValue.setPadding(8);
+        billTable.addCell(totalValue);
+
+        doc.add(billTable);
 
         doc.close();
     }
 
-    private PdfPCell getCell(String label, String value) {
-        PdfPCell cell = new PdfPCell(new Phrase(label + " " + value));
+    private PdfPCell getInfoCell(String text, Font font) {
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
         cell.setBorder(Rectangle.NO_BORDER);
+        cell.setPadding(5);
         return cell;
+    }
+
+    private void addInfoRow(PdfPTable table, String key, String value, Font font) {
+        table.addCell(getInfoCell(key + ":", font));
+        table.addCell(getInfoCell(value, font));
+    }
+
+    private void addBillRow(PdfPTable table, String desc, String amount, Font font) {
+        PdfPCell c1 = new PdfPCell(new Phrase(desc, font));
+        c1.setHorizontalAlignment(Element.ALIGN_LEFT);
+        c1.setPadding(6);
+        table.addCell(c1);
+
+        PdfPCell c2 = new PdfPCell(new Phrase(amount, font));
+        c2.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        c2.setPadding(6);
+        table.addCell(c2);
     }
 }

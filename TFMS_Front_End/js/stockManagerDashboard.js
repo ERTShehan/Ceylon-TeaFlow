@@ -74,6 +74,22 @@ async function loadStockHistory(page = 0, filter = "ALL") {
     }
 }
 
+async function loadTotalStockQuantity() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/stockDashboard/getTotalStockQuantity`);
+        const result = await response.json();
+
+        if (result.code === 200) {
+            const qty = result.data;
+            document.getElementById("total-stock-quantity").textContent = `${qty} kg`;
+        } else {
+            console.error("Failed to load total stock quantity:", result);
+        }
+    } catch (error) {
+        console.error("Error fetching total stock quantity:", error);
+    }
+}
+
 function populateStockHistoryTable(stocks) {
     const tbody = document.getElementById("stockHistoryTableBody");
     tbody.innerHTML = "";
@@ -135,7 +151,7 @@ document.querySelector("#add-stock form").addEventListener("submit", async funct
     const form = e.target;
     const productName = form.querySelector("select").value;
     const quantity = form.querySelector("input[type='number']").value;
-    const expiryDateInput = form.querySelector("input[type='date']").value; // YYYY-MM-DD
+    const expiryDateInput = form.querySelector("input[type='date']").value;
     const notes = form.querySelector("textarea").value;
 
     if (!productName || !quantity) {
@@ -165,6 +181,7 @@ document.querySelector("#add-stock form").addEventListener("submit", async funct
             alert(result.data);
             form.reset();
             loadStockHistory();
+            loadTotalStockQuantity();
             await loadStockLevels();
         } else {
             alert("Failed to add stock!");
@@ -179,4 +196,5 @@ document.addEventListener("DOMContentLoaded", () => {
     loadStockLevels();
     loadTeaProducts();
     loadStockHistory();
+    loadTotalStockQuantity();
 });

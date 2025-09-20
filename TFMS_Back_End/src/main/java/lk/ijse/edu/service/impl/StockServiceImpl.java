@@ -105,4 +105,10 @@ public class StockServiceImpl implements StockService {
                 s.getType()
         ));
     }
+
+    @Override
+    public Long getTotalStockQuantity() {
+        Long total = stockRepository.findTotalStockQuantity();
+        return total != null ? total : 0L;
+    }
 }

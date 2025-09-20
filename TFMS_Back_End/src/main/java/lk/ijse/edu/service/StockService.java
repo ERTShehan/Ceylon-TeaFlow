@@ -11,4 +11,5 @@ public interface StockService {
     List<StockResponseDto> getGroupedStockLevels();
     String addNewStock(AddNewStockDto dto);
     Page<StockHistoryDto> getStockHistory(int page, int size, String filter);
+    Long getTotalStockQuantity();
 }

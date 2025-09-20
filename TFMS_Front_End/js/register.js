@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.querySelector('form');
     if (!form) return;
 
-    // Get all input elements
     const firstName = document.getElementById('firstName');
     const lastName = document.getElementById('lastName');
     const email = document.getElementById('email');
@@ -17,13 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleRadios = document.querySelectorAll('input[name="role"]');
     const teaCardField = document.getElementById('teaCardField');
 
-    // Helper function to show error messages
     function showError(input, message) {
         const formControl = input.parentElement;
         formControl.classList.remove('success');
         formControl.classList.add('error');
 
-        // Check if error message already exists
         let errorElement = formControl.querySelector('.error-message');
         if (!errorElement) {
             errorElement = document.createElement('small');
@@ -34,26 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
         errorElement.innerText = message;
     }
 
-    // Helper function to show success state
     function showSuccess(input) {
         const formControl = input.parentElement;
         formControl.classList.remove('error');
         formControl.classList.add('success');
 
-        // Remove any existing error message
         const errorElement = formControl.querySelector('.error-message');
         if (errorElement) {
             errorElement.remove();
         }
     }
 
-    // Validate email format
     function isValidEmail(email) {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(String(email).toLowerCase());
     }
 
-    // Check required fields
     function checkRequired(inputArr) {
         let isAllValid = true;
         inputArr.forEach(function(input) {
@@ -67,13 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return isAllValid;
     }
 
-    // Get field name for error messages
     function getFieldName(input) {
         if (!input || !input.id) return 'Field';
         return input.id.charAt(0).toUpperCase() + input.id.slice(1).replace(/([A-Z])/g, ' $1');
     }
 
-    // Check input length
     function checkLength(input, min, max) {
         if (!input) return false;
         if (input.value.length < min) {
@@ -88,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Check passwords match
     function checkPasswordsMatch(input1, input2) {
         if (!input1 || !input2) return false;
         if (input1.value !== input2.value) {
@@ -100,10 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Check password strength
     function checkPasswordStrength(input) {
         if (!input) return false;
-        // At least 8 characters, one uppercase, one lowercase, one number
         const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 
         if (!strongRegex.test(input.value)) {
@@ -115,12 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Validate tea card format (if supplier is selected)
     function validateTeaCard(input) {
         if (!input) return false;
-        const teaCardRegex = /^TC-\d{6}$/;
+        const teaCardRegex = /^TC-\d{4}-\d{3}$/;
         if (!teaCardRegex.test(input.value)) {
-            showError(input, 'Tea Card must be in format TC-123456');
+            showError(input, 'Tea Card must be in format TC-1234-567');
             return false;
         } else {
             showSuccess(input);
@@ -128,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Check if terms are agreed to
     function checkTerms(checkbox) {
         if (!checkbox) return false;
         if (!checkbox.checked) {
@@ -156,9 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Real-time validation for inputs
     function setupRealTimeValidation() {
-        // Email validation
         if (email) {
             email.addEventListener('blur', function() {
                 if (email.value.trim() !== '') {
@@ -171,13 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Password validation
         if (password) {
             password.addEventListener('input', function() {
                 if (password.value.trim() !== '') {
                     checkPasswordStrength(password);
 
-                    // Check if confirm password matches when both have values
                     if (confirmPassword && confirmPassword.value.trim() !== '') {
                         checkPasswordsMatch(password, confirmPassword);
                     }
@@ -185,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Confirm password validation
         if (confirmPassword) {
             confirmPassword.addEventListener('input', function() {
                 if (confirmPassword.value.trim() !== '' && password && password.value.trim() !== '') {
@@ -194,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Tea card validation (if supplier is selected)
         if (teaCardInput) {
             teaCardInput.addEventListener('blur', function() {
                 const isSupplier = document.querySelector('input[name="role"]:checked')?.value === 'supplier';
@@ -204,7 +184,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Username validation
         if (username) {
             username.addEventListener('blur', function() {
                 if (username.value.trim() !== '') {
@@ -213,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Name validation
         if (firstName) {
             firstName.addEventListener('blur', function() {
                 if (firstName.value.trim() !== '') {
@@ -231,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update tea card visibility based on role selection
     const updateTeaCardVisibility = () => {
         const selected = document.querySelector('input[name="role"]:checked');
         if (!selected || !teaCardField) return;
@@ -243,14 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTeaCardVisibility();
     }
 
-    // Form submission handler
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Validate all fields
         const isRequiredValid = checkRequired([firstName, lastName, email, username, address, password, confirmPassword]);
 
-        // Check email format
         let isEmailValid = false;
         if (email && email.value.trim() !== '') {
             isEmailValid = isValidEmail(email.value);
@@ -261,25 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Check password strength
         let isPasswordStrong = false;
         if (password && password.value.trim() !== '') {
             isPasswordStrong = checkPasswordStrength(password);
         }
 
-        // Check passwords match
         let isPasswordMatch = false;
         if (password && password.value.trim() !== '' && confirmPassword && confirmPassword.value.trim() !== '') {
             isPasswordMatch = checkPasswordsMatch(password, confirmPassword);
         }
 
-        // Check username length
         let isUsernameValid = false;
         if (username && username.value.trim() !== '') {
             isUsernameValid = checkLength(username, 3, 20);
         }
 
-        // Check name lengths
         let isFirstNameValid = false;
         if (firstName && firstName.value.trim() !== '') {
             isFirstNameValid = checkLength(firstName, 2, 30);
@@ -290,7 +260,6 @@ document.addEventListener('DOMContentLoaded', () => {
             isLastNameValid = checkLength(lastName, 2, 30);
         }
 
-        // Check tea card if supplier is selected
         const isSupplier = document.querySelector('input[name="role"]:checked')?.value === 'supplier';
         let isTeaCardValid = true;
 
@@ -303,16 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Check terms agreement
         const isTermsAgreed = checkTerms(termsCheckbox);
 
-        // If validation fails, stop form submission
         if (!(isRequiredValid && isEmailValid && isPasswordStrong && isPasswordMatch &&
             isUsernameValid && isFirstNameValid && isLastNameValid && isTeaCardValid && isTermsAgreed)) {
             return;
         }
 
-        // Proceed with form submission if validation passes
         const selectedRoleEl = document.querySelector('input[name="role"]:checked');
         const role = selectedRoleEl ? selectedRoleEl.value : 'customer';
 
@@ -383,6 +349,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initialize real-time validation
     setupRealTimeValidation();
 });
