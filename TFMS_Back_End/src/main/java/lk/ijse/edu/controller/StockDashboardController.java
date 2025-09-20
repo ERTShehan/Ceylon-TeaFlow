@@ -22,7 +22,7 @@ public class StockDashboardController {
     @GetMapping("/getStockLevels")
     public ResponseEntity<APIResponse<List<StockResponseDto>>> getStockLevels(){
         return ResponseEntity.ok(new APIResponse<>(
-                200, "Done", stockService.getAllStockLevels()
+                200, "Done", stockService.getGroupedStockLevels()
         ));
     }
 
@@ -36,7 +36,7 @@ public class StockDashboardController {
     @PostMapping("/addTeaInStock")
     public ResponseEntity<APIResponse<String>> addTeaProductInStock(@RequestBody AddNewStockDto addNewStockDto){
         return ResponseEntity.ok(new APIResponse<>(
-                200, "Stock update successfully", stockService.addTeaProduct(addNewStockDto)
+                200, "Stock update successfully", stockService.addNewStock(addNewStockDto)
         ));
     }
 }

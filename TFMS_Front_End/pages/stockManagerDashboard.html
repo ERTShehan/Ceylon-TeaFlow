@@ -26,13 +26,13 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            overflow: hidden; /* Prevent body scrolling */
+            overflow: hidden;
         }
 
         .sidebar {
             transition: all 0.3s ease;
-            height: 100vh; /* Full viewport height */
-            overflow-y: auto; /* Allow scrolling only if needed */
+            height: 100vh;
+            overflow-y: auto;
         }
 
         @media (max-width: 768px) {
@@ -48,8 +48,8 @@
         }
 
         .main-content {
-            height: 100vh; /* Full viewport height */
-            overflow-y: auto; /* Enable scrolling for main content */
+            height: 100vh;
+            overflow-y: auto;
         }
 
         .stat-card {
@@ -262,47 +262,8 @@
                         <th class="p-3 text-left">Source/Destination</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr class="border-b">
-                        <td class="p-3">Aug 22, 2025</td>
-                        <td class="p-3">Ceylon Black Tea</td>
-                        <td class="p-3">BATCH-0822-01</td>
-                        <td class="p-3">+125 kg</td>
-                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
-                        <td class="p-3">Kamal Perera</td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3">Aug 22, 2025</td>
-                        <td class="p-3">Green Tea</td>
-                        <td class="p-3">BATCH-0822-02</td>
-                        <td class="p-3">+98 kg</td>
-                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
-                        <td class="p-3">Nimal Fernando</td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3">Aug 21, 2025</td>
-                        <td class="p-3">Ceylon Black Tea</td>
-                        <td class="p-3">BATCH-0810-05</td>
-                        <td class="p-3">-50 kg</td>
-                        <td class="p-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Outgoing</span></td>
-                        <td class="p-3">Order #TF-7842</td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3">Aug 21, 2025</td>
-                        <td class="p-3">White Tea</td>
-                        <td class="p-3">BATCH-0815-03</td>
-                        <td class="p-3">-35 kg</td>
-                        <td class="p-3"><span class="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Outgoing</span></td>
-                        <td class="p-3">Order #TF-7791</td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3">Aug 20, 2025</td>
-                        <td class="p-3">Green Tea</td>
-                        <td class="p-3">BATCH-0820-01</td>
-                        <td class="p-3">+112 kg</td>
-                        <td class="p-3"><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Incoming</span></td>
-                        <td class="p-3">Sunil Rathnayake</td>
-                    </tr>
+                    <tbody id="stockHistoryTableBody">
+
                     </tbody>
                 </table>
             </div>
@@ -348,14 +309,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="../js/stockManagerDashboard.js"></script>
 <script>
-    // Mobile menu toggle
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {
         document.querySelector('.sidebar').classList.toggle('active');
     });
 
-    // Charts initialization
     document.addEventListener('DOMContentLoaded', function() {
-        // Stock Movement Chart
         const stockMovementCtx = document.getElementById('stockMovementChart').getContext('2d');
         new Chart(stockMovementCtx, {
             type: 'line',
@@ -383,7 +341,6 @@
             }
         });
 
-        // Stock Distribution Chart
         const stockDistributionCtx = document.getElementById('stockDistributionChart').getContext('2d');
         new Chart(stockDistributionCtx, {
             type: 'doughnut',

@@ -6,6 +6,6 @@ import lk.ijse.edu.dto.StockResponseDto;
 import java.util.List;
 
 public interface StockService {
-    List<StockResponseDto> getAllStockLevels();
-    String addTeaProduct(AddNewStockDto addNewStockDto);
+    List<StockResponseDto> getGroupedStockLevels();
+    String addNewStock(AddNewStockDto dto);
 }

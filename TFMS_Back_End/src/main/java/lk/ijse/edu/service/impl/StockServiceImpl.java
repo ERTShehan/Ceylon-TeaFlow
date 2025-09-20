@@ -12,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -43,46 +42,41 @@ public class StockServiceImpl implements StockService {
         return String.format("ANS-%03d-%03d", first, last);
     }
 
+
     @Override
-    public List<StockResponseDto> getAllStockLevels() {
-        return stockRepository.findAll().stream().map(stock ->
-                new StockResponseDto(
-                        stock.getStockId(),
-                        stock.getName().name(),
-                        stock.getQuantity(),
-                        stock.getExpiryDate() != null ? stock.getExpiryDate().toString() : null,
-                        stock.getNotes()
-                )
-        ).toList();
+    public List<StockResponseDto> getGroupedStockLevels() {
+        List<Object[]> rows = stockRepository.findGroupedStockLevels();
+        List<StockResponseDto> list = new ArrayList<>();
+
+        for (Object[] row : rows) {
+            TeaProductName name = (TeaProductName) row[0];
+            Long totalQty = (Long) row[1];
+
+            list.add(StockResponseDto.builder()
+                    .productName(name.name())
+                    .quantity(totalQty.toString())
+                    .build());
+        }
+        return list;
     }
 
     @Override
-    public String addTeaProduct(AddNewStockDto dto) {
+    public String addNewStock(AddNewStockDto dto) {
         String lastId = stockRepository.findLastStockId();
-        String newId = generateNextStockId(lastId);
+        String nextId = generateNextStockId(lastId);
 
         TeaProductName teaName = TeaProductName.valueOf(dto.getProductName());
 
-        Optional<Stock> existing = stockRepository.findByName(teaName);
+        Stock stock = Stock.builder()
+                .stockId(nextId)
+                .name(teaName)
+                .quantity(dto.getQuantity())
+                .expiryDate(LocalDateTime.parse(dto.getExpiryDate()))
+                .notes(dto.getNotes())
+                .dateTime(LocalDateTime.now())
+                .build();
 
-        if (existing.isPresent()) {
-            Stock stock = existing.get();
-            int newQty = Integer.parseInt(stock.getQuantity()) + Integer.parseInt(dto.getQuantity());
-            stock.setQuantity(String.valueOf(newQty));
-            stock.setExpiryDate(LocalDateTime.parse(dto.getExpiryDate()));
-            stock.setNotes(dto.getNotes());
-            stockRepository.save(stock);
-            return teaName + " stock updated successfully";
-        } else {
-            Stock newStock = Stock.builder()
-                    .stockId(newId)
-                    .name(teaName)
-                    .quantity(dto.getQuantity())
-                    .expiryDate(LocalDateTime.parse(dto.getExpiryDate()))
-                    .notes(dto.getNotes())
-                    .build();
-            stockRepository.save(newStock);
-            return teaName + " stock added successfully";
-        }
+        stockRepository.save(stock);
+        return "Stock saved for " + teaName;
     }
 }

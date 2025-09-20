@@ -9,9 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class StockResponseDto {
-    private String stockId;
     private String productName;
     private String quantity;
-    private String expiryDate;
-    private String notes;
 }
