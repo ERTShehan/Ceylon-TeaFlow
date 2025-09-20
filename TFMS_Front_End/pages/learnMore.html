@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -15,6 +16,9 @@
             'tea-green-light': '#3CB371',
             'tea-gold': '#DAA520',
             'tea-cream': '#FFF8E1',
+            'dark-bg': '#1a2a35',
+            'dark-card': '#22333e',
+            'dark-text': '#e2e8f0',
           },
           animation: {
             'float': 'float 6s ease-in-out infinite',
@@ -35,6 +39,12 @@
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(120deg, #f0f8e6, #e6f0e6);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(120deg, #1a2a35, #22333e);
+      color: #e2e8f0;
     }
 
     .tea-leaf {
@@ -44,6 +54,10 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232E8B57' d='M19.74 4.29c-4.53.16-9.31 2.6-12.8 6.1C3.76 13.56 2 17.11 2 22c4.89 0 8.44-1.76 11.61-4.94 3.5-3.49 5.94-8.27 6.1-12.8.03-.61-.48-1.12-1.09-1.09zM6.54 17.46c1.33-2.27 3.28-4.47 5.54-6.73 2.26-2.26 4.46-4.21 6.73-5.54-.33 2.9-2.1 6.76-5.28 9.94s-7.04 4.94-9.94 5.28z'/%3E%3C/svg%3E");
       opacity: 0.7;
       z-index: 0;
+    }
+
+    body.dark-mode .tea-leaf {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233CB371' d='M19.74 4.29c-4.53.16-9.31 2.6-12.8 6.1C3.76 13.56 2 17.11 2 22c4.89 0 8.44-1.76 11.61-4.94 3.5-3.49 5.94-8.27 6.1-12.8.03-.61-.48-1.12-1.09-1.09zM6.54 17.46c1.33-2.27 3.28-4.47 5.54-6.73 2.26-2.26 4.46-4.21 6.73-5.54-.33 2.9-2.1 6.76-5.28 9.94s-7.04 4.94-9.94 5.28z'/%3E%3C/svg%3E");
     }
 
     .gradient-bg {
@@ -85,31 +99,74 @@
       font-size: 30px;
       margin-bottom: 20px;
     }
+
+    body.dark-mode .bg-white {
+      background-color: #22333e;
+    }
+
+    body.dark-mode .text-gray-600 {
+      color: #cbd5e0;
+    }
+
+    body.dark-mode .bg-tea-cream {
+      background-color: #1a2a35;
+    }
+
+    body.dark-mode .shadow-md {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark-mode .bg-gray-800 {
+      background-color: #15202b;
+    }
+
+    body.dark-mode .text-gray-400 {
+      color: #a0aec0;
+    }
+
+    body.dark-mode .border-gray-700 {
+      border-color: #2d3748;
+    }
+
+    body.dark-mode .bg-gradient-to-r.from-tea-green.to-tea-green-light {
+      background: linear-gradient(135deg, #1a2a35 0%, #22333e 50%, #2d4a3e 100%);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 <!-- Navigation -->
-<nav class="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+<nav class="bg-white shadow-md py-4 px-6 flex justify-between items-center dark:bg-dark-card">
   <div class="flex items-center">
     <a href="../index.html" class="flex items-center">
-      <i class="fas fa-leaf text-tea-green text-2xl mr-2"></i>
-      <span class="text-xl font-semibold text-tea-green">Ceylon TeaFlow</span>
+      <i class="fas fa-leaf text-tea-green text-2xl mr-2 dark:text-tea-green-light"></i>
+      <span class="text-xl font-semibold text-tea-green dark:text-tea-green-light">Ceylon TeaFlow</span>
     </a>
   </div>
-  <div class="hidden md:flex space-x-8">
-    <a href="../index.html" class="text-gray-600 hover:text-tea-green">Home</a>
-    <a href="#" class="text-tea-green hover:text-tea-green-light">Learn More</a>
-<!--    <a href="#" class="text-gray-600 hover:text-tea-green">Features</a>-->
-    <a href="#contact" class="text-gray-600 hover:text-tea-green">Contact</a>
+  <div class="hidden md:flex space-x-8 items-center">
+    <a href="../index.html" class="text-gray-600 hover:text-tea-green dark:text-dark-text dark:hover:text-tea-green-light">Home</a>
+    <a href="#" class="text-tea-green hover:text-tea-green-light dark:text-tea-green-light">Learn More</a>
+    <a href="#contact" class="text-gray-600 hover:text-tea-green dark:text-dark-text dark:hover:text-tea-green-light">Contact</a>
+
+    <!-- Dark mode toggle -->
+    <button id="theme-toggle" class="p-2 rounded-full bg-tea-cream dark:bg-dark-bg">
+      <i class="fas fa-moon text-tea-gold dark:hidden"></i>
+      <i class="fas fa-sun text-tea-gold hidden dark:block"></i>
+    </button>
   </div>
   <div class="flex items-center space-x-4">
-    <a href="./login.html" class="px-4 py-2 text-tea-green rounded hover:bg-tea-green hover:text-white transition">Sign In</a>
-    <a href="./register.html" class="px-4 py-2 bg-tea-green text-white rounded hover:bg-tea-green-light transition">Sign Up</a>
+    <a href="./login.html" class="px-4 py-2 text-tea-green rounded hover:bg-tea-green hover:text-white transition dark:text-tea-green-light dark:hover:bg-tea-green-light dark:hover:text-white">Sign In</a>
+    <a href="./register.html" class="px-4 py-2 bg-tea-green text-white rounded hover:bg-tea-green-light transition dark:bg-tea-green-light dark:hover:bg-tea-green">Sign Up</a>
+
+    <!-- Mobile dark mode toggle -->
+    <button id="mobile-theme-toggle" class="p-2 rounded-full bg-tea-cream dark:bg-dark-bg md:hidden">
+      <i class="fas fa-moon text-tea-gold dark:hidden"></i>
+      <i class="fas fa-sun text-tea-gold hidden dark:block"></i>
+    </button>
   </div>
 </nav>
 
 <!-- Hero Section -->
-<section class="relative py-16 overflow-hidden bg-tea-green text-white">
+<section class="relative py-16 overflow-hidden bg-tea-green text-white dark:bg-dark-bg">
   <!-- Animated tea leaves -->
   <div class="tea-leaf absolute top-20 left-10 animate-float" style="animation-delay: 0s;"></div>
   <div class="tea-leaf absolute top-40 right-20 animate-float" style="animation-delay: 1s;"></div>
@@ -119,46 +176,46 @@
   <div class="container mx-auto px-6 text-center">
     <h1 class="text-4xl md:text-5xl font-bold mb-6">Learn About Ceylon TeaFlow</h1>
     <p class="text-xl max-w-3xl mx-auto mb-8">Discover how our comprehensive tea factory management system can transform your operations and how to create the right account for your needs.</p>
-    <a href="#account-types" class="px-6 py-3 bg-white text-tea-green font-semibold rounded-lg shadow-md hover:bg-tea-cream transition">Explore Account Options</a>
+    <a href="#account-types" class="px-6 py-3 bg-white text-tea-green font-semibold rounded-lg shadow-md hover:bg-tea-cream transition dark:bg-dark-card dark:text-tea-green-light dark:hover:bg-tea-green-light dark:hover:text-white">Explore Account Options</a>
   </div>
 </section>
 
 <!-- Software Description -->
-<section class="py-16 bg-white">
+<section class="py-16 bg-white dark:bg-dark-bg">
   <div class="container mx-auto px-6">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-tea-green mb-4">About Ceylon TeaFlow</h2>
+      <h2 class="text-3xl font-bold text-tea-green mb-4 dark:text-tea-green-light">About Ceylon TeaFlow</h2>
       <div class="h-1 w-20 bg-tea-green mx-auto mb-6"></div>
-      <p class="text-lg text-gray-600 max-w-3xl mx-auto">Ceylon TeaFlow is a comprehensive management system designed specifically for tea factories in Sri Lanka. Our platform streamlines the entire tea production process from leaf to cup, providing tools for every stakeholder in the supply chain.</p>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto dark:text-dark-text">Ceylon TeaFlow is a comprehensive management system designed specifically for tea factories in Sri Lanka. Our platform streamlines the entire tea production process from leaf to cup, providing tools for every stakeholder in the supply chain.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover">
-        <div class="feature-icon mx-auto">
+      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover dark:bg-dark-card">
+        <div class="feature-icon mx-auto dark:bg-opacity-20 dark:bg-tea-green-light dark:text-tea-green-light">
           <i class="fas fa-leaf"></i>
         </div>
-        <h3 class="text-xl font-semibold text-tea-green mb-2">From Garden to Factory</h3>
-        <p class="text-gray-600">Track tea leaves from suppliers through quality assessment, processing, and inventory management.</p>
+        <h3 class="text-xl font-semibold text-tea-green mb-2 dark:text-tea-green-light">From Garden to Factory</h3>
+        <p class="text-gray-600 dark:text-dark-text">Track tea leaves from suppliers through quality assessment, processing, and inventory management.</p>
       </div>
 
-      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover">
-        <div class="feature-icon mx-auto">
+      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover dark:bg-dark-card">
+        <div class="feature-icon mx-auto dark:bg-opacity-20 dark:bg-tea-green-light dark:text-tea-green-light">
           <i class="fas fa-chart-line"></i>
         </div>
-        <h3 class="text-xl font-semibold text-tea-green mb-2">Business Intelligence</h3>
-        <p class="text-gray-600">Gain insights with comprehensive analytics on production, sales, inventory, and financial performance.</p>
+        <h3 class="text-xl font-semibold text-tea-green mb-2 dark:text-tea-green-light">Business Intelligence</h3>
+        <p class="text-gray-600 dark:text-dark-text">Gain insights with comprehensive analytics on production, sales, inventory, and financial performance.</p>
       </div>
 
-      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover">
-        <div class="feature-icon mx-auto">
+      <div class="bg-tea-cream p-6 rounded-lg text-center card-hover dark:bg-dark-card">
+        <div class="feature-icon mx-auto dark:bg-opacity-20 dark:bg-tea-green-light dark:text-tea-green-light">
           <i class="fas fa-users"></i>
         </div>
-        <h3 class="text-xl font-semibold text-tea-green mb-2">Multi-Role Platform</h3>
-        <p class="text-gray-600">Customized dashboards for CEOs, Suppliers, Tea Makers, Managers, and Customers.</p>
+        <h3 class="text-xl font-semibold text-tea-green mb-2 dark:text-tea-green-light">Multi-Role Platform</h3>
+        <p class="text-gray-600 dark:text-dark-text">Customized dashboards for CEOs, Suppliers, Tea Makers, Managers, and Customers.</p>
       </div>
     </div>
 
-    <div class="bg-gradient-to-r from-tea-green to-tea-green-light p-8 rounded-lg text-white">
+    <div class="bg-gradient-to-r from-tea-green to-tea-green-light p-8 rounded-lg text-white dark:bg-gradient-to-r dark:from-dark-card dark:to-dark-bg">
       <h3 class="text-2xl font-semibold mb-4">Why Choose Ceylon TeaFlow?</h3>
       <p class="mb-4">Our system is specifically designed for the unique needs of Sri Lanka's tea industry, offering:</p>
       <ul class="list-disc list-inside space-y-2">
@@ -173,27 +230,27 @@
 </section>
 
 <!-- Account Types -->
-<section id="account-types" class="py-16 bg-tea-cream">
+<section id="account-types" class="py-16 bg-tea-cream dark:bg-dark-bg">
   <div class="container mx-auto px-6">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-tea-green mb-4">Account Types</h2>
+      <h2 class="text-3xl font-bold text-tea-green mb-4 dark:text-tea-green-light">Account Types</h2>
       <div class="h-1 w-20 bg-tea-green mx-auto mb-6"></div>
-      <p class="text-lg text-gray-600 max-w-3xl mx-auto">Ceylon TeaFlow offers different account types tailored to specific roles in the tea industry. Choose the one that matches your needs.</p>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto dark:text-dark-text">Ceylon TeaFlow offers different account types tailored to specific roles in the tea industry. Choose the one that matches your needs.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
       <!-- Supplier Account -->
-      <div class="bg-white p-8 rounded-lg shadow-md card-hover">
+      <div class="bg-white p-8 rounded-lg shadow-md card-hover dark:bg-dark-card">
         <div class="text-center mb-6">
           <div class="w-20 h-20 bg-tea-green-light rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4">
             <i class="fas fa-truck-loading"></i>
           </div>
-          <h3 class="text-2xl font-semibold text-tea-green">Supplier Account</h3>
+          <h3 class="text-2xl font-semibold text-tea-green dark:text-tea-green-light">Supplier Account</h3>
           <p class="text-tea-green-light">For tea leaf suppliers</p>
         </div>
 
-        <h4 class="text-lg font-semibold text-tea-green mb-4">Benefits:</h4>
-        <ul class="list-disc list-inside space-y-2 mb-6 text-gray-600">
+        <h4 class="text-lg font-semibold text-tea-green mb-4 dark:text-tea-green-light">Benefits:</h4>
+        <ul class="list-disc list-inside space-y-2 mb-6 text-gray-600 dark:text-dark-text">
           <li>Track your tea leaf deliveries and quality assessments</li>
           <li>Monitor payments and account balance</li>
           <li>Schedule future deliveries</li>
@@ -201,53 +258,53 @@
           <li>Access to specialized supplier support</li>
         </ul>
 
-        <h4 class="text-lg font-semibold text-tea-green mb-4">Registration Process:</h4>
+        <h4 class="text-lg font-semibold text-tea-green mb-4 dark:text-tea-green-light">Registration Process:</h4>
         <div class="space-y-4">
           <div class="flex items-start">
             <div class="step-number">1</div>
             <div>
-              <h5 class="font-semibold">Obtain Tea Card</h5>
-              <p class="text-gray-600">Visit the factory to register as a supplier and receive your unique tea card number.</p>
+              <h5 class="font-semibold dark:text-dark-text">Obtain Tea Card</h5>
+              <p class="text-gray-600 dark:text-dark-text">Visit the factory to register as a supplier and receive your unique tea card number.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">2</div>
             <div>
-              <h5 class="font-semibold">Online Registration</h5>
-              <p class="text-gray-600">Select "Supplier" during account creation and enter your tea card number.</p>
+              <h5 class="font-semibold dark:text-dark-text">Online Registration</h5>
+              <p class="text-gray-600 dark:text-dark-text">Select "Supplier" during account creation and enter your tea card number.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">3</div>
             <div>
-              <h5 class="font-semibold">Account Verification</h5>
-              <p class="text-gray-600">Factory management will verify your account within 24-48 hours.</p>
+              <h5 class="font-semibold dark:text-dark-text">Account Verification</h5>
+              <p class="text-gray-600 dark:text-dark-text">Factory management will verify your account within 24-48 hours.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">4</div>
             <div>
-              <h5 class="font-semibold">Full Access</h5>
-              <p class="text-gray-600">Once verified, gain full access to the supplier portal.</p>
+              <h5 class="font-semibold dark:text-dark-text">Full Access</h5>
+              <p class="text-gray-600 dark:text-dark-text">Once verified, gain full access to the supplier portal.</p>
             </div>
           </div>
         </div>
 
-        <a href="./register.html" class="block w-full mt-6 px-4 py-3 bg-tea-green text-white text-center rounded-lg hover:bg-tea-green-light transition">Register as Supplier</a>
+        <a href="./register.html" class="block w-full mt-6 px-4 py-3 bg-tea-green text-white text-center rounded-lg hover:bg-tea-green-light transition dark:bg-tea-green-light dark:hover:bg-tea-green">Register as Supplier</a>
       </div>
 
       <!-- Customer Account -->
-      <div class="bg-white p-8 rounded-lg shadow-md card-hover">
+      <div class="bg-white p-8 rounded-lg shadow-md card-hover dark:bg-dark-card">
         <div class="text-center mb-6">
           <div class="w-20 h-20 bg-tea-green-light rounded-full flex items-center justify-center text-white text-3xl mx-auto mb-4">
             <i class="fas fa-shopping-bag"></i>
           </div>
-          <h3 class="text-2xl font-semibold text-tea-green">Customer Account</h3>
+          <h3 class="text-2xl font-semibold text-tea-green dark:text-tea-green-light">Customer Account</h3>
           <p class="text-tea-green-light">For tea product customers</p>
         </div>
 
-        <h4 class="text-lg font-semibold text-tea-green mb-4">Benefits:</h4>
-        <ul class="list-disc list-inside space-y-2 mb-6 text-gray-600">
+        <h4 class="text-lg font-semibold text-tea-green mb-4 dark:text-tea-green-light">Benefits:</h4>
+        <ul class="list-disc list-inside space-y-2 mb-6 text-gray-600 dark:text-dark-text">
           <li>Browse and purchase premium Ceylon tea products</li>
           <li>Track order status and delivery information</li>
           <li>Access order history and receipts</li>
@@ -255,50 +312,50 @@
           <li>Receive notifications about new tea varieties</li>
         </ul>
 
-        <h4 class="text-lg font-semibold text-tea-green mb-4">Registration Process:</h4>
+        <h4 class="text-lg font-semibold text-tea-green mb-4 dark:text-tea-green-light">Registration Process:</h4>
         <div class="space-y-4">
           <div class="flex items-start">
             <div class="step-number">1</div>
             <div>
-              <h5 class="font-semibold">Select Account Type</h5>
-              <p class="text-gray-600">Choose "Customer" during the registration process.</p>
+              <h5 class="font-semibold dark:text-dark-text">Select Account Type</h5>
+              <p class="text-gray-600 dark:text-dark-text">Choose "Customer" during the registration process.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">2</div>
             <div>
-              <h5 class="font-semibold">Provide Information</h5>
-              <p class="text-gray-600">Enter your personal details and contact information.</p>
+              <h5 class="font-semibold dark:text-dark-text">Provide Information</h5>
+              <p class="text-gray-600 dark:text-dark-text">Enter your personal details and contact information.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">3</div>
             <div>
-              <h5 class="font-semibold">Email Verification</h5>
-              <p class="text-gray-600">Verify your email address through the link we send you.</p>
+              <h5 class="font-semibold dark:text-dark-text">Email Verification</h5>
+              <p class="text-gray-600 dark:text-dark-text">Verify your email address through the link we send you.</p>
             </div>
           </div>
           <div class="flex items-start">
             <div class="step-number">4</div>
             <div>
-              <h5 class="font-semibold">Start Shopping</h5>
-              <p class="text-gray-600">Immediately access our tea catalog and place orders.</p>
+              <h5 class="font-semibold dark:text-dark-text">Start Shopping</h5>
+              <p class="text-gray-600 dark:text-dark-text">Immediately access our tea catalog and place orders.</p>
             </div>
           </div>
         </div>
 
-        <a href="./register.html" class="block w-full mt-6 px-4 py-3 bg-tea-green text-white text-center rounded-lg hover:bg-tea-green-light transition">Register as Customer</a>
+        <a href="./register.html" class="block w-full mt-6 px-4 py-3 bg-tea-green text-white text-center rounded-lg hover:bg-tea-green-light transition dark:bg-tea-green-light dark:hover:bg-tea-green">Register as Customer</a>
       </div>
     </div>
 
-    <div class="bg-white p-8 rounded-lg shadow-md">
-      <h3 class="text-2xl font-semibold text-tea-green mb-4 text-center">Not Sure Which Account You Need?</h3>
-      <p class="text-center text-gray-600 mb-6">Contact our team for guidance on selecting the right account type for your needs.</p>
+    <div class="bg-white p-8 rounded-lg shadow-md dark:bg-dark-card">
+      <h3 class="text-2xl font-semibold text-tea-green mb-4 text-center dark:text-tea-green-light">Not Sure Which Account You Need?</h3>
+      <p class="text-center text-gray-600 mb-6 dark:text-dark-text">Contact our team for guidance on selecting the right account type for your needs.</p>
       <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-        <a href="#" class="px-6 py-3 bg-tea-green text-white rounded-lg text-center hover:bg-tea-green-light transition">
+        <a href="#" class="px-6 py-3 bg-tea-green text-white rounded-lg text-center hover:bg-tea-green-light transition dark:bg-tea-green-light dark:hover:bg-tea-green">
           <i class="fas fa-envelope mr-2"></i> Email Us
         </a>
-        <a href="#" class="px-6 py-3 border border-tea-green text-tea-green rounded-lg text-center hover:bg-tea-green hover:text-white transition">
+        <a href="#" class="px-6 py-3 border border-tea-green text-tea-green rounded-lg text-center hover:bg-tea-green hover:text-white transition dark:border-tea-green-light dark:text-tea-green-light dark:hover:bg-tea-green-light dark:hover:text-white">
           <i class="fas fa-phone mr-2"></i> Call Support
         </a>
       </div>
@@ -307,51 +364,51 @@
 </section>
 
 <!-- FAQ Section -->
-<section class="py-16 bg-white">
+<section class="py-16 bg-white dark:bg-dark-bg">
   <div class="container mx-auto px-6">
     <div class="text-center mb-12">
-      <h2 class="text-3xl font-bold text-tea-green mb-4">Frequently Asked Questions</h2>
+      <h2 class="text-3xl font-bold text-tea-green mb-4 dark:text-tea-green-light">Frequently Asked Questions</h2>
       <div class="h-1 w-20 bg-tea-green mx-auto mb-6"></div>
     </div>
 
     <div class="max-w-3xl mx-auto space-y-6">
-      <div class="border border-tea-green-light rounded-lg overflow-hidden">
-        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green">
+      <div class="border border-tea-green-light rounded-lg overflow-hidden dark:border-tea-green">
+        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green dark:bg-dark-card dark:text-tea-green-light">
           <span>Can I upgrade my account type later?</span>
           <i class="fas fa-chevron-down"></i>
         </button>
-        <div class="p-4 bg-white">
-          <p class="text-gray-600">Yes, you can contact our support team to upgrade your account type if your needs change. For example, if you initially registered as a customer but later become a supplier, we can help migrate your account.</p>
+        <div class="p-4 bg-white dark:bg-dark-bg">
+          <p class="text-gray-600 dark:text-dark-text">Yes, you can contact our support team to upgrade your account type if your needs change. For example, if you initially registered as a customer but later become a supplier, we can help migrate your account.</p>
         </div>
       </div>
 
-      <div class="border border-tea-green-light rounded-lg overflow-hidden">
-        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green">
+      <div class="border border-tea-green-light rounded-lg overflow-hidden dark:border-tea-green">
+        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green dark:bg-dark-card dark:text-tea-green-light">
           <span>What if I lose my tea card number?</span>
           <i class="fas fa-chevron-down"></i>
         </button>
-        <div class="p-4 bg-white">
-          <p class="text-gray-600">If you're a supplier and have lost your tea card number, please visit the factory office with valid identification to retrieve your number. You cannot register as a supplier without this unique identifier.</p>
+        <div class="p-4 bg-white dark:bg-dark-bg">
+          <p class="text-gray-600 dark:text-dark-text">If you're a supplier and have lost your tea card number, please visit the factory office with valid identification to retrieve your number. You cannot register as a supplier without this unique identifier.</p>
         </div>
       </div>
 
-      <div class="border border-tea-green-light rounded-lg overflow-hidden">
-        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green">
+      <div class="border border-tea-green-light rounded-lg overflow-hidden dark:border-tea-green">
+        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green dark:bg-dark-card dark:text-tea-green-light">
           <span>Is there a cost to register for an account?</span>
           <i class="fas fa-chevron-down"></i>
         </button>
-        <div class="p-4 bg-white">
-          <p class="text-gray-600">No, registration is completely free for both suppliers and customers. There are no hidden fees or subscription costs for basic account access.</p>
+        <div class="p-4 bg-white dark:bg-dark-bg">
+          <p class="text-gray-600 dark:text-dark-text">No, registration is completely free for both suppliers and customers. There are no hidden fees or subscription costs for basic account access.</p>
         </div>
       </div>
 
-      <div class="border border-tea-green-light rounded-lg overflow-hidden">
-        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green">
+      <div class="border border-tea-green-light rounded-lg overflow-hidden dark:border-tea-green">
+        <button class="flex justify-between items-center w-full p-4 bg-tea-cream text-left font-semibold text-tea-green dark:bg-dark-card dark:text-tea-green-light">
           <span>How secure is my information?</span>
           <i class="fas fa-chevron-down"></i>
         </button>
-        <div class="p-4 bg-white">
-          <p class="text-gray-600">We take security seriously. All your data is encrypted and protected with industry-standard security measures. We never share your personal information with third parties without your consent.</p>
+        <div class="p-4 bg-white dark:bg-dark-bg">
+          <p class="text-gray-600 dark:text-dark-text">We take security seriously. All your data is encrypted and protected with industry-standard security measures. We never share your personal information with third parties without your consent.</p>
         </div>
       </div>
     </div>
@@ -368,7 +425,7 @@
 </section>
 
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-12">
+<footer class="bg-gray-800 text-white py-12 dark:bg-gray-900">
   <div class="container mx-auto px-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <div>
@@ -376,25 +433,25 @@
           <i class="fas fa-leaf text-tea-green-light text-2xl mr-2"></i>
           <span class="text-xl font-semibold">Ceylon TeaFlow</span>
         </div>
-        <p class="text-gray-400">Revolutionizing tea factory management in Sri Lanka with cutting-edge technology.</p>
+        <p class="text-gray-400 dark:text-gray-500">Revolutionizing tea factory management in Sri Lanka with cutting-edge technology.</p>
       </div>
 
       <div>
         <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
         <ul class="space-y-2">
-          <li><a href="../index.html" class="text-gray-400 hover:text-tea-green-light transition">Home</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Learn More</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Features</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Contact</a></li>
+          <li><a href="../index.html" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Home</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Learn More</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Features</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Contact</a></li>
         </ul>
       </div>
 
       <div>
         <h4 class="text-lg font-semibold mb-4">Account</h4>
         <ul class="space-y-2">
-          <li><a href="./login.html" class="text-gray-400 hover:text-tea-green-light transition">Sign In</a></li>
-          <li><a href="./register.html" class="text-gray-400 hover:text-tea-green-light transition">Sign Up</a></li>
-          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition">Forgot Password</a></li>
+          <li><a href="./login.html" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Sign In</a></li>
+          <li><a href="./register.html" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Sign Up</a></li>
+          <li><a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light">Forgot Password</a></li>
         </ul>
       </div>
 
@@ -403,27 +460,27 @@
         <ul class="space-y-2">
           <li class="flex items-center">
             <i class="fas fa-map-marker-alt text-tea-green-light mr-2"></i>
-            <span class="text-gray-400">123 Tea Garden Rd, Kandy, Sri Lanka</span>
+            <span class="text-gray-400 dark:text-gray-500">123 Tea Garden Rd, Kandy, Sri Lanka</span>
           </li>
           <li class="flex items-center">
             <i class="fas fa-phone text-tea-green-light mr-2"></i>
-            <span class="text-gray-400">+94 77 123 4567</span>
+            <span class="text-gray-400 dark:text-gray-500">+94 77 123 4567</span>
           </li>
           <li class="flex items-center">
             <i class="fas fa-envelope text-tea-green-light mr-2"></i>
-            <span class="text-gray-400">info@ceylonteaflow.lk</span>
+            <span class="text-gray-400 dark:text-gray-500">info@ceylonteaflow.lk</span>
           </li>
         </ul>
       </div>
     </div>
 
-    <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-      <p class="text-gray-400 text-sm">© 2025 Ceylon TeaFlow. All rights reserved.</p>
+    <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center dark:border-gray-800">
+      <p class="text-gray-400 text-sm dark:text-gray-500">© 2025 Ceylon TeaFlow. All rights reserved.</p>
       <div class="flex space-x-4 mt-4 md:mt-0">
-        <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-twitter"></i></a>
-        <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-instagram"></i></a>
-        <a href="#" class="text-gray-400 hover:text-tea-green-light transition"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="text-gray-400 hover:text-tea-green-light transition dark:text-gray-500 dark:hover:text-tea-green-light"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
   </div>
@@ -443,7 +500,6 @@
       heroSection.appendChild(leaf);
     }
 
-    // FAQ toggle functionality
     const faqButtons = document.querySelectorAll('.border-tea-green-light button');
     faqButtons.forEach(button => {
       button.addEventListener('click', () => {
@@ -453,6 +509,26 @@
         content.classList.toggle('hidden');
         icon.classList.toggle('fa-chevron-down');
         icon.classList.toggle('fa-chevron-up');
+      });
+    });
+
+    const themeToggleBtns = document.querySelectorAll('#theme-toggle, #mobile-theme-toggle');
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    if (savedTheme === 'dark') {
+      html.classList.add('dark');
+      document.body.classList.add('dark-mode');
+    }
+
+    themeToggleBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        document.body.classList.toggle('dark-mode');
+
+        const currentTheme = html.classList.contains('dark') ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
       });
     });
   });

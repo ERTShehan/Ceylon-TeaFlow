@@ -94,7 +94,7 @@ public class TeaCountServiceImpl implements TeaCountService {
 
         teaCountRepository.save(teaLeafCount);
 
-        supplierEmailService.sendTeaLeafRecordEmail(
+        new Thread(() -> supplierEmailService.sendTeaLeafRecordEmail(
                 supplier.getEmail(),
                 teaLeafCount.getDate(),
                 teaLeafCountDto.getTeaCardNumber(),
@@ -104,7 +104,7 @@ public class TeaCountServiceImpl implements TeaCountService {
                 teaLeafCountDto.getMoistureWeight(),
                 teaLeafCountDto.getNetWeight(),
                 teaLeafCountDto.getQuality()
-        );
+        )).start();
 
         return "Tea Leaf Count Added Successfully";
     }
@@ -141,8 +141,6 @@ public class TeaCountServiceImpl implements TeaCountService {
         TeaLeafCount existing = teaCountRepository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Tea Leaf Count Id not found"));
 
-//        existing.setTeaCardNumber(dto.getTeaCardNumber());
-//        existing.setSupplierName(dto.getSupplierName());
         existing.setGrossWeight(dto.getGrossWeight());
         existing.setSackWeight(dto.getSackWeight());
         existing.setMoistureWeight(dto.getMoistureWeight());
@@ -153,7 +151,7 @@ public class TeaCountServiceImpl implements TeaCountService {
 
         TeaLeafSupplier supplier = existing.getSupplier();
         if (supplier != null && supplier.getEmail() != null) {
-            supplierEmailService.sendTeaLeafRecordUpdateEmail(
+            new Thread(() -> supplierEmailService.sendTeaLeafRecordUpdateEmail(
                     supplier.getEmail(),
                     existing.getDate(),
                     existing.getTeaCardNumber(),
@@ -163,7 +161,7 @@ public class TeaCountServiceImpl implements TeaCountService {
                     existing.getMoistureWeight(),
                     existing.getNetWeight(),
                     String.valueOf(existing.getQuality())
-            );
+            )).start();
         }
 
         return "Tea Leaf Count Updated Successfully";
@@ -232,7 +230,6 @@ public class TeaCountServiceImpl implements TeaCountService {
 
     private double parseNetWeight(String netStr) {
         if (netStr == null) return 0.0;
-        // extract first number-like substring
         Pattern p = Pattern.compile("([0-9]+(?:\\.[0-9]+)?)");
         Matcher m = p.matcher(netStr);
         if (m.find()) {
@@ -247,7 +244,6 @@ public class TeaCountServiceImpl implements TeaCountService {
 
     @Override
     public List<DaySupplyDto> getSupplierCalendarData(String supplierId, int monthsBack) {
-        // calculate start and end dates
         LocalDate today = LocalDate.now();
         YearMonth currentMonth = YearMonth.from(today);
         YearMonth startMonth = currentMonth.minusMonths(monthsBack);
@@ -255,20 +251,18 @@ public class TeaCountServiceImpl implements TeaCountService {
         LocalDate startDate = startMonth.atDay(1);
         LocalDate endDate = currentMonth.atEndOfMonth();
 
-        String fromStr = startDate.format(fmt); // "yyyy-MM-dd"
+        String fromStr = startDate.format(fmt);
         String toStr = endDate.format(fmt);
 
         List<TeaLeafCount> counts = teaCountRepository.findBySupplierSupplierIdAndDateBetween(supplierId, fromStr, toStr);
 
-        // aggregate by date string (exact match of date value)
-        Map<String, Double> agg = new TreeMap<>(); // sorted by date
+        Map<String, Double> agg = new TreeMap<>();
         for (TeaLeafCount t : counts) {
             String d = t.getDate();
             double val = parseNetWeight(t.getNetWeight());
             agg.put(d, agg.getOrDefault(d, 0.0) + val);
         }
 
-        // Ensure every date in range exists in result (optional: include zeros)
         List<DaySupplyDto> result = new ArrayList<>();
         LocalDate cursor = startDate;
         while (!cursor.isAfter(endDate)) {
@@ -278,7 +272,6 @@ public class TeaCountServiceImpl implements TeaCountService {
             cursor = cursor.plusDays(1);
         }
 
-        // return only dates for the months range, sorted
         return result;
     }
 
@@ -290,7 +283,7 @@ public class TeaCountServiceImpl implements TeaCountService {
         LocalDate startDate = currentMonth.atDay(1);
         LocalDate endDate = currentMonth.atEndOfMonth();
 
-        String fromStr = startDate.format(fmt); // yyyy-MM-dd
+        String fromStr = startDate.format(fmt);
         String toStr = endDate.format(fmt);
 
         List<TeaLeafCount> counts =

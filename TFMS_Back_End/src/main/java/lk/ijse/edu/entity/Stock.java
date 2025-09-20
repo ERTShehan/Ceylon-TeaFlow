@@ -19,15 +19,23 @@ public class Stock {
     @Id
     private String stockId;
 
-    @OneToOne
-    @JoinColumn(name = "product_id", nullable = false, unique = true)
-    private TeaProduct product;
+//    @OneToOne
+//    @JoinColumn(name = "product_id", nullable = false, unique = true)
+//    private TeaProduct product;
+
+    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StockTeaProduct> stockTeaProducts = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TeaProductName name;
 
     private String quantity;
 
 //    @OneToMany(mappedBy = "stock", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    private List<StockManager> stockManagers = new ArrayList<>();
 
-    @UpdateTimestamp
-    private LocalDateTime lastUpdated;
+    private LocalDateTime dateTime;
+    private LocalDateTime expiryDate;
+    private String notes;
 }

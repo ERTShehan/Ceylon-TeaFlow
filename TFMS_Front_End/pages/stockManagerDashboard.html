@@ -193,70 +193,14 @@
                 <p class="text-sm text-gray-500 mt-2">Different types in stock</p>
             </div>
 
-            <div class="stat-card bg-white rounded-xl shadow-md p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-gray-500">Low Stock Items</h3>
-                        <p class="text-2xl font-bold text-tea-green">3</p>
-                    </div>
-                    <div class="bg-tea-cream p-3 rounded-lg">
-                        <i class="fas fa-exclamation-triangle text-tea-green text-xl"></i>
-                    </div>
-                </div>
-                <p class="text-sm text-gray-500 mt-2">Needs restocking</p>
-            </div>
+
         </div>
 
         <!-- Stock Levels Section -->
         <div id="stock-levels" class="bg-white rounded-xl shadow-md p-6 mb-8">
             <h2 class="text-xl font-semibold text-tea-green mb-4">Current Stock Levels</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div class="stock-level high p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">Ceylon Black Tea</h3>
-                    </div>
-                    <p class="text-2xl font-bold">850 kg</p>
-                </div>
-
-                <div class="stock-level high p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">Green Tea</h3>
-                    </div>
-                    <p class="text-2xl font-bold">720 kg</p>
-                </div>
-
-                <div class="stock-level medium p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">White Tea</h3>
-                    </div>
-                    <p class="text-2xl font-bold">450 kg</p>
-
-                </div>
-
-                <div class="stock-level low p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">Earl Grey</h3>
-                    </div>
-                    <p class="text-2xl font-bold">120 kg</p>
-
-                </div>
-
-                <div class="stock-level low p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">Chamomile</h3>
-                    </div>
-                    <p class="text-2xl font-bold">95 kg</p>
-
-                </div>
-
-                <div class="stock-level low p-4 rounded-lg">
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="font-semibold">Oolong Tea</h3>
-                    </div>
-                    <p class="text-2xl font-bold">115 kg</p>
-
-                </div>
+            <div id="stock-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- JS will populate here -->
             </div>
         </div>
 
@@ -268,38 +212,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label class="block text-gray-700 mb-2">Tea Type</label>
-                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
+                        <select id="selectTeaType"
+                                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
                             <option value="">Select Tea Type</option>
-                            <option value="ceylon_black">Ceylon Black Tea</option>
-                            <option value="green">Green Tea</option>
-                            <option value="white">White Tea</option>
-                            <option value="earl_grey">Earl Grey</option>
-                            <option value="chamomile">Chamomile</option>
-                            <option value="oolong">Oolong Tea</option>
-                            <option value="other">Other</option>
                         </select>
                     </div>
+
                     <div>
                         <label class="block text-gray-700 mb-2">Quantity (kg)</label>
                         <input type="number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter quantity">
                     </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">Batch Number</label>
-                        <input type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition" placeholder="Enter batch number">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">Source</label>
-                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
-                            <option value="">Select Source</option>
-                            <option value="local">Local Supplier</option>
-                            <option value="internal">Internal Production</option>
-                            <option value="import">Imported</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">Received Date</label>
-                        <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
-                    </div>
+
                     <div>
                         <label class="block text-gray-700 mb-2">Expiry Date</label>
                         <input type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tea-green focus:border-tea-green outline-none transition">
@@ -422,7 +345,8 @@
         </div>
     </div>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="../js/stockManagerDashboard.js"></script>
 <script>
     // Mobile menu toggle
     document.getElementById('mobileMenuBtn').addEventListener('click', function() {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeaProductRepository extends JpaRepository<TeaProduct, String> {
     boolean existsByName(TeaProductName name);
@@ -16,6 +17,8 @@ public interface TeaProductRepository extends JpaRepository<TeaProduct, String> 
 
     @Query("SELECT t FROM TeaProduct t WHERE LOWER(CAST(t.name AS string)) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<TeaProduct> searchByNameContainingIgnoreCase(@Param("keyword") String keyword);
+
+    Optional<TeaProduct> findByName(TeaProductName name);
 
 //    List<TeaProduct> findTeaProductByNameContainingIgnoreCase(String keyword);
 }

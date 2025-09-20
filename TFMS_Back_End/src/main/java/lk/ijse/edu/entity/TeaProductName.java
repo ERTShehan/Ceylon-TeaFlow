@@ -1,10 +1,10 @@
 package lk.ijse.edu.entity;
 
 public enum TeaProductName {
-    BLACK_TEA,
+    OP_TEA,
     GREEN_TEA,
-    WHITE_TEA,
-    OOLONG_TEA,
-    HERBAL_TEA,
+    FBOP_TEA,
+    DUST_TEA,
+    BOP_TEA,
     BOPF_TEA
 }
