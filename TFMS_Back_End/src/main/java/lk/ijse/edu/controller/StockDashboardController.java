@@ -19,24 +19,24 @@ public class StockDashboardController {
     private final StockService stockService;
     private final TeaProductService teaProductService;
 
-//    @GetMapping("/getStockLevels")
-//    public ResponseEntity<APIResponse<List<StockResponseDto>>> getStockLevels(){
-//        return ResponseEntity.ok(new APIResponse<>(
-//                200, "Done", stockService.getAllStockLevels()
-//        ));
-//    }
-//
-//    @GetMapping("/loadTeaProductInDropdown")
-//    public ResponseEntity<APIResponse<List<String>>> loadTeaProductInDropdown() {
-//        return ResponseEntity.ok(new APIResponse<>(
-//                200, "Tea Product Retrieved Successfully", teaProductService.getTeaProductNames()
-//        ));
-//    }
-//
-//    @PostMapping("/addTeaInStock")
-//    public ResponseEntity<APIResponse<String>> addTeaProductInStock(@RequestBody AddNewStockDto addNewStockDto){
-//        return ResponseEntity.ok(new APIResponse<>(
-//                200, "Stock update successfully", stockService.addTeaProduct(addNewStockDto)
-//        ));
-//    }
+    @GetMapping("/getStockLevels")
+    public ResponseEntity<APIResponse<List<StockResponseDto>>> getStockLevels(){
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Done", stockService.getAllStockLevels()
+        ));
+    }
+
+    @GetMapping("/loadTeaProductInDropdown")
+    public ResponseEntity<APIResponse<List<String>>> loadTeaProductInDropdown() {
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Tea Product Retrieved Successfully", teaProductService.getTeaProductNames()
+        ));
+    }
+
+    @PostMapping("/addTeaInStock")
+    public ResponseEntity<APIResponse<String>> addTeaProductInStock(@RequestBody AddNewStockDto addNewStockDto){
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Stock update successfully", stockService.addTeaProduct(addNewStockDto)
+        ));
+    }
 }

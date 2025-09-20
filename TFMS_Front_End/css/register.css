@@ -1,0 +1,13 @@
+.success input {
+    border-color: #2E8B57 !important;
+}
+
+.error input {
+    border-color: #e53e3e !important;
+}
+
+.error-message {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}

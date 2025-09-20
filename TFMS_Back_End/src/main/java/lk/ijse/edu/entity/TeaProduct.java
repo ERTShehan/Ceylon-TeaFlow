@@ -30,12 +30,6 @@ public class TeaProduct {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> order_item;
 
-//    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Stock stock;
-
-    @OneToMany(mappedBy = "teaProduct", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StockTeaProduct> stockTeaProducts = new ArrayList<>();
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TeaPacketRequest> productRequests = new ArrayList<>();
 

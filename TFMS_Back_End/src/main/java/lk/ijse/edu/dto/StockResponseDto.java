@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 public class StockResponseDto {
     private String stockId;
-    private TeaProductName productName;
+    private String productName;
     private String quantity;
+    private String expiryDate;
+    private String notes;
 }
