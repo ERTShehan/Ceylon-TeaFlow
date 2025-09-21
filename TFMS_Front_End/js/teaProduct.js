@@ -129,7 +129,7 @@ $(document).ready(function() {
                     success: function(response) {
                         if (response.code === 200) {
                             showToast('success', 'Tea product deleted successfully');
-                            loadTeaProducts(); // Reload the table
+                            loadTeaProducts();
                         } else {
                             showToast('error', 'Failed to delete tea product');
                         }
@@ -187,7 +187,7 @@ $(document).ready(function() {
                     if (response.code === 200) {
                         showToast('success', 'Tea product updated successfully');
                         resetForm();
-                        loadTeaProducts(); // Reload the table
+                        loadTeaProducts();
                     } else {
                         showToast('error', 'Failed to update tea product');
                     }

@@ -1,22 +1,22 @@
 const API_BASE = 'http://localhost:8080';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.querySelector('form');
-    if (!form) return;
+$(document).ready(function () {
+    const $form = $('form');
+    if ($form.length === 0) return;
 
-    form.addEventListener('submit', async (e) => {
+    $form.on('submit', async function (e) {
         e.preventDefault();
 
-        const username = (document.getElementById('username') || {}).value?.trim();
-        const password = (document.getElementById('password') || {}).value;
+        const username = $('#username').val()?.trim();
+        const password = $('#password').val();
 
         if (!username || !password) {
             alert('Please enter both username and password.');
             return;
         }
 
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) submitBtn.disabled = true;
+        const $submitBtn = $form.find('button[type="submit"]');
+        $submitBtn.prop('disabled', true);
 
         try {
             const res = await fetch(`${API_BASE}/auth/login`, {
@@ -54,15 +54,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.href = '../pages/adminDashboard.html';
             } else if (role === 'TEA_MAKER') {
                 window.location.href = '../pages/teaMakerDashboard.html';
-            } else {
-                alert('Unknown user role. Cannot redirect.');
+            } else if(role === 'STOCK_MANAGER') {
+                window.location.href = '../pages/stockManagerDashboard.html';
             }
 
         } catch (err) {
             console.error('Login error:', err);
             alert(err?.message || 'Login failed. See console for details.');
         } finally {
-            if (submitBtn) submitBtn.disabled = false;
+            $submitBtn.prop('disabled', false);
         }
     });
 });

@@ -220,10 +220,10 @@
     </div>
 </div>
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="../js/register.js"></script>
 
 <script>
-    // Show/hide tea card field based on role selection
     document.querySelectorAll('input[name="role"]').forEach(radio => {
         radio.addEventListener('change', function() {
             document.getElementById('teaCardField').style.display =
@@ -231,7 +231,6 @@
         });
     });
 
-    // Create animated tea leaves
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.querySelector('body');
         for (let i = 0; i < 10; i++) {

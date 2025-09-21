@@ -2,9 +2,764 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Manager Dashboard - Ceylon TeaFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tea-green': '#2E8B57',
+                        'tea-green-light': '#3CB371',
+                        'tea-gold': '#DAA520',
+                        'tea-cream': '#FFF8E1',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Prevent body scrolling */
+        }
+
+        .sidebar {
+            transition: all 0.3s ease;
+            height: 100vh; /* Full viewport height */
+            overflow-y: auto; /* Allow scrolling only if needed */
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 50;
+                height: 100vh;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+
+        .main-content {
+            height: 100vh; /* Full viewport height */
+            overflow-y: auto; /* Enable scrolling for main content */
+        }
+
+        .stat-card {
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .order-status-processing {
+            background-color: #FFFBEB;
+            color: #F59E0B;
+        }
+
+        .order-status-shipped {
+            background-color: #EFF6FF;
+            color: #3B82F6;
+        }
+
+        .order-status-delivered {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+
+        .order-status-cancelled {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex">
+<!-- Mobile Menu Button -->
+<div class="md:hidden fixed top-4 left-4 z-50">
+    <button id="mobileMenuBtn" class="p-2 bg-tea-green text-white rounded">
+        <i class="fas fa-bars"></i>
+    </button>
+</div>
+
+<div class="flex w-full">
+    <!-- Sidebar -->
+    <div class="sidebar w-64 bg-tea-green text-white p-4 flex-shrink-0">
+        <div class="flex items-center justify-center mb-8 mt-4">
+            <i class="fas fa-leaf text-3xl mr-2"></i>
+            <span class="text-xl font-semibold">Ceylon TeaFlow</span>
+        </div>
+
+        <div class="p-4 bg-tea-green-light rounded-lg mb-6">
+            <div class="flex items-center">
+                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-tea-green text-xl mr-3">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Nisha Ratnayake</h3>
+                    <p class="text-sm">Sales Manager</p>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="space-y-2">
+                <li>
+                    <a href="#" class="flex items-center p-3 rounded-lg bg-tea-green-light">
+                        <i class="fas fa-home mr-3"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#sales-overview" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-chart-pie mr-3"></i>
+                        <span>Sales Overview</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#orders" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-shopping-bag mr-3"></i>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#customers" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-users mr-3"></i>
+                        <span>Customers</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#products" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-box-open mr-3"></i>
+                        <span>Products</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="../index.html" class="flex items-center p-3 rounded-lg hover:bg-tea-green-light">
+                        <i class="fas fa-sign-out-alt mr-3"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="mt-8 p-4 bg-tea-green-light rounded-lg">
+            <h4 class="font-semibold mb-2">Support</h4>
+            <p class="text-sm">Need help? Contact factory support:</p>
+            <p class="text-sm mt-1"><i class="fas fa-phone mr-2"></i> +94 77 123 4567</p>
+            <p class="text-sm mt-1"><i class="fas fa-envelope mr-2"></i> support@ceylonteaflow.lk</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content flex-1 p-6 md:ml-0">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <h1 class="text-2xl font-bold text-tea-green mb-2">Sales Manager Dashboard</h1>
+            <p class="text-gray-600">Welcome back, Nisha! Monitor sales performance and manage customer orders.</p>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Monthly Revenue</h3>
+                        <p class="text-2xl font-bold text-tea-green">LKR 1.2M</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-money-bill-wave text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">+8% from last month</p>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Total Orders</h3>
+                        <p class="text-2xl font-bold text-tea-green">156</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">+12 this month</p>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">New Customers</h3>
+                        <p class="text-2xl font-bold text-tea-green">24</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-user-plus text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">+5 from last month</p>
+            </div>
+
+            <div class="stat-card bg-white rounded-xl shadow-md p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500">Avg. Order Value</h3>
+                        <p class="text-2xl font-bold text-tea-green">LKR 7,692</p>
+                    </div>
+                    <div class="bg-tea-cream p-3 rounded-lg">
+                        <i class="fas fa-chart-line text-tea-green text-xl"></i>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">+3% from last month</p>
+            </div>
+        </div>
+
+        <!-- Sales Overview Section -->
+        <div id="sales-overview" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Sales Overview</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Monthly Sales Trend</h3>
+                    <div class="h-64">
+                        <canvas id="salesTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Sales by Product Category</h3>
+                    <div class="h-64">
+                        <canvas id="salesCategoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Top Selling Products</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Ceylon Black Tea</span>
+                            <span class="font-semibold">LKR 450,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Green Tea</span>
+                            <span class="font-semibold">LKR 320,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>White Tea</span>
+                            <span class="font-semibold">LKR 280,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Earl Grey</span>
+                            <span class="font-semibold">LKR 95,000</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Herbal Blends</span>
+                            <span class="font-semibold">LKR 55,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Conversion Metrics</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Conversion Rate</span>
+                            <span class="font-semibold">4.2%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Cart Abandonment Rate</span>
+                            <span class="font-semibold">68%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Customer Retention</span>
+                            <span class="font-semibold">35%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Avg. Session Duration</span>
+                            <span class="font-semibold">3m 42s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Sales Targets</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Monthly Target</span>
+                                <span>LKR 1.2M / LKR 1.5M</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-tea-green h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Quarterly Target</span>
+                                <span>LKR 3.4M / LKR 4.5M</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-tea-green h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>New Customers Target</span>
+                                <span>24 / 30</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-tea-green h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Recent Orders</h2>
+
+            <div class="mb-4 flex space-x-4">
+                <button class="px-4 py-2 bg-tea-green text-white rounded-lg">All Orders</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Pending</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Processing</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Shipped</button>
+                <button class="px-4 py-2 bg-gray-200 rounded-lg">Delivered</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="bg-gray-50">
+                        <th class="p-3 text-left">Order ID</th>
+                        <th class="p-3 text-left">Customer</th>
+                        <th class="p-3 text-left">Date</th>
+                        <th class="p-3 text-left">Items</th>
+                        <th class="p-3 text-left">Total</th>
+                        <th class="p-3 text-left">Status</th>
+                        <th class="p-3 text-left">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b">
+                        <td class="p-3 font-semibold">#TF-7842</td>
+                        <td class="p-3">Sarah Johnson</td>
+                        <td class="p-3">Aug 14, 2025</td>
+                        <td class="p-3">2 items</td>
+                        <td class="p-3">LKR 1,650.00</td>
+                        <td class="p-3">
+                            <span class="order-status-badge order-status-processing">Processing</span>
+                        </td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3 font-semibold">#TF-7791</td>
+                        <td class="p-3">Robert Smith</td>
+                        <td class="p-3">Aug 10, 2025</td>
+                        <td class="p-3">3 items</td>
+                        <td class="p-3">LKR 2,200.00</td>
+                        <td class="p-3">
+                            <span class="order-status-badge order-status-shipped">Shipped</span>
+                        </td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3 font-semibold">#TF-7725</td>
+                        <td class="p-3">Emma Williams</td>
+                        <td class="p-3">Aug 5, 2025</td>
+                        <td class="p-3">1 item</td>
+                        <td class="p-3">LKR 950.00</td>
+                        <td class="p-3">
+                            <span class="order-status-badge order-status-delivered">Delivered</span>
+                        </td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3 font-semibold">#TF-7654</td>
+                        <td class="p-3">James Brown</td>
+                        <td class="p-3">Jul 28, 2025</td>
+                        <td class="p-3">2 items</td>
+                        <td class="p-3">LKR 1,400.00</td>
+                        <td class="p-3">
+                            <span class="order-status-badge order-status-delivered">Delivered</span>
+                        </td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3 font-semibold">#TF-7589</td>
+                        <td class="p-3">Olivia Davis</td>
+                        <td class="p-3">Jul 25, 2025</td>
+                        <td class="p-3">4 items</td>
+                        <td class="p-3">LKR 3,100.00</td>
+                        <td class="p-3">
+                            <span class="order-status-badge order-status-delivered">Delivered</span>
+                        </td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                <button class="px-6 py-2 border border-tea-green text-tea-green rounded-lg hover:bg-tea-green hover:text-white transition">
+                    View All Orders
+                </button>
+            </div>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="customers" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Customer Insights</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Customer Demographics</h3>
+                    <div class="h-64">
+                        <canvas id="customerDemographicsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">New vs Returning Customers</h3>
+                    <div class="h-64">
+                        <canvas id="customerTypeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="font-medium mb-3">Top Customers by Lifetime Value</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="bg-gray-50">
+                        <th class="p-3 text-left">Customer</th>
+                        <th class="p-3 text-left">Orders</th>
+                        <th class="p-3 text-left">Total Spent</th>
+                        <th class="p-3 text-left">Last Order</th>
+                        <th class="p-3 text-left">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b">
+                        <td class="p-3">Sarah Johnson</td>
+                        <td class="p-3">12</td>
+                        <td class="p-3">LKR 18,500</td>
+                        <td class="p-3">Aug 14, 2025</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Robert Smith</td>
+                        <td class="p-3">8</td>
+                        <td class="p-3">LKR 14,200</td>
+                        <td class="p-3">Aug 10, 2025</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Emma Williams</td>
+                        <td class="p-3">6</td>
+                        <td class="p-3">LKR 9,800</td>
+                        <td class="p-3">Aug 5, 2025</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">James Brown</td>
+                        <td class="p-3">5</td>
+                        <td class="p-3">LKR 7,500</td>
+                        <td class="p-3">Jul 28, 2025</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Active</span>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Olivia Davis</td>
+                        <td class="p-3">4</td>
+                        <td class="p-3">LKR 6,200</td>
+                        <td class="p-3">Jul 25, 2025</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Inactive</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div id="products" class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Product Performance</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-tea-cream p-4 rounded-lg">
+                    <h3 class="font-medium text-tea-green mb-3">Inventory Status</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Ceylon Black Tea</span>
+                                <span>850/1000 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Green Tea</span>
+                                <span>720/1000 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>White Tea</span>
+                                <span>450/1000 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Earl Grey</span>
+                                <span>120/1000 kg</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-red-500 h-2 rounded-full" style="width: 12%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="font-medium mb-3">Product List</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                    <tr class="bg-gray-50">
+                        <th class="p-3 text-left">Product</th>
+                        <th class="p-3 text-left">Price</th>
+                        <th class="p-3 text-left">Stock</th>
+                        <th class="p-3 text-left">Sold (Month)</th>
+                        <th class="p-3 text-left">Revenue</th>
+                        <th class="p-3 text-left">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-b">
+                        <td class="p-3">Ceylon Black Tea</td>
+                        <td class="p-3">LKR 450.00</td>
+                        <td class="p-3">850 kg</td>
+                        <td class="p-3">125 kg</td>
+                        <td class="p-3">LKR 56,250</td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Green Tea</td>
+                        <td class="p-3">LKR 500.00</td>
+                        <td class="p-3">720 kg</td>
+                        <td class="p-3">98 kg</td>
+                        <td class="p-3">LKR 49,000</td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">White Tea</td>
+                        <td class="p-3">LKR 650.00</td>
+                        <td class="p-3">450 kg</td>
+                        <td class="p-3">75 kg</td>
+                        <td class="p-3">LKR 48,750</td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Earl Grey</td>
+                        <td class="p-3">LKR 550.00</td>
+                        <td class="p-3">120 kg</td>
+                        <td class="p-3">45 kg</td>
+                        <td class="p-3">LKR 24,750</td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="p-3">Chamomile</td>
+                        <td class="p-3">LKR 600.00</td>
+                        <td class="p-3">95 kg</td>
+                        <td class="p-3">32 kg</td>
+                        <td class="p-3">LKR 19,200</td>
+                        <td class="p-3">
+                            <button class="text-tea-green hover:text-tea-green-light mr-2">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="text-tea-green hover:text-tea-green-light">
+                                <i class="fas fa-chart-line"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mobile menu toggle
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Charts initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Sales Trend Chart
+        const salesTrendCtx = document.getElementById('salesTrendChart').getContext('2d');
+        new Chart(salesTrendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
+                datasets: [{
+                    label: 'Monthly Sales (LKR)',
+                    data: [850000, 920000, 980000, 870000, 950000, 1050000, 1120000, 1200000],
+                    borderColor: '#2E8B57',
+                    backgroundColor: 'rg(46, 139, 87, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Sales by Category Chart
+        const salesCategoryCtx = document.getElementById('salesCategoryChart').getContext('2d');
+        new Chart(salesCategoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ceylon Black', 'Green Tea', 'White Tea', 'Earl Grey', 'Herbal Blends'],
+                datasets: [{
+                    data: [450000, 320000, 280000, 95000, 55000],
+                    backgroundColor: [
+                        '#2E8B57',
+                        '#3CB371',
+                        '#DAA520',
+                        '#FFD700',
+                        '#F4A460'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Customer Demographics Chart
+        const customerDemographicsCtx = document.getElementById('customerDemographicsChart').getContext('2d');
+        new Chart(customerDemographicsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'],
+                datasets: [{
+                    label: 'Customers by Age',
+                    data: [15, 35, 25, 15, 7, 3],
+                    backgroundColor: '#2E8B57'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Customer Type Chart
+        const customerTypeCtx = document.getElementById('customerTypeChart').getContext('2d');
+        new Chart(customerTypeCtx, {
+            type: 'pie',
+            data: {
+                labels: ['New Customers', 'Returning Customers'],
+                datasets: [{
+                    data: [24, 132],
+                    backgroundColor: [
+                        '#3CB371',
+                        '#2E8B57'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
 </body>
 </html>

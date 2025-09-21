@@ -1,30 +1,28 @@
 const EMPLOYEE_API = "http://localhost:8080/employee";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const addEmployeeBtn = document.getElementById("addEmployeeBtn");
-    const employeeModal = document.getElementById("employeeModal");
-    const employeeUpdateModal = document.getElementById("employeeUpdateModal");
-    const closeBtns = document.querySelectorAll(".modal .close");
+$(document).ready(function () {
+    const $addEmployeeBtn = $("#addEmployeeBtn");
+    const $employeeModal = $("#employeeModal");
+    const $employeeUpdateModal = $("#employeeUpdateModal");
+    const $closeBtns = $(".modal .close");
 
-    const employeeForm = document.getElementById("employeeForm");
-    const employeeUpdateForm = document.getElementById("employeeUpdateForm");
-    const tableBody = document.getElementById("employee-table-body");
-    const searchInput = document.getElementById("employee-search");
+    const $employeeForm = $("#employeeForm");
+    const $employeeUpdateForm = $("#employeeUpdateForm");
+    const $tableBody = $("#employee-table-body");
+    const $searchInput = $("#employee-search");
 
-    addEmployeeBtn.addEventListener("click", () => {
-        employeeForm.reset();
-        employeeModal.style.display = "block";
+    $addEmployeeBtn.on("click", function () {
+        $employeeForm[0].reset();
+        $employeeModal.css("display", "block");
     });
 
-    closeBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            btn.closest(".modal").style.display = "none";
-        });
+    $closeBtns.on("click", function () {
+        $(this).closest(".modal").css("display", "none");
     });
 
-    window.addEventListener("click", (e) => {
-        if (e.target.classList.contains("modal")) {
-            e.target.style.display = "none";
+    $(window).on("click", function (e) {
+        if ($(e.target).hasClass("modal")) {
+            $(e.target).css("display", "none");
         }
     });
 
@@ -34,30 +32,25 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) throw new Error("Failed to fetch employees");
             const result = await res.json();
 
-            tableBody.innerHTML = "";
+            $tableBody.empty();
 
             if (Array.isArray(result.data)) {
                 result.data.forEach(emp => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td class="p-3">${emp.id}</td>
-                        <td class="p-3">${emp.name}</td>
-                        <td class="p-3">${emp.address}</td>
-                        <td class="p-3">${emp.phone}</td>
-                        <td class="p-3">${emp.department}</td>
-                        <td class="p-3">${emp.basicSalary || "-"}</td>
-                        <td class="p-3 space-x-2">
-                            <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${emp.id}">
-                                Edit
-                            </button>
-                            <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded" data-id="${emp.id}">
-                                Delete
-                            </button>
-                        </td>
+                    const row = `
+                        <tr>
+                            <td class="p-3">${emp.id}</td>
+                            <td class="p-3">${emp.name}</td>
+                            <td class="p-3">${emp.address}</td>
+                            <td class="p-3">${emp.phone}</td>
+                            <td class="p-3">${emp.department}</td>
+                            <td class="p-3">${emp.basicSalary}</td>
+                            <td class="p-3 space-x-2">
+                                <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${emp.id}">Edit</button>
+                                <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded" data-id="${emp.id}">Delete</button>
+                            </td>
+                        </tr>
                     `;
-
-                    tableBody.appendChild(row);
+                    $tableBody.append(row);
                 });
 
                 attachActionEvents();
@@ -68,56 +61,79 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function attachActionEvents() {
-        document.querySelectorAll(".edit-btn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const row = e.target.closest("tr");
-                const id = e.target.dataset.id;
+        $(".edit-btn").off("click").on("click", function () {
+            const $row = $(this).closest("tr");
+            const id = $(this).data("id");
 
-                document.getElementById("updateEmployeeId").value = id;
-                document.getElementById("updateEmployeeName").value = row.children[1].textContent;
-                document.getElementById("updateEmployeeAddress").value = row.children[2].textContent;
-                document.getElementById("updateEmployeePhone").value = row.children[3].textContent;
-                document.getElementById("updateEmployeeDepartment").value = row.children[4].textContent;
-                document.getElementById("updateEmployeeSalary").value = row.children[5].textContent;
+            $("#updateEmployeeId").val(id);
+            $("#updateEmployeeName").val($row.children().eq(1).text());
+            $("#updateEmployeeAddress").val($row.children().eq(2).text());
+            $("#updateEmployeePhone").val($row.children().eq(3).text());
+            $("#updateEmployeeDepartment").val($row.children().eq(4).text());
+            $("#updateEmployeeSalary").val($row.children().eq(5).text());
 
-                employeeUpdateModal.style.display = "block";
-            });
+            $employeeUpdateModal.css("display", "block");
         });
 
-        document.querySelectorAll(".delete-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
-                if (!confirm(`Are you sure you want to delete employee ${id}?`)) return;
+        $(".delete-btn").off("click").on("click", function () {
+            const id = $(this).data("id");
 
-                try {
-                    const res = await fetch(`${EMPLOYEE_API}/delete?id=${id}`, {
-                        method: "PUT",
-                    });
+            Swal.fire({
+                title: "Are you sure?",
+                text: `Do you want to delete employee ${id}?`,
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const res = await fetch(`${EMPLOYEE_API}/delete?id=${id}`, {
+                            method: "PUT",
+                        });
 
-                    const result = await res.json();
+                        const data = await res.json();
 
-                    if (res.ok) {
-                        alert(result.message || "Deleted successfully!");
-                        loadEmployees();
-                    } else {
-                        alert(result.message || "Delete failed!");
+                        if (res.ok) {
+                            Swal.fire({
+                                toast: true,
+                                position: "top-end",
+                                icon: "success",
+                                title: data.message || "Deleted successfully!",
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            loadEmployees();
+                        } else {
+                            Swal.fire({
+                                toast: true,
+                                position: "top-end",
+                                icon: "error",
+                                title: data.message || "Delete failed!",
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    } catch (err) {
+                        console.error("Error deleting employee:", err);
                     }
-                } catch (err) {
-                    console.error("Error deleting employee:", err);
                 }
             });
         });
     }
 
-    employeeForm.addEventListener("submit", async (e) => {
+    $employeeForm.on("submit", async function (e) {
         e.preventDefault();
 
         const dto = {
-            name: document.getElementById("employeeName").value,
-            address: document.getElementById("employeeAddress").value,
-            phone: document.getElementById("employeePhone").value,
-            department: document.getElementById("employeeDepartment").value,
-            basicSalary: document.getElementById("employeeSalary").value
+            name: $("#employeeName").val(),
+            address: $("#employeeAddress").val(),
+            phone: $("#employeePhone").val(),
+            department: $("#employeeDepartment").val(),
+            basicSalary: $("#employeeSalary").val()
         };
 
         try {
@@ -130,27 +146,43 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await res.json();
 
             if (res.ok) {
-                alert(result.message || "Employee added successfully!");
-                employeeModal.style.display = "none";
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: result.message || "Employee added successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                $employeeModal.css("display", "none");
                 loadEmployees();
             } else {
-                alert(result.message || "Something went wrong!");
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "error",
+                    title: result.message || "Something went wrong!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
         } catch (err) {
             console.error("Error adding employee:", err);
         }
     });
 
-    employeeUpdateForm.addEventListener("submit", async (e) => {
+    $employeeUpdateForm.on("submit", async function (e) {
         e.preventDefault();
 
         const dto = {
-            id: document.getElementById("updateEmployeeId").value,
-            name: document.getElementById("updateEmployeeName").value,
-            address: document.getElementById("updateEmployeeAddress").value,
-            phone: document.getElementById("updateEmployeePhone").value,
-            department: document.getElementById("updateEmployeeDepartment").value,
-            basicSalary: document.getElementById("updateEmployeeSalary").value
+            id: $("#updateEmployeeId").val(),
+            name: $("#updateEmployeeName").val(),
+            address: $("#updateEmployeeAddress").val(),
+            phone: $("#updateEmployeePhone").val(),
+            department: $("#updateEmployeeDepartment").val(),
+            basicSalary: $("#updateEmployeeSalary").val()
         };
 
         try {
@@ -163,19 +195,35 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await res.json();
 
             if (res.ok) {
-                alert(result.message || "Employee updated successfully!");
-                employeeUpdateModal.style.display = "none";
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: result.message || "Employee updated successfully!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                $employeeUpdateModal.css("display", "none");
                 loadEmployees();
             } else {
-                alert(result.message || "Update failed!");
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "error",
+                    title: result.message || "Update failed!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
         } catch (err) {
             console.error("Error updating employee:", err);
         }
     });
 
-    searchInput.addEventListener("input", async (e) => {
-        const keyword = e.target.value.trim();
+    $searchInput.on("input", async function () {
+        const keyword = $(this).val().trim();
 
         if (keyword === "") {
             loadEmployees();
@@ -187,30 +235,25 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) throw new Error("Search failed");
             const result = await res.json();
 
-            tableBody.innerHTML = "";
+            $tableBody.empty();
 
             if (Array.isArray(result.data)) {
                 result.data.forEach(emp => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td class="p-3">${emp.id}</td>
-                        <td class="p-3">${emp.name}</td>
-                        <td class="p-3">${emp.address}</td>
-                        <td class="p-3">${emp.phone}</td>
-                        <td class="p-3">${emp.department}</td>
-                        <td class="p-3">${emp.basicSalary || "-"}</td>
-                        <td class="p-3 space-x-2">
-                            <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${emp.id}">
-                                Edit
-                            </button>
-                            <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded" data-id="${emp.id}">
-                                Delete
-                            </button>
-                        </td>
+                    const row = `
+                        <tr>
+                            <td class="p-3">${emp.id}</td>
+                            <td class="p-3">${emp.name}</td>
+                            <td class="p-3">${emp.address}</td>
+                            <td class="p-3">${emp.phone}</td>
+                            <td class="p-3">${emp.department}</td>
+                            <td class="p-3">${emp.basicSalary || "-"}</td>
+                            <td class="p-3 space-x-2">
+                                <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${emp.id}">Edit</button>
+                                <button class="delete-btn bg-red-500 text-white px-3 py-1 rounded" data-id="${emp.id}">Delete</button>
+                            </td>
+                        </tr>
                     `;
-
-                    tableBody.appendChild(row);
+                    $tableBody.append(row);
                 });
 
                 attachActionEvents();

@@ -61,7 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             const result = await res.json();
-            alert(result.message);
+            Swal.fire({
+                icon: "success",
+                title: "Success",
+                text: result.message
+            });
 
             teaCardModal.style.display = "none";
             teaCardForm.reset();
@@ -72,19 +76,33 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     async function deleteTeaCard(id) {
-        if (!confirm("Are you sure you want to delete this Tea Card?")) return;
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await fetch(`${API_BASE}/delete?id=${id}`, {
+                        method: "PUT"
+                    });
 
-        try {
-            const res = await fetch(`${API_BASE}/delete?id=${id}`, {
-                method: "PUT"
-            });
-
-            const result = await res.json();
-            alert(result.message);
-            loadTeaCards();
-        } catch (error) {
-            console.error("Error deleting tea card:", error);
-        }
+                    const data = await res.json();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: data.message
+                    });
+                    loadTeaCards();
+                } catch (error) {
+                    console.error("Error deleting tea card:", error);
+                }
+            }
+        });
     }
 
     function bindDeleteButtons() {

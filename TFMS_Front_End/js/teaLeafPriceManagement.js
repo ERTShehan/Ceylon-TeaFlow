@@ -1,31 +1,31 @@
 const API_BASE1 = "http://localhost:8080/addTeaLeafPrice";
 
-document.addEventListener("DOMContentLoaded", () => {
-    const teaLeafPriceModal = document.getElementById("teaLeafPriceModal");
-    const closeModalBtn = teaLeafPriceModal.querySelector(".close");
-    const changeTeaLeafPriceBtn = document.getElementById("changeTeaLeafPriceBtn");
-    const teaLeafPriceForm = document.getElementById("teaLeafPriceForm");
-    const teaLeafPriceIdInput = document.getElementById("teaLeafPriceId");
-    const effectiveMonthInput = document.getElementById("effectiveMonth");
-    const pricePerKgInput = document.getElementById("pricePerKg");
-    const tableBody = document.getElementById("leaf-price-table-body");
+$(document).ready(function () {
+    const $teaLeafPriceModal = $("#teaLeafPriceModal");
+    const $closeModalBtn = $teaLeafPriceModal.find(".close");
+    const $changeTeaLeafPriceBtn = $("#changeTeaLeafPriceBtn");
+    const $teaLeafPriceForm = $("#teaLeafPriceForm");
+    const $teaLeafPriceIdInput = $("#teaLeafPriceId");
+    const $effectiveMonthInput = $("#effectiveMonth");
+    const $pricePerKgInput = $("#pricePerKg");
+    const $tableBody = $("#leaf-price-table-body");
 
     let isEditMode = false;
 
-    changeTeaLeafPriceBtn.addEventListener("click", () => {
+    $changeTeaLeafPriceBtn.on("click", function () {
         isEditMode = false;
-        teaLeafPriceForm.reset();
-        teaLeafPriceIdInput.value = "";
-        teaLeafPriceModal.style.display = "block";
+        $teaLeafPriceForm[0].reset();
+        $teaLeafPriceIdInput.val("");
+        $teaLeafPriceModal.css("display", "block");
     });
 
-    closeModalBtn.addEventListener("click", () => {
-        teaLeafPriceModal.style.display = "none";
+    $closeModalBtn.on("click", function () {
+        $teaLeafPriceModal.css("display", "none");
     });
 
-    window.addEventListener("click", (e) => {
-        if (e.target === teaLeafPriceModal) {
-            teaLeafPriceModal.style.display = "none";
+    $(window).on("click", function (e) {
+        if (e.target === $teaLeafPriceModal[0]) {
+            $teaLeafPriceModal.css("display", "none");
         }
     });
 
@@ -35,24 +35,23 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!res.ok) throw new Error("Failed to fetch prices");
             const result = await res.json();
 
-            tableBody.innerHTML = "";
+            $tableBody.empty();
 
             if (Array.isArray(result.data)) {
                 result.data.forEach(price => {
-                    const row = document.createElement("tr");
-
-                    row.innerHTML = `
-                        <td class="p-3">${price.id}</td>
-                        <td class="p-3">${price.yearMonth}</td>
-                        <td class="p-3">${price.pricePerKg.toFixed(2)}</td>
-                        <td class="p-3">
-                            <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${price.id}">
-                                Edit
-                            </button>
-                        </td>
+                    const row = `
+                        <tr>
+                            <td class="p-3">${price.id}</td>
+                            <td class="p-3">${price.yearMonth}</td>
+                            <td class="p-3">${price.pricePerKg.toFixed(2)}</td>
+                            <td class="p-3">
+                                <button class="edit-btn bg-yellow-500 text-white px-3 py-1 rounded" data-id="${price.id}">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
                     `;
-
-                    tableBody.appendChild(row);
+                    $tableBody.append(row);
                 });
 
                 attachEditEvents();
@@ -63,35 +62,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function attachEditEvents() {
-        document.querySelectorAll(".edit-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
+        $(".edit-btn").off("click").on("click", function () {
+            const id = $(this).data("id");
 
-                try {
-                    const row = e.target.closest("tr");
-                    const effectiveMonth = row.children[1].textContent.trim();
-                    const pricePerKg = row.children[2].textContent.trim();
+            try {
+                const $row = $(this).closest("tr");
+                const effectiveMonth = $row.children().eq(1).text().trim();
+                const pricePerKg = $row.children().eq(2).text().trim();
 
-                    teaLeafPriceIdInput.value = id;
-                    effectiveMonthInput.value = effectiveMonth;
-                    pricePerKgInput.value = pricePerKg;
+                $teaLeafPriceIdInput.val(id);
+                $effectiveMonthInput.val(effectiveMonth);
+                $pricePerKgInput.val(pricePerKg);
 
-                    isEditMode = true;
-                    teaLeafPriceModal.style.display = "block";
-                } catch (error) {
-                    console.error("Error fetching tea leaf price details:", error);
-                }
-            });
+                isEditMode = true;
+                $teaLeafPriceModal.css("display", "block");
+            } catch (error) {
+                console.error("Error fetching tea leaf price details:", error);
+            }
         });
     }
 
-    teaLeafPriceForm.addEventListener("submit", async (e) => {
+    $teaLeafPriceForm.on("submit", async function (e) {
         e.preventDefault();
 
         const dto = {
-            id: teaLeafPriceIdInput.value || null,
-            yearMonth: effectiveMonthInput.value,
-            pricePerKg: parseFloat(pricePerKgInput.value),
+            id: $teaLeafPriceIdInput.val() || null,
+            yearMonth: $effectiveMonthInput.val(),
+            pricePerKg: parseFloat($pricePerKgInput.val()),
         };
 
         try {
@@ -109,15 +106,35 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await res.json();
 
             if (res.ok) {
-                alert(result.message || "Success!");
-                teaLeafPriceModal.style.display = "none";
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: result.message || "Success!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                $teaLeafPriceModal.css("display", "none");
                 loadTeaLeafPrices();
             } else {
-                alert(result.message || "Something went wrong!");
+                Swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "error",
+                    title: result.message || "Something went wrong!",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
         } catch (error) {
             console.error("Error saving tea leaf price:", error);
-            alert("Failed to save tea leaf price!");
+            Swal.fire({
+                icon: "error",
+                title: "Failed!",
+                text: "Failed to save tea leaf price!"
+            });
         }
     });
 

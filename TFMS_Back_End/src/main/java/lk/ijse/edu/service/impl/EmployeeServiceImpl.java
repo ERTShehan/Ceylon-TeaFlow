@@ -89,7 +89,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             employeeDto.setId(employee.getId());
             employeeDto.setName(employee.getName());
             employeeDto.setAddress(employee.getAddress());
-//            employeeDto.setBasicSalary(employee.getBasicSalary());
+            employeeDto.setBasicSalary(employee.getBasicSalary());
             employeeDto.setPhone(employee.getPhone());
             employeeDto.setDepartment(employee.getDepartment());
             return employeeDto;

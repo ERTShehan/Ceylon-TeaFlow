@@ -1233,7 +1233,6 @@
               <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
             </div>
           </div>
-          <p class="text-sm text-gray-500 mt-2">+12 this month</p>
         </div>
 
 
@@ -1241,26 +1240,24 @@
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-gray-500">Monthly Revenue</h3>
-              <p class="text-2xl font-bold text-tea-green">LKR 1.2M</p>
+              <p class="text-2xl font-bold text-tea-green">LKR 0</p>
             </div>
             <div class="bg-tea-cream p-3 rounded-lg">
               <i class="fas fa-money-bill-wave text-tea-green text-xl"></i>
             </div>
           </div>
-          <p class="text-sm text-gray-500 mt-2">+8% from last month</p>
         </div>
 
         <div class="stat-card bg-white rounded-xl shadow-md p-6">
           <div class="flex justify-between items-start">
             <div>
               <h3 class="text-gray-500">Tea Stock</h3>
-              <p class="text-2xl font-bold text-tea-green">2,450 kg</p>
+              <p id="total-stock-quantity-adminDashboard" class="text-2xl font-bold text-tea-green">0 kg</p>
             </div>
             <div class="bg-tea-cream p-3 rounded-lg">
               <i class="fas fa-boxes text-tea-green text-xl"></i>
             </div>
           </div>
-          <p class="text-sm text-gray-500 mt-2">+320 kg this week</p>
         </div>
       </div>
 
@@ -1297,18 +1294,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div class="bg-tea-cream p-4 rounded-lg">
             <h3 class="font-medium text-tea-green">This Month's Supply</h3>
-            <p class="text-2xl font-bold">1,245 kg</p>
-            <p class="text-sm text-gray-600">From 42 suppliers</p>
+            <p id="total-weight-value-adminDashboard" class="text-2xl font-bold">0 kg</p>
           </div>
+
           <div class="bg-tea-cream p-4 rounded-lg">
-            <h3 class="font-medium text-tea-green">Average Quality Score</h3>
-            <p class="text-2xl font-bold">8.7/10</p>
-            <p class="text-sm text-gray-600">+0.3 from last month</p>
-          </div>
-          <div class="bg-tea-cream p-4 rounded-lg">
-            <h3 class="font-medium text-tea-green">Top Supplier</h3>
-            <p class="text-xl font-bold">Kamal Perera</p>
-            <p class="text-sm text-gray-600">215 kg supplied</p>
+            <h3 class="font-medium text-tea-green">Top Supplier Today</h3>
+            <p id="today-top-supplier-name" class="text-xl font-bold">Loading ...</p>
+            <p id="today-top-supplier-total-weight" class="text-sm text-gray-600">0 kg supplied</p>
           </div>
         </div>
 
@@ -1319,30 +1311,15 @@
               <thead>
               <tr class="bg-gray-50">
                 <th class="p-2 text-left">Supplier</th>
+                <th class="p-2 text-left">Tea Card Number</th>
                 <th class="p-2 text-left">Date</th>
-                <th class="p-2 text-left">Quantity</th>
-                <th class="p-2 text-left">Quality Score</th>
+                <th class="p-2 text-left">Net Weight</th>
+                <th class="p-2 text-left">Quality</th>
+                <th class="p-2 text-left">Note</th>
               </tr>
               </thead>
-              <tbody>
-              <tr class="border-b">
-                <td class="p-2">Kamal Perera</td>
-                <td class="p-2">Aug 22, 2025</td>
-                <td class="p-2">125 kg</td>
-                <td class="p-2">9.2/10</td>
-              </tr>
-              <tr class="border-b">
-                <td class="p-2">Nimal Fernando</td>
-                <td class="p-2">Aug 21, 2025</td>
-                <td class="p-2">98 kg</td>
-                <td class="p-2">8.5/10</td>
-              </tr>
-              <tr class="border-b">
-                <td class="p-2">Sunil Rathnayake</td>
-                <td class="p-2">Aug 20, 2025</td>
-                <td class="p-2">112 kg</td>
-                <td class="p-2">8.8/10</td>
-              </tr>
+              <tbody id="all-tea-supplies-table-body">
+
               </tbody>
             </table>
           </div>
