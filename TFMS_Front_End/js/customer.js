@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Function to fetch tea products from the backend
     function fetchTeaProducts() {
         fetch('http://localhost:8080/customer/teaProduction')
             .then(response => {
@@ -17,13 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error fetching tea products:', error);
-                // Display error message in the products container
                 document.getElementById('products-container').innerHTML =
                     '<p class="text-red-500 text-center col-span-full">Failed to load products. Please try again later.</p>';
             });
     }
 
-    // Function to display tea products in the UI
     function displayTeaProducts(products) {
         const productsContainer = document.getElementById('products-container');
         productsContainer.innerHTML = ''; // Clear any existing content
@@ -48,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Helper function to escape HTML characters
     function escapeHtml(text) {
         const map = {
             '&': '&amp;',
@@ -60,11 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return text.toString().replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
-    // Helper function to format price
     function formatPrice(price) {
         return parseFloat(price).toFixed(2);
     }
 
-    // Fetch tea products when the page loads
     fetchTeaProducts();
 });

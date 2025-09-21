@@ -54,7 +54,8 @@ public class SecurityConfig {
                                                 "/addTeaLeafPrice/*",
                                                 "/supplier/totalTeaPacketRequestsMonth/**",
                                                 "/adminDashboard/**",
-                                                "/stockDashboard/**"
+                                                "/stockDashboard/**",
+                                                "/api/payhere/**"
                                         ).permitAll()
                                         .anyRequest().authenticated())
                 .sessionManagement(

@@ -108,7 +108,7 @@
                     <i class="fas fa-user"></i>
                 </div>
                 <div>
-                    <h3 class="font-semibold">Sarah Johnson</h3>
+                    <h3 class="font-semibold">kavindu</h3>
                     <p class="text-sm">Premium Customer</p>
                 </div>
             </div>
@@ -161,7 +161,7 @@
     <div class="main-content flex-1 p-6 md:ml-0">
         <div class="bg-white rounded-xl shadow-md p-6 mb-6">
             <h1 class="text-2xl font-bold text-tea-green mb-2">Customer Dashboard</h1>
-            <p class="text-gray-600">Welcome back, Sarah! Discover our premium tea collection and manage your orders.</p>
+            <p class="text-gray-600">Welcome back, Discover our premium tea collection and manage your orders.</p>
         </div>
 
         <!-- Stats Overview -->
@@ -170,7 +170,7 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Loyalty Points</h3>
-                        <p class="text-2xl font-bold text-tea-green">1,250 pts</p>
+                        <p class="text-2xl font-bold text-tea-green">0 pts</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-star text-tea-green text-xl"></i>
@@ -183,20 +183,20 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Orders This Month</h3>
-                        <p class="text-2xl font-bold text-tea-green">3 orders</p>
+                        <p class="text-2xl font-bold text-tea-green">0 orders</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-shopping-bag text-tea-green text-xl"></i>
                     </div>
                 </div>
-                <p class="text-sm text-gray-500 mt-2">2 delivered, 1 in transit</p>
+<!--                <p class="text-sm text-gray-500 mt-2">2 delivered, 1 in transit</p>-->
             </div>
 
             <div class="bg-white rounded-xl shadow-md p-6">
                 <div class="flex justify-between items-start">
                     <div>
                         <h3 class="text-gray-500">Favorite Tea</h3>
-                        <p class="text-2xl font-bold text-tea-green">Ceylon Black</p>
+                        <p class="text-2xl font-bold text-tea-green">-------</p>
                     </div>
                     <div class="bg-tea-cream p-3 rounded-lg">
                         <i class="fas fa-heart text-tea-green text-xl"></i>
@@ -231,63 +231,8 @@
                         <th class="p-3 text-left">Action</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr class="border-b">
-                        <td class="p-3 font-semibold">#TF-7842</td>
-                        <td class="p-3">Aug 14, 2025</td>
-                        <td class="p-3">2 items</td>
-                        <td class="p-3">LKR 1,650.00</td>
-                        <td class="p-3">
-                            <span class="order-status-badge order-status-processing">Processing</span>
-                        </td>
-                        <td class="p-3">
-                            <button class="text-tea-green hover:text-tea-green-light">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3 font-semibold">#TF-7791</td>
-                        <td class="p-3">Aug 10, 2025</td>
-                        <td class="p-3">3 items</td>
-                        <td class="p-3">LKR 2,200.00</td>
-                        <td class="p-3">
-                            <span class="order-status-badge order-status-shipped">Shipped</span>
-                        </td>
-                        <td class="p-3">
-                            <button class="text-tea-green hover:text-tea-green-light">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3 font-semibold">#TF-7725</td>
-                        <td class="p-3">Aug 5, 2025</td>
-                        <td class="p-3">1 item</td>
-                        <td class="p-3">LKR 950.00</td>
-                        <td class="p-3">
-                            <span class="order-status-badge order-status-delivered">Delivered</span>
-                        </td>
-                        <td class="p-3">
-                            <button class="text-tea-green hover:text-tea-green-light">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="p-3 font-semibold">#TF-7654</td>
-                        <td class="p-3">Jul 28, 2025</td>
-                        <td class="p-3">2 items</td>
-                        <td class="p-3">LKR 1,400.00</td>
-                        <td class="p-3">
-                            <span class="order-status-badge order-status-delivered">Delivered</span>
-                        </td>
-                        <td class="p-3">
-                            <button class="text-tea-green hover:text-tea-green-light">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                        </td>
-                    </tr>
+                    <tbody id="customer-orders-table-body">
+
                     </tbody>
                 </table>
             </div>
@@ -301,28 +246,28 @@
 
         <!-- Order Details Section -->
         <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 class="text-xl font-semibold text-tea-green mb-4">Order Details: #TF-7791</h2>
+            <h2 class="text-xl font-semibold text-tea-green mb-4">Order Details:</h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <h3 class="font-medium mb-3">Order Information</h3>
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <div class="flex justify-between mb-2">
-                            <span class="text-gray-600">Order Date:</span>
-                            <span class="font-semibold">Aug 10, 2025</span>
-                        </div>
-                        <div class="flex justify-between mb-2">
-                            <span class="text-gray-600">Status:</span>
-                            <span class="order-status-badge order-status-shipped">Shipped</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Estimated Delivery:</span>
-                            <span class="font-semibold">Aug 15, 2025</span>
-                        </div>
-                    </div>
-                </div>
+<!--                <div>-->
+<!--                    <h3 class="font-medium mb-3">Order Information</h3>-->
+<!--                    <div class="bg-gray-50 p-4 rounded-lg">-->
+<!--                        <div class="flex justify-between mb-2">-->
+<!--                            <span class="text-gray-600">Order Date:</span>-->
+<!--                            <span class="font-semibold">Aug 10, 2025</span>-->
+<!--                        </div>-->
+<!--                        <div class="flex justify-between mb-2">-->
+<!--                            <span class="text-gray-600">Status:</span>-->
+<!--                            <span class="order-status-badge order-status-shipped">Shipped</span>-->
+<!--                        </div>-->
+<!--                        <div class="flex justify-between">-->
+<!--                            <span class="text-gray-600">Estimated Delivery:</span>-->
+<!--                            <span class="font-semibold">Aug 15, 2025</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div>
+                <div id="shipping-address-section">
                     <h3 class="font-medium mb-3">Shipping Address</h3>
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <p class="font-semibold">Sarah Johnson</p>
@@ -334,65 +279,65 @@
                 </div>
             </div>
 
-            <h3 class="font-medium mb-3">Order Items</h3>
-            <div class="border rounded-lg overflow-hidden">
-                <div class="grid grid-cols-5 bg-gray-50 p-3 font-semibold">
-                    <div class="col-span-2">Product</div>
-                    <div>Price</div>
-                    <div>Quantity</div>
-                    <div>Total</div>
-                </div>
-                <div class="grid grid-cols-5 p-3 border-t">
-                    <div class="col-span-2 flex items-center">
-                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">
-                            <i class="fas fa-box text-tea-green"></i>
-                        </div>
-                        <span>Ceylon Black Tea</span>
-                    </div>
-                    <div>LKR 450.00</div>
-                    <div>2</div>
-                    <div>LKR 900.00</div>
-                </div>
-                <div class="grid grid-cols-5 p-3 border-t">
-                    <div class="col-span-2 flex items-center">
-                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">
-                            <i class="fas fa-box text-tea-green"></i>
-                        </div>
-                        <span>Green Tea</span>
-                    </div>
-                    <div>LKR 500.00</div>
-                    <div>1</div>
-                    <div>LKR 500.00</div>
-                </div>
-                <div class="grid grid-cols-5 p-3 border-t">
-                    <div class="col-span-2 flex items-center">
-                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">
-                            <i class="fas fa-box text-tea-green"></i>
-                        </div>
-                        <span>White Tea</span>
-                    </div>
-                    <div>LKR 650.00</div>
-                    <div>1</div>
-                    <div>LKR 650.00</div>
-                </div>
-            </div>
+<!--            <h3 class="font-medium mb-3">Order Items</h3>-->
+<!--            <div class="border rounded-lg overflow-hidden">-->
+<!--                <div class="grid grid-cols-5 bg-gray-50 p-3 font-semibold">-->
+<!--                    <div class="col-span-2">Product</div>-->
+<!--                    <div>Price</div>-->
+<!--                    <div>Quantity</div>-->
+<!--                    <div>Total</div>-->
+<!--                </div>-->
+<!--                <div class="grid grid-cols-5 p-3 border-t">-->
+<!--                    <div class="col-span-2 flex items-center">-->
+<!--                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">-->
+<!--                            <i class="fas fa-box text-tea-green"></i>-->
+<!--                        </div>-->
+<!--                        <span>Ceylon Black Tea</span>-->
+<!--                    </div>-->
+<!--                    <div>LKR 450.00</div>-->
+<!--                    <div>2</div>-->
+<!--                    <div>LKR 900.00</div>-->
+<!--                </div>-->
+<!--                <div class="grid grid-cols-5 p-3 border-t">-->
+<!--                    <div class="col-span-2 flex items-center">-->
+<!--                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">-->
+<!--                            <i class="fas fa-box text-tea-green"></i>-->
+<!--                        </div>-->
+<!--                        <span>Green Tea</span>-->
+<!--                    </div>-->
+<!--                    <div>LKR 500.00</div>-->
+<!--                    <div>1</div>-->
+<!--                    <div>LKR 500.00</div>-->
+<!--                </div>-->
+<!--                <div class="grid grid-cols-5 p-3 border-t">-->
+<!--                    <div class="col-span-2 flex items-center">-->
+<!--                        <div class="w-10 h-10 bg-tea-cream rounded mr-3 flex items-center justify-center">-->
+<!--                            <i class="fas fa-box text-tea-green"></i>-->
+<!--                        </div>-->
+<!--                        <span>White Tea</span>-->
+<!--                    </div>-->
+<!--                    <div>LKR 650.00</div>-->
+<!--                    <div>1</div>-->
+<!--                    <div>LKR 650.00</div>-->
+<!--                </div>-->
+<!--            </div>-->
 
-            <div class="mt-4 flex justify-end">
-                <div class="w-64">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-600">Subtotal:</span>
-                        <span>LKR 2,050.00</span>
-                    </div>
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-600">Shipping:</span>
-                        <span>LKR 150.00</span>
-                    </div>
-                    <div class="flex justify-between font-semibold text-lg border-t pt-2 mt-2">
-                        <span>Total:</span>
-                        <span class="text-tea-green">LKR 2,200.00</span>
-                    </div>
-                </div>
-            </div>
+<!--            <div class="mt-4 flex justify-end">-->
+<!--                <div class="w-64">-->
+<!--                    <div class="flex justify-between mb-2">-->
+<!--                        <span class="text-gray-600">Subtotal:</span>-->
+<!--                        <span>LKR 2,050.00</span>-->
+<!--                    </div>-->
+<!--                    <div class="flex justify-between mb-2">-->
+<!--                        <span class="text-gray-600">Shipping:</span>-->
+<!--                        <span>LKR 150.00</span>-->
+<!--                    </div>-->
+<!--                    <div class="flex justify-between font-semibold text-lg border-t pt-2 mt-2">-->
+<!--                        <span>Total:</span>-->
+<!--                        <span class="text-tea-green">LKR 2,200.00</span>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
         </div>
     </div>
 </div>
@@ -404,7 +349,6 @@
         document.querySelector('.sidebar').classList.toggle('active');
     });
 
-    // Simple quantity adjusters for cart items
     document.querySelectorAll('.bg-gray-200').forEach(button => {
         button.addEventListener('click', function() {
             const parent = this.parentElement;
@@ -417,24 +361,19 @@
                 quantityElement.textContent = quantity - 1;
             }
 
-            // In a real application, you would update the prices accordingly
         });
     });
 
-    // Filter buttons for tea categories
     document.querySelectorAll('.bg-gray-200.rounded-full').forEach(button => {
         button.addEventListener('click', function() {
-            // Remove active class from all buttons
             document.querySelectorAll('.bg-gray-200.rounded-full').forEach(btn => {
                 btn.classList.remove('bg-tea-green', 'text-white');
                 btn.classList.add('bg-gray-200');
             });
 
-            // Add active class to clicked button
             this.classList.remove('bg-gray-200');
             this.classList.add('bg-tea-green', 'text-white');
 
-            // In a real application, you would filter the products here
         });
     });
 </script>
