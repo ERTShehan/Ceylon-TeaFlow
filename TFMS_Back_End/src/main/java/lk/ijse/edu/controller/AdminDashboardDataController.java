@@ -1,6 +1,7 @@
 package lk.ijse.edu.controller;
 
 import lk.ijse.edu.dto.APIResponse;
+import lk.ijse.edu.dto.StockResponseDto;
 import lk.ijse.edu.dto.TeaLeafCountDto;
 import lk.ijse.edu.dto.TopSupplierDto;
 import lk.ijse.edu.repository.NormalCustomerRepository;
@@ -84,6 +85,13 @@ public class AdminDashboardDataController {
     public ResponseEntity<APIResponse<List<TeaLeafCountDto>>> getAllTeaLeafCounts() {
         return ResponseEntity.ok(new APIResponse<>(
                 200, "All Tea Leaf Counts Retrieved Successfully", teaCountService.getAllTeaLeafCounts()
+        ));
+    }
+
+    @GetMapping("/getStockLevels")
+    public ResponseEntity<APIResponse<List<StockResponseDto>>> getStockLevels(){
+        return ResponseEntity.ok(new APIResponse<>(
+                200, "Done", stockService.getGroupedStockLevels()
         ));
     }
 }

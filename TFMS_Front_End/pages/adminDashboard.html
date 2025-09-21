@@ -1313,16 +1313,17 @@
                 <th class="p-2 text-left">Supplier</th>
                 <th class="p-2 text-left">Tea Card Number</th>
                 <th class="p-2 text-left">Date</th>
-                <th class="p-2 text-left">Net Weight</th>
+                <th class="p-2 text-left">New Weight</th>
                 <th class="p-2 text-left">Quality</th>
                 <th class="p-2 text-left">Note</th>
               </tr>
               </thead>
-              <tbody id="all-tea-supplies-table-body">
-
-              </tbody>
+              <tbody id="all-tea-supplies-table-body"></tbody>
             </table>
           </div>
+
+          <!-- Pagination -->
+          <div id="pagination" class="flex justify-center items-center space-x-2 mt-4"></div>
         </div>
       </div>
 
@@ -1969,35 +1970,14 @@
         datasets: [
           {
             label: "Monthly Revenue (LKR)",
-            data: [
-              850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
-              1200000,
-            ],
+            // data: [
+            //   850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
+            //   1200000,
+            // ],
             borderColor: "#2E8B57",
             backgroundColor: "rgba(46, 139, 87, 0.1)",
             tension: 0.3,
             fill: true,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-      },
-    });
-
-    // Tea Type Chart
-    const teaTypeCtx = document
-            .getElementById("teaTypeChart")
-            .getContext("2d");
-    new Chart(teaTypeCtx, {
-      type: "doughnut",
-      data: {
-        labels: ["Ceylon Black", "Green Tea", "White Tea", "Herbal Blends"],
-        datasets: [
-          {
-            data: [45, 25, 15, 15],
-            backgroundColor: ["#2E8B57", "#3CB371", "#DAA520", "#FFD700"],
           },
         ],
       },
@@ -2018,14 +1998,14 @@
         datasets: [
           {
             label: "Revenue",
-            data: [
-              850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
-            ],
+            // data: [
+            //   850000, 920000, 980000, 870000, 950000, 1050000, 1120000,
+            // ],
             backgroundColor: "#2E8B57",
           },
           {
             label: "Expenses",
-            data: [620000, 650000, 680000, 720000, 690000, 710000, 750000],
+            // data: [620000, 650000, 680000, 720000, 690000, 710000, 750000],
             backgroundColor: "#DAA520",
           },
         ],

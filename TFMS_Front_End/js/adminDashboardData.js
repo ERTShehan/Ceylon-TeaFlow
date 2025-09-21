@@ -1,134 +1,190 @@
-async function loadTotalSuppliers() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/adminDashboard/totalSuppliers`);
-        const result = await response.json();
+let allDeliveries = [];
+let currentPage = 1;
+const itemsPerPage = 6;
 
+function loadTotalSuppliers() {
+    $.getJSON(`${API_BASE_URL}/adminDashboard/totalSuppliers`, function (result) {
         if (result.code === 200) {
-            document.getElementById("totalSuppliers").textContent = result.data;
-
-            document.getElementById("newSuppliers").textContent = `+`+ result.data+` this month`;
+            $("#totalSuppliers").text(result.data);
+            $("#newSuppliers").text("+" + result.data + " this month");
         } else {
             console.error("Error:", result.status);
         }
-    } catch (error) {
-        console.error("Failed to load suppliers:", error);
-    }
+    }).fail(function (err) {
+        console.error("Failed to load suppliers:", err);
+    });
 }
 
-async function loadDashboardData() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/adminDashboard/totalNormalCustomers`);
-        const result = await response.json();
-
+function loadDashboardData() {
+    $.getJSON(`${API_BASE_URL}/adminDashboard/totalNormalCustomers`, function (result) {
         if (result.status === 200) {
-            document.getElementById("totalCustomers").innerText = result.data;
+            $("#totalCustomers").text(result.data);
         }
-    } catch (error) {
-        console.error("Error loading dashboard data:", error);
-    }
+    }).fail(function (err) {
+        console.error("Error loading dashboard data:", err);
+    });
 }
 
-async function loadTotalStockQuantity() {
-    try {
-        const response = await fetch(`${API_BASE_URL}/adminDashboard/getTotalStockQuantity`);
-        const result = await response.json();
-
+function loadTotalStockQuantity() {
+    $.getJSON(`${API_BASE_URL}/adminDashboard/getTotalStockQuantity`, function (result) {
         if (result.code === 200) {
-            const qty = result.data;
-            document.getElementById("total-stock-quantity-adminDashboard").textContent = `${qty} kg`;
+            $("#total-stock-quantity-adminDashboard").text(result.data + " kg");
         } else {
             console.error("Failed to load total stock quantity:", result);
         }
-    } catch (error) {
-        console.error("Error fetching total stock quantity:", error);
-    }
+    }).fail(function (err) {
+        console.error("Error fetching total stock quantity:", err);
+    });
 }
 
 function fetchTotalWeightThisMonth() {
-    fetch(`${API_BASE_URL}/adminDashboard/totalWeightThisMonth`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok");
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.code === 200) {
-                const formattedWeight = new Intl.NumberFormat().format(data.data) + " kg";
-
-                document.querySelector("#total-weight-value-adminDashboard").textContent = formattedWeight;
-            } else {
-                console.error("Error:", data.message);
-            }
-        })
-        .catch(error => {
-            console.error("Fetch error:", error);
-        });
+    $.getJSON(`${API_BASE_URL}/adminDashboard/totalWeightThisMonth`, function (data) {
+        if (data.code === 200) {
+            const formattedWeight = new Intl.NumberFormat().format(data.data) + " kg";
+            $("#total-weight-value-adminDashboard").text(formattedWeight);
+        } else {
+            console.error("Error:", data.message);
+        }
+    }).fail(function (err) {
+        console.error("Fetch error:", err);
+    });
 }
 
 function fetchBestSupplierToday() {
-    fetch(`${API_BASE_URL}/adminDashboard/bestSupplierToday`)
-        .then(response => response.json())
-        .then(res => {
-            if (res.data) {
-                const supplierNameEl = document.getElementById("today-top-supplier-name");
-                const supplierWeightEl = document.getElementById("today-top-supplier-total-weight");
-
-                supplierNameEl.textContent = res.data.supplierName;
-                supplierWeightEl.textContent = `${res.data.totalSupplied} kg supplied`;
-            } else {
-                document.getElementById("today-top-supplier-name").textContent = "No Suppliers Found Today";
-                document.getElementById("today-top-supplier-total-weight").textContent = "0 kg supplied";
-            }
-        })
-        .catch(err => {
-            console.error("Error fetching top supplier:", err);
-            document.getElementById("today-top-supplier-name").textContent = "Error loading data";
-            document.getElementById("today-top-supplier-total-weight").textContent = "--";
-        });
+    $.getJSON(`${API_BASE_URL}/adminDashboard/bestSupplierToday`, function (res) {
+        if (res.data) {
+            $("#today-top-supplier-name").text(res.data.supplierName);
+            $("#today-top-supplier-total-weight").text(res.data.totalSupplied + " kg supplied");
+        } else {
+            $("#today-top-supplier-name").text("No Suppliers Found Today");
+            $("#today-top-supplier-total-weight").text("0 kg supplied");
+        }
+    }).fail(function (err) {
+        console.error("Error fetching top supplier:", err);
+        $("#today-top-supplier-name").text("Error loading data");
+        $("#today-top-supplier-total-weight").text("--");
+    });
 }
 
 function getAllSuppliesData() {
-    fetch(`${API_BASE_URL}/adminDashboard/getAllTeaLeafCounts`)
-        .then(response => response.json())
-        .then(res => {
-            const tableBody = document.getElementById("all-tea-supplies-table-body");
-            tableBody.innerHTML = ""; // Clear existing rows
-
-            if (res.data && res.data.length > 0) {
-                res.data.forEach(item => {
-                    const row = document.createElement("tr");
-                    row.className = "border-b";
-
-                    row.innerHTML = `
-                        <td class="p-2">${item.supplierName}</td>
-                        <td class="p-2">${item.teaCardNumber}</td>
-                        <td class="p-2">${item.date} ${item.time}</td>
-                        <td class="p-2">${item.netWeight} kg</td>
-                        <td class="p-2">${item.quality}</td>
-                        <td class="p-2">${item.note || "-"}</td>
-                    `;
-
-                    tableBody.appendChild(row);
-                });
-            } else {
-                const row = document.createElement("tr");
-                row.innerHTML = `<td colspan="6" class="p-2 text-center text-gray-500">No deliveries found</td>`;
-                tableBody.appendChild(row);
-            }
-        })
-        .catch(err => {
-            console.error("Error fetching tea leaf counts:", err);
-            const tableBody = document.getElementById("all-tea-supplies-table-body");
-            tableBody.innerHTML = `<tr><td colspan="6" class="p-2 text-center text-red-500">Error loading data</td></tr>`;
-        });
+    $.getJSON(`${API_BASE_URL}/adminDashboard/getAllTeaLeafCounts`, function (res) {
+        if (res.data && res.data.length > 0) {
+            allDeliveries = res.data;
+            renderTable();
+            renderPagination();
+        } else {
+            $("#all-tea-supplies-table-body").html(
+                `<tr><td colspan="6" class="p-2 text-center text-gray-500">No deliveries found</td></tr>`
+            );
+        }
+    }).fail(function (err) {
+        console.error("Error fetching tea leaf counts:", err);
+        $("#all-tea-supplies-table-body").html(
+            `<tr><td colspan="6" class="p-2 text-center text-red-500">Error loading data</td></tr>`
+        );
+    });
 }
 
-document.addEventListener("DOMContentLoaded",() => {
+function renderTable() {
+    const $tableBody = $("#all-tea-supplies-table-body");
+    $tableBody.empty();
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const pageData = allDeliveries.slice(startIndex, endIndex);
+
+    pageData.forEach(item => {
+        $tableBody.append(`
+            <tr class="border-b">
+                <td class="p-2">${item.supplierName}</td>
+                <td class="p-2">${item.teaCardNumber}</td>
+                <td class="p-2">${item.date} ${item.time}</td>
+                <td class="p-2">${item.netWeight} kg</td>
+                <td class="p-2">${item.quality}</td>
+                <td class="p-2">${item.note || "-"}</td>
+            </tr>
+        `);
+    });
+}
+
+function renderPagination() {
+    const $pagination = $("#pagination");
+    $pagination.empty();
+
+    const totalPages = Math.ceil(allDeliveries.length / itemsPerPage);
+
+    const $prevBtn = $(`<button class="px-3 py-1 border rounded">&laquo; Prev</button>`);
+    $prevBtn.prop("disabled", currentPage === 1).on("click", function () {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+            renderPagination();
+        }
+    });
+    $pagination.append($prevBtn);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const $pageBtn = $(`<button class="px-3 py-1 border rounded">${i}</button>`);
+        if (i === currentPage) $pageBtn.addClass("bg-tea-green text-white");
+        $pageBtn.on("click", function () {
+            currentPage = i;
+            renderTable();
+            renderPagination();
+        });
+        $pagination.append($pageBtn);
+    }
+
+    const $nextBtn = $(`<button class="px-3 py-1 border rounded">Next &raquo;</button>`);
+    $nextBtn.prop("disabled", currentPage === totalPages).on("click", function () {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+            renderPagination();
+        }
+    });
+    $pagination.append($nextBtn);
+}
+
+function loadChartInStockLevels() {
+    $.getJSON(`${API_BASE_URL}/adminDashboard/getStockLevels`, function (res) {
+        if (res.data && res.data.length > 0) {
+            const labels = res.data.map(item => item.productName.replace(/_/g, " "));
+            const values = res.data.map(item => parseFloat(item.quantity));
+
+            const colors = ["#2E8B57", "#3CB371", "#DAA520", "#FFD700", "#3333ff", "#ff7f50", "#8a2be2"];
+
+            const ctx = $("#teaTypeChart")[0].getContext("2d");
+            new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors.slice(0, values.length)
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: "right" }
+                    }
+                }
+            });
+        } else {
+            console.warn("No stock data found");
+        }
+    }).fail(function (err) {
+        console.error("Error fetching stock levels:", err);
+    });
+}
+
+$(document).ready(function () {
     loadTotalSuppliers();
     loadDashboardData();
     loadTotalStockQuantity();
     fetchTotalWeightThisMonth();
     fetchBestSupplierToday();
     getAllSuppliesData();
+    loadChartInStockLevels();
 });

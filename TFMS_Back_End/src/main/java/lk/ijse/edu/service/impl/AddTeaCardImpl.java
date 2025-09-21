@@ -27,7 +27,7 @@ public class AddTeaCardImpl implements AddTeaCardService {
     private String generateNextTeaCardId(String lastId) {
         if (lastId == null || lastId.isEmpty()) return "TC-00001";
 
-        String numericStr = lastId.substring(3); // Assumes prefix is always "TC-"
+        String numericStr = lastId.substring(3);
         int number = Integer.parseInt(numericStr);
 
         number++;
@@ -81,7 +81,6 @@ public class AddTeaCardImpl implements AddTeaCardService {
             userRepository.delete(user);
         }
 
-        // Delete the tea card
         teaCardRepository.delete(teaCard);
 
         return "Tea Card deleted successfully";

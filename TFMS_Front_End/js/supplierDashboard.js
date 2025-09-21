@@ -23,13 +23,35 @@ async function loadAdvanceRequests() {
     }
 }
 
+async function loadSupplierProfile() {
+    try {
+        const res = await fetch(`${API_BASE}/supplier/getSupplierProfile`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+        const result = await res.json();
+
+        if (result.code === 200) {
+            const data = result.data;
+            document.querySelector("#supplier-name").innerText = data.name;
+            document.querySelector("#tea-card").innerText = "Tea Card: " + data.teaCardNumber;
+        } else {
+            console.error(result.status);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
 function renderAdvanceRequests() {
     const tbody = document.getElementById("advanceRequestsTable");
     const paginationControls = document.getElementById("pagination-controls");
 
     if (!tbody) return;
 
-    // clear
     tbody.innerHTML = "";
     paginationControls.innerHTML = "";
 
@@ -411,7 +433,8 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMonthlyPacketRequestsAndDisplay();
     new SupplierDashboard();
     loadAdvanceAvailability();
-    loadAccountBalance();
+    loadAccountBalance()
+    // loadSupplierProfile();
 });
 
 async function fetchMonthlyTotalAndDisplay() {

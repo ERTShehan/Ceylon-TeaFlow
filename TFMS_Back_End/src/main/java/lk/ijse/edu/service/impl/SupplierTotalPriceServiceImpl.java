@@ -20,7 +20,6 @@ public class SupplierTotalPriceServiceImpl implements SupplierTotalPriceService 
     public MonthlySupplySummaryDto getSupplierMonthlyTotalPrice(String supplierId, int year, int month) {
         double totalKg = teaCountRepository.getTotalBySupplierAndMonth(supplierId, year, month);
 
-        // get price for this month
         String effectiveMonth = String.format("%04d-%02d", year, month);
         Optional<TeaLeafPrice> teaLeafPrice = addTeaLeafPriceRepository.findByEffectiveMonth(effectiveMonth);
 

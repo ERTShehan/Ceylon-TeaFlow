@@ -274,4 +274,21 @@ public class SupplierDashboardController {
         c2.setPadding(6);
         table.addCell(c2);
     }
+
+    @GetMapping("/getSupplierUsername")
+    public ResponseEntity<APIResponse<String>> getSupplierUsername(Principal principal) {
+        String username = principal.getName();
+
+        TeaLeafSupplier supplier = teaLeafSupplierRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+
+        SupplierProfileDto dto = new SupplierProfileDto(
+                username,
+                supplier.getTeaCardNumber()
+        );
+
+        return ResponseEntity.ok(
+                new APIResponse<>(200, "Supplier profile retrieved successfully", dto)
+        );
+    }
 }
